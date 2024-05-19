@@ -1,0 +1,37 @@
+name: macOS
+
+on:
+  push:
+    paths:
+      - '**'
+      - '!.github/workflows/**'
+      - '.github/workflows/macos.yml'
+
+jobs:
+  deploy-and-test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup LLVM, Ninja and vcpkg
+        run: |
+          brew update # Ensure to use a latest version of Homebrew
+          brew install llvm ninja
+          echo "CC=$(brew --prefix llvm)/bin/clang" >> "$GITHUB_ENV"
+          echo "CXX=$(brew --prefix llvm)/bin/clang++" >> "$GITHUB_ENV"
+          git clone https://github.com/microsoft/vcpkg "$HOME/vcpkg"
+          echo "VCPKG_ROOT=$HOME/vcpkg" >> "$GITHUB_ENV"
+
+      - name: Install Vulkan SDK
+        uses: humbletim/install-vulkan-sdk@v1.1.1
+
+      - name: Configure
+        run: |
+          mkdir build
+          cmake -S . -B build -G Ninja                                          \
+            -DCMAKE_BUILD_TYPE=Release                                          \
+            -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake \
+            -DVKU_BUILD_EXAMPLES=ON
+
+      - name: Build
+        run: cmake --build build --config Release

@@ -1,0 +1,34 @@
+name: Linux
+
+on:
+  push:
+    paths:
+      - '**'
+      - '!.github/workflows/**'
+      - '.github/workflows/linux.yml'
+
+jobs:
+  deploy-and-test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup LLVM, Ninja and vcpkg
+        run: |
+          sudo apt-get install -y ninja-build
+          echo "CC=/usr/bin/clang-18" >> "$GITHUB_ENV"
+          echo "CXX=/usr/bin/clang++-18" >> "$GITHUB_ENV"
+
+      - name: Install Vulkan SDK
+        uses: humbletim/install-vulkan-sdk@v1.1.1
+
+      - name: Configure
+        run: |
+          mkdir build
+          cmake -S . -B build -G Ninja                                                       \
+            -DCMAKE_BUILD_TYPE=Release                                                       \
+            -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake \
+            -DVKU_BUILD_EXAMPLES=ON
+
+      - name: Build
+        run: cmake --build build --config Release
