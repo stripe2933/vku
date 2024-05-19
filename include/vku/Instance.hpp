@@ -11,7 +11,7 @@ namespace vku {
         struct Config {
             std::vector<const char*> layers;
             std::vector<const char*> extensions;
-            PNextsTuple pNexts;
+            PNextsTuple pNexts = std::tuple<>{};
         };
 
         vk::raii::Context context;
