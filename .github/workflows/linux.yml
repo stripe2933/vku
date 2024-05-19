@@ -21,16 +21,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup LLVM, Ninja and vcpkg
-        run: |
-          sudo apt-get install -y ninja-build
-          echo "CC=${{ matrix.compiler.c_compiler }}" >> "$GITHUB_ENV"
-          echo "CXX=${{ matrix.compiler.cxx_compiler }}" >> "$GITHUB_ENV"
+      - name: Install Vulkan SDK
+        uses: humbletim/install-vulkan-sdk@v1.1.1
 
       - name: Configure
         run: |
           mkdir build
-          cmake -S . -B build -G Ninja                                                       \
+          CC=${{ matrix.compiler.c_compiler }}                                               \
+          CXX=${{ matrix.compiler.cxx_compiler }}                                            \
+          cmake -S . -B build                                                                \
             -DCMAKE_BUILD_TYPE=Release                                                       \
             -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake \
             -DVKU_BUILD_EXAMPLES=ON
