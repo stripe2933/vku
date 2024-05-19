@@ -12,18 +12,20 @@ jobs:
     strategy:
       matrix:
         compiler:
-          - c_compiler: gcc-14
-            cxx_compiler: g++-14
-          - c_compiler: clang-18
-            cxx_compiler: clang++-18
+          - { c_compiler: gcc-14, cxx_compiler: g++-14 }
+          - { c_compiler: clang-18, cxx_compiler: clang++-18 }
 
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup LLVM and vcpkg
+      - name: Setup compiler and vcpkg
         run: |
+          echo "CC=${{ matrix.compiler.c_compiler }}" >> "$GITHUB_ENV"
+          echo "CXX=${{ matrix.compiler.cxx_compiler }}" >> "$GITHUB_ENV"
           cd $VCPKG_INSTALLATION_ROOT
+          git reset --hard
+          git pull
           vcpkg update
 
       - name: Install Vulkan SDK
@@ -32,9 +34,7 @@ jobs:
       - name: Configure
         run: |
           mkdir build
-          CC=${{ matrix.compiler.c_compiler }}                                               \
-          CXX=${{ matrix.compiler.cxx_compiler }}                                            \
-          cmake -S . -B build                                                                \
+          cmake -S . -B build -G Ninja                                                       \
             -DCMAKE_BUILD_TYPE=Release                                                       \
             -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake \
             -DVKU_BUILD_EXAMPLES=ON
