@@ -21,6 +21,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup LLVM and vcpkg
+        run: |
+          cd $VCPKG_INSTALLATION_ROOT
+          vcpkg update
+
       - name: Install Vulkan SDK
         uses: humbletim/install-vulkan-sdk@v1.1.1
 
