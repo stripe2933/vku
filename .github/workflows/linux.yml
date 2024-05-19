@@ -8,7 +8,14 @@ on:
       - '.github/workflows/linux.yml'
 
 jobs:
-  deploy-and-test:
+  build:
+    strategy:
+      matrix:
+        compiler:
+          - c_compiler: gcc-14
+            cxx_compiler: g++-14
+          - c_compiler: clang-18
+            cxx_compiler: clang++-18
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -16,8 +23,10 @@ jobs:
       - name: Setup LLVM, Ninja and vcpkg
         run: |
           sudo apt-get install -y ninja-build
-          echo "CC=/usr/bin/clang-18" >> "$GITHUB_ENV"
-          echo "CXX=/usr/bin/clang++-18" >> "$GITHUB_ENV"
+          echo "CC=${{ matrix.compiler.c_compiler }}" >> "$GITHUB_ENV"
+          echo "CXX=${{ matrix.compiler.cxx_compiler }}" >> "$GITHUB_ENV"
+          cd $VCPKG_INSTALLATION_ROOT
+          git pull
 
       - name: Install Vulkan SDK
         uses: humbletim/install-vulkan-sdk@v1.1.1
