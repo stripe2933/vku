@@ -98,7 +98,7 @@ namespace details {
         template <typename... ConfigArgs>
         explicit Gpu(
             const vk::raii::Instance &instance,
-            Config<ConfigArgs...> config = {}
+            Config<ConfigArgs...> config = Config<>{}
         ) : physicalDevice { selectPhysicalDevice(instance, config) },
             queueFamilyIndices { std::invoke(config.queueFamilyIndicesGetter, *physicalDevice) },
             device { createDevice(config) } {
