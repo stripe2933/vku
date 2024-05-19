@@ -22,9 +22,6 @@ jobs:
           git clone https://github.com/microsoft/vcpkg "$HOME/vcpkg"
           echo "VCPKG_ROOT=$HOME/vcpkg" >> "$GITHUB_ENV"
 
-      - name: Install Vulkan SDK
-        uses: humbletim/install-vulkan-sdk@v1.1.1
-
       - name: Configure
         run: |
           mkdir build

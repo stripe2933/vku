@@ -25,6 +25,7 @@ endif()
 # ----------------
 
 find_package(Vulkan REQUIRED)
+find_package(VulkanMemoryAllocator CONFIG REQUIRED)
 find_package(unofficial-vulkan-memory-allocator-hpp CONFIG REQUIRED)
 if (VKU_USE_GLM)
     find_package(glm CONFIG REQUIRED)
@@ -54,6 +55,7 @@ target_compile_features(vku PUBLIC cxx_std_23)
 target_include_directories(vku PUBLIC include)
 target_link_libraries(vku PUBLIC
     Vulkan::Vulkan
+    GPUOpen::VulkanMemoryAllocator
     unofficial::VulkanMemoryAllocator-Hpp::VulkanMemoryAllocator-Hpp
 )
 target_compile_definitions(vku PUBLIC VKU_VK_VERSION=${VKU_VK_VERSION})
