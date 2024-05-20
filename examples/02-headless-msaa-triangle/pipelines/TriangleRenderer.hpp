@@ -11,7 +11,7 @@ public:
     vk::raii::PipelineLayout pipelineLayout;
     vk::raii::Pipeline pipeline;
 
-    explicit TriangleRenderer(
+    TriangleRenderer(
         const vk::raii::Device &device,
         vk::Format colorAttachmentFormat,
         vk::Format depthAttachmentFormat
