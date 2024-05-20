@@ -34,4 +34,4 @@ jobs:
             -DVKU_USE_GLFW=ON -DVKU_BUILD_EXAMPLES=ON
 
       - name: Build
-        run: cmake --build build --config Release
+        run: ninja -C build
