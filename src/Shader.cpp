@@ -5,7 +5,12 @@
 auto vku::Shader::readCode(const std::filesystem::path &path) -> std::vector<std::uint32_t> {
     std::ifstream file { path, std::ios::ate | std::ios::binary };
     if (!file.is_open()) {
-        char buffer[256]; strerror_r(errno, buffer, 256);
+        char buffer[256];
+#ifdef _MSC_VER
+        strerror_s(errno, buffer, 256);
+#else
+        strerror_r(errno, buffer, 256);
+#endif
         throw std::runtime_error { std::format("Failed to open file {} ({})", path.string(), buffer) };
     }
 
