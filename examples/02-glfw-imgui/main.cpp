@@ -146,10 +146,13 @@ public:
 
         const MainApp &app;
 
+        // Attachment groups.
         std::vector<ImGuiAttachmentGroup> imGuiAttachmentGroups = createImGuiAttachmentGroups();
 
+        // Command buffers.
         vk::CommandBuffer drawImGuiCommandBuffer;
 
+        // Synchronization stuffs.
         vk::raii::Semaphore swapchainImageAcquireSema { app.device, vk::SemaphoreCreateInfo{} },
                             drawFinishSema { app.device, vk::SemaphoreCreateInfo{} };
         vk::raii::Fence     inFlightFence { app.device, vk::FenceCreateInfo { vk::FenceCreateFlagBits::eSignaled } } ;
