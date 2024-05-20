@@ -143,7 +143,7 @@ namespace details {
                     queueCreateInfos,
                     {},
                     config.extensions,
-                    [&] -> const vk::PhysicalDeviceFeatures* {
+                    [&]() -> const vk::PhysicalDeviceFeatures* {
                         return std::convertible_to<decltype(config.physicalDeviceFeatures), vk::PhysicalDeviceFeatures>
                             ? &config.physicalDeviceFeatures
                             : nullptr;
