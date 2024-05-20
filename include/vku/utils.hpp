@@ -67,4 +67,10 @@ namespace vku{
     ) noexcept -> std::uint32_t {
         return workgroupCount[0] * workgroupCount[1] * workgroupCount[2];
     }
+
+    [[nodiscard]] constexpr auto fullSubresourceRange(
+        vk::ImageAspectFlags aspectFlags = vk::ImageAspectFlagBits::eColor
+    ) noexcept -> vk::ImageSubresourceRange {
+        return { aspectFlags, 0, vk::RemainingMipLevels, 0, vk::RemainingArrayLayers };
+    }
 }

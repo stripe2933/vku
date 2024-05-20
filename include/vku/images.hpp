@@ -64,10 +64,4 @@ namespace vku {
         auto operator=(AllocatedImage &&src) noexcept -> AllocatedImage&;
         ~AllocatedImage();
     };
-
-    [[nodiscard]] constexpr auto fullSubresourceRange(
-        vk::ImageAspectFlags aspectFlags = vk::ImageAspectFlagBits::eColor
-    ) noexcept -> vk::ImageSubresourceRange {
-        return { aspectFlags, 0, vk::RemainingMipLevels, 0, vk::RemainingArrayLayers };
-    }
 }

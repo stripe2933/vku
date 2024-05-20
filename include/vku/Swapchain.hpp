@@ -2,7 +2,7 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include "images.hpp"
+#include "utils.hpp"
 
 namespace vku {
     template <typename... PNexts>
