@@ -55,19 +55,9 @@ public:
                 vma::Allocator allocator
             ) : vku::AttachmentGroup { vk::Extent2D { 512, 512 } } {
                 // Create vku::AllocateImage and move ownership into vku::AttachmentGroup.
-                addColorAttachment(device, storeImage(std::make_unique<vku::AllocatedImage>(allocator, vk::ImageCreateInfo {
-                    {},
-                    vk::ImageType::e2D,
-                    vk::Format::eB8G8R8A8Srgb,
-                    vk::Extent3D { 512, 512, 1 },
-                    1, 1,
-                    vk::SampleCountFlagBits::e1,
-                    vk::ImageTiling::eOptimal,
-                    vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferSrc,
-                }, vma::AllocationCreateInfo {
-                    {},
-                    vma::MemoryUsage::eAutoPreferDevice,
-                })));
+                addColorAttachment(
+                    device,
+                    storeImage(createColorImage(allocator, vk::Format::eR8G8B8A8Unorm, vk::ImageUsageFlagBits::eTransferSrc)));
             }
         } attachmentGroup { gpu.device, allocator };
 
