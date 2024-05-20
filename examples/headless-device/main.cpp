@@ -76,7 +76,7 @@ int main(){
     // Create vk::raii::PhysicalDevice, vk::raii::Device and its queues.
     const vku::Gpu<QueueFamilyIndices, Queues> gpu {
         instance.instance,
-        vku::Gpu<QueueFamilyIndices, Queues>::Config {
+        vku::Gpu<QueueFamilyIndices, Queues>::Config<std::tuple<>> {
             // For default, vku::Gpu tests that the physical device has required queue families by passed argument.
             // Our QueueFamilyIndices constructor has two arguments (vk::PhysicalDevice, vk::SurfaceKHR), therefore
             // queueFamilyIndicesGetter have to be manually specified.
