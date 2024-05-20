@@ -13,4 +13,5 @@ find_package(Stb REQUIRED)
 
 add_subdirectory(00-compute-device)
 add_subdirectory(01-headless-triangle)
-add_subdirectory(02-glfw-imgui)
+add_subdirectory(02-headless-msaa-triangle)
+add_subdirectory(04-imgui)
