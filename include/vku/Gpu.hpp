@@ -85,9 +85,7 @@ namespace details {
             std::vector<const char*> extensions;
             // If PNextsTuple has vk::PhysicalDeviceFeatures2 alternative, then physicalDeviceFeatures field set to details::nofield to pretend it is not exists.
             // https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkDeviceCreateInfo.html#VUID-VkDeviceCreateInfo-pNext-00373
-#ifdef _MSC_VER
-            [[msvc::no_unique_address]]
-#else
+#ifndef _MSC_VER
             [[no_unique_address]]
 #endif
             std::conditional_t<details::alternative_of<vk::PhysicalDeviceFeatures2, PNextsTuple>, details::nofield, vk::PhysicalDeviceFeatures> physicalDeviceFeatures;
