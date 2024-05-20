@@ -71,7 +71,8 @@ auto vku::AttachmentGroup::addColorAttachment(
     const vk::ImageSubresourceRange &subresourceRange
 ) -> const Attachment & {
     return colorAttachments.emplace_back(
-        image, vk::raii::ImageView { device, vk::ImageViewCreateInfo {
+        image,
+        vk::raii::ImageView { device, vk::ImageViewCreateInfo {
             {},
             image,
             vk::ImageViewType::e2D,
@@ -164,7 +165,7 @@ auto vku::AttachmentGroup::createDepthStencilImage(
 
 auto vku::AttachmentGroup::getRenderingInfo(
     std::span<const std::tuple<vk::AttachmentLoadOp, vk::AttachmentStoreOp, vk::ClearColorValue>> colorAttachmentInfos,
-    std::optional<std::tuple<vk::AttachmentLoadOp, vk::AttachmentStoreOp, vk::ClearDepthStencilValue>> depthStencilAttachmentInfo
+    const std::optional<std::tuple<vk::AttachmentLoadOp, vk::AttachmentStoreOp, vk::ClearDepthStencilValue>> &depthStencilAttachmentInfo
 ) const -> RefHolder<vk::RenderingInfo, std::vector<vk::RenderingAttachmentInfo>, std::optional<vk::RenderingAttachmentInfo>> {
     assert(colorAttachments.size() == colorAttachmentInfos.size() && "Color attachment info count mismatch");
     assert(depthStencilAttachment.has_value() == depthStencilAttachmentInfo.has_value() && "Depth-stencil attachment info mismatch");
@@ -332,7 +333,7 @@ auto vku::MsaaAttachmentGroup::createDepthStencilImage(
 
 auto vku::MsaaAttachmentGroup::getRenderingInfo(
     std::span<const std::tuple<vk::AttachmentLoadOp, vk::AttachmentStoreOp, vk::ClearColorValue>> colorAttachmentInfos,
-    std::optional<std::tuple<vk::AttachmentLoadOp, vk::AttachmentStoreOp, vk::ClearDepthStencilValue>> depthStencilAttachmentInfo
+    const std::optional<std::tuple<vk::AttachmentLoadOp, vk::AttachmentStoreOp, vk::ClearDepthStencilValue>> &depthStencilAttachmentInfo
 ) const -> RefHolder<vk::RenderingInfo, std::vector<vk::RenderingAttachmentInfo>, std::optional<vk::RenderingAttachmentInfo>> {
     assert(colorAttachments.size() == colorAttachmentInfos.size() && "Color attachment info count mismatch");
     assert(depthStencilAttachment.has_value() == depthStencilAttachmentInfo.has_value() && "Depth-stencil attachment info mismatch");
