@@ -48,9 +48,7 @@ struct Queues {
 
 class MainApp {
 public:
-    MainApp() = default;
-
-    auto run() const -> void {
+    [[nodiscard]] auto run() const -> int {
         // Create compute pipeline.
         const MultiplyComputer multiplyComputer { gpu.device };
 
@@ -93,15 +91,18 @@ public:
         gpu.queues.compute.waitIdle();
 
         // Check if buffer is multiplied by 2.
-        const std::span<const float> result = buffer.asRange<float>();
+        const std::span result = buffer.asRange<float>();
         constexpr auto expect = inputData | std::views::transform([](float x) { return x * 2.f; });
         const auto [it1, it2] = std::ranges::mismatch(result, expect);
-        if (it1 != result.end()) {
-            std::println(std::cerr, "Mismatch at {} in buffer: {}", std::distance(result.begin(), it1), *it1);
+        if (it1 != result.end() || it2 != expect.end()) {
+            if (it1 != result.end())
+                std::println(std::cerr, "Mismatch at {} in buffer: {}", std::distance(result.begin(), it1), *it1);
+            if (it2 != expect.end())
+                std::println(std::cerr, "Mismatch at {} in expectation: {}", std::distance(expect.begin(), it2), *it2);
+            return 1;
         }
-        if (it2 != expect.end()) {
-            std::println(std::cerr, "Mismatch at {} in expectation: {}", std::distance(expect.begin(), it2), *it2);
-        }
+
+        return 0;
     }
 
 private:
@@ -147,6 +148,7 @@ private:
 };
 
 int main() {
-    MainApp{}.run();
-    return 0;
+    VULKAN_HPP_DEFAULT_DISPATCHER.init();
+
+    return MainApp{}.run();
 }
