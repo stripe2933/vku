@@ -18,6 +18,7 @@ jobs:
 
       - name: Install LLVM, Ninja and vcpkg
         run: |
+          brew update
           brew install llvm ninja
           git clone https://github.com/microsoft/vcpkg.git
           ./vcpkg/bootstrap-vcpkg.sh
