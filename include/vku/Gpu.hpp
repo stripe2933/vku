@@ -63,6 +63,7 @@ namespace details {
                 // Check if given physical device has required queue families.
                 try {
                     const QueueFamilyIndices queueFamilyIndices = queueFamilyIndicesGetter(physicalDevice);
+                    (void)queueFamilyIndices;
                 }
                 catch (...) {
                     return 0U;

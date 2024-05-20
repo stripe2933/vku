@@ -156,11 +156,14 @@ private:
             vku::Gpu<QueueFamilyIndices, Queues>::Config<std::tuple<vk::PhysicalDeviceDynamicRenderingFeatures>> {
                 // Internal physical device rater will check if the requested extension is available on the physical device, and ignore if not.
                 .extensions = {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
                     vk::KHRMultiviewExtensionName, // Required by VK_KHR_create_renderpass2.
                     vk::KHRMaintenance2ExtensionName, // Required by VK_KHR_create_renderpass2.
                     vk::KHRCreateRenderpass2ExtensionName, // Required by VK_KHR_depth_stencil_resolve.
                     vk::KHRDepthStencilResolveExtensionName, // Required by VK_KHR_dynamic_rendering.
                     vk::KHRDynamicRenderingExtensionName,
+#pragma clang diagnostic pop
                 },
                 .pNexts = std::tuple {
                     vk::PhysicalDeviceDynamicRenderingFeatures { vk::True },

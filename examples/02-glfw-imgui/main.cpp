@@ -284,6 +284,8 @@ private:
             instance,
             Gpu::Config<std::tuple<vk::PhysicalDeviceDynamicRenderingFeatures>> {
                 .extensions = {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
                     vk::KHRSwapchainExtensionName,
                     vk::KHRImageFormatListExtensionName, // Required by VK_KHR_swapchain_mutable_format.
                     vk::KHRSwapchainMutableFormatExtensionName,
@@ -292,6 +294,7 @@ private:
                     vk::KHRCreateRenderpass2ExtensionName, // Required by VK_KHR_depth_stencil_resolve.
                     vk::KHRDepthStencilResolveExtensionName, // Required by VK_KHR_dynamic_rendering.
                     vk::KHRDynamicRenderingExtensionName,
+#pragma clang diagnostic pop
                 },
                 // For default, vku::Gpu tests that the physical device has required queue families by passed argument.
                 // Our QueueFamilyIndices constructor has two arguments (vk::PhysicalDevice, vk::SurfaceKHR), therefore
@@ -351,7 +354,10 @@ private:
     }
 
     [[nodiscard]] auto createFrames() const -> std::array<Frame, MAX_FRAMES_IN_FLIGHT> {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-value"
         return ARRAY_OF(MAX_FRAMES_IN_FLIGHT, Frame { *this });
+#pragma clang diagnostic pop
     }
 
     auto handleSwapchainResize() -> void {
