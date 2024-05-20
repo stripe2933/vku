@@ -14,7 +14,7 @@ public:
     explicit TriangleRenderer(
         const vk::raii::Device &device,
         vk::Format colorAttachmentFormat
-    ) : pipelineLayout { createPipelineLayout(device) },
+    ) : pipelineLayout { device, vk::PipelineLayoutCreateInfo{} },
         pipeline { createPipeline(device, colorAttachmentFormat) } { }
 
     auto draw(
@@ -25,12 +25,6 @@ public:
     }
 
 private:
-    [[nodiscard]] static auto createPipelineLayout(
-        const vk::raii::Device &device
-    ) -> vk::raii::PipelineLayout {
-        return { device, vk::PipelineLayoutCreateInfo{} };
-    }
-
     [[nodiscard]] auto createPipeline(
         const vk::raii::Device &device,
         vk::Format colorAttachmentFormat

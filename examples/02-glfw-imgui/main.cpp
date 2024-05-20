@@ -158,11 +158,9 @@ public:
         vk::raii::Fence     inFlightFence { app.device, vk::FenceCreateInfo { vk::FenceCreateFlagBits::eSignaled } } ;
 
         auto createImGuiAttachmentGroups() const -> std::vector<ImGuiAttachmentGroup> {
-            return app.swapchain.getImages()
-                | std::views::transform([this](vk::Image swapchainImage) {
-                    return ImGuiAttachmentGroup { app.device, swapchainImage, app.swapchain.getExtent() };
-                })
-                | std::ranges::to<std::vector>();
+            return { std::from_range, app.swapchain.getImages() | std::views::transform([this](vk::Image swapchainImage) {
+                return ImGuiAttachmentGroup { app.device, swapchainImage, app.swapchain.getExtent() };
+            }) };
         }
 
         auto update() const -> void {
@@ -182,7 +180,8 @@ public:
             // Layout transition for dynamic rendering.
             drawImGuiCommandBuffer.pipelineBarrier(
                 vk::PipelineStageFlagBits::eColorAttachmentOutput, vk::PipelineStageFlagBits::eColorAttachmentOutput,
-                {}, {}, {}, vk::ImageMemoryBarrier {
+                {}, {}, {},
+                vk::ImageMemoryBarrier {
                     {}, vk::AccessFlagBits::eColorAttachmentRead | vk::AccessFlagBits::eColorAttachmentWrite,
                     {}, vk::ImageLayout::eColorAttachmentOptimal,
                     {}, {},
@@ -206,7 +205,8 @@ public:
             // Layout transition for present.
             drawImGuiCommandBuffer.pipelineBarrier(
                 vk::PipelineStageFlagBits::eColorAttachmentOutput, vk::PipelineStageFlagBits::eBottomOfPipe,
-                {}, {}, {}, vk::ImageMemoryBarrier {
+                {}, {}, {},
+                vk::ImageMemoryBarrier {
                     vk::AccessFlagBits::eColorAttachmentWrite, {},
                     vk::ImageLayout::eColorAttachmentOptimal, vk::ImageLayout::ePresentSrcKHR,
                     {}, {},
@@ -269,7 +269,7 @@ public:
                 swapchain.changeExtent(vku::convertExtent2D(framebufferSize));
                 handleSwapchainResize();
                 break;
-        }
+            }
         }
         device.waitIdle();
     }

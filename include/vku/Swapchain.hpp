@@ -31,7 +31,7 @@ namespace vku {
             }
         }
 
-        [[nodiscard]] auto getInfo() const noexcept -> const vk::SwapchainCreateInfoKHR & {
+        [[nodiscard]] auto getInfo() const noexcept -> const vk::SwapchainCreateInfoKHR& {
             return info.get();
         }
 
@@ -92,18 +92,16 @@ namespace vku {
         [[nodiscard]] auto createImageViewsWithFormat(
             vk::Format format
         ) const -> std::vector<vk::raii::ImageView> {
-            return images
-                | std::views::transform([this, format](vk::Image image) {
-                    return vk::raii::ImageView { device, vk::ImageViewCreateInfo {
-                        {},
-                        image,
-                        vk::ImageViewType::e2D,
-                        format,
-                        {},
-                        fullSubresourceRange(),
-                    } };
-                })
-                | std::ranges::to<std::vector>();
+            return { std::from_range, images | std::views::transform([this, format](vk::Image image) {
+                return vk::raii::ImageView { device, vk::ImageViewCreateInfo {
+                    {},
+                    image,
+                    vk::ImageViewType::e2D,
+                    format,
+                    {},
+                    fullSubresourceRange(),
+                } };
+            }) };
         }
     };
 }

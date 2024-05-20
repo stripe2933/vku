@@ -95,7 +95,8 @@ public:
             // Change image layout to COLOR_ATTACHMENT_OPTIMAL.
             commandBuffer.pipelineBarrier(
                 vk::PipelineStageFlagBits::eTopOfPipe, vk::PipelineStageFlagBits::eColorAttachmentOutput,
-                {}, {}, {}, vk::ImageMemoryBarrier {
+                {}, {}, {},
+                vk::ImageMemoryBarrier {
                     {}, vk::AccessFlagBits::eColorAttachmentWrite,
                     {}, vk::ImageLayout::eColorAttachmentOptimal,
                     {}, {},
@@ -108,9 +109,9 @@ public:
                 std::tuple { vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore, vk::ClearColorValue{} },
             }));
 
-            // Viewport and scissor are set to dynamic state.
-            attachmentGroup.setViewport(commandBuffer); // Set full viewport.
-            attachmentGroup.setScissor(commandBuffer); // Set full scissor.
+            // Viewport and scissor are set to dynamic state by default when using vku::getDefaultGraphicsPipelineCreateInfo.
+            attachmentGroup.setViewport(commandBuffer); // Set viewport as full region of attachment group.
+            attachmentGroup.setScissor(commandBuffer); // Set scissor as full region of attachment group.
 
             // Dispatch pipeline.
             triangleRenderer.draw(commandBuffer);

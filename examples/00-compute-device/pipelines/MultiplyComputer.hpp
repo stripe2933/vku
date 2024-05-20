@@ -12,7 +12,7 @@
 
 class MultiplyComputer {
 public:
-    struct DescriptorSetLayouts : vku::DescriptorSetLayouts<1 /* binding count in 1st descriptor set */> {
+    struct DescriptorSetLayouts : vku::DescriptorSetLayouts<1 /* binding count in set=0 */> {
         explicit DescriptorSetLayouts(
             const vk::raii::Device &device
         ) : vku::DescriptorSetLayouts<1> { device, LayoutBindings {
@@ -26,6 +26,8 @@ public:
         [[nodiscard]] auto getDescriptorWrites0(
             const vk::DescriptorBufferInfo &bufferInfo
         ) const -> auto {
+            // Use vku::RefHolder to make vk::WriteDescriptorSet "holds" the corresponding vk::DescriptorBufferInfo
+            // reference.
             return vku::RefHolder {
                 [this](const vk::DescriptorBufferInfo &bufferInfo) {
                     // Descriptor type are automatically set by predefined DescriptorSetLayouts parameters.
@@ -81,7 +83,7 @@ private:
     [[nodiscard]] auto createPipeline(
         const vk::raii::Device &device
     ) const -> vk::raii::Pipeline {
-        const auto [_, stages] = createStages(device, vku::Shader {
+        const auto [_ /* shader modules */, stages] = createStages(device, vku::Shader {
             vk::ShaderStageFlagBits::eCompute,
 #ifdef NDEBUG
             vku::Shader::convert(resources::shaders_multiply_comp()),
@@ -94,5 +96,6 @@ private:
             get<0>(stages),
             pipelineLayout,
         } };
+        // Shader modules must be alive until pipeline creation.
     }
 };
