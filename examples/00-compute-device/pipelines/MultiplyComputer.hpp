@@ -7,7 +7,7 @@
 #include <vku/utils.hpp>
 
 #ifdef NDEBUG
-
+#include <resources/shaders.hpp>
 #endif
 
 class MultiplyComputer {
@@ -84,9 +84,9 @@ private:
         const auto [_, stages] = vku::createStages(device, vku::Shader {
             vk::ShaderStageFlagBits::eCompute,
 #ifdef NDEBUG
-            // TODO
+            vku::Shader::convert(resources::shaders_multiply_comp()),
 #else
-            vku::Shader::readCode("shaders/multiply.comp.spv"),
+            vku::Shader::readCode(VKU_EXAMPLES_00_COMPUTE_DEVICE_COMPILED_SHADER_DIR "/shaders/multiply.comp.spv"),
 #endif
         });
         return { device, nullptr, vk::ComputePipelineCreateInfo {
