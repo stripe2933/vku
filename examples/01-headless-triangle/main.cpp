@@ -49,7 +49,7 @@ public:
 
     auto run() const -> void {
         // Create attachment group that has a color attachment for triangle rendering.
-        struct AttachmentGroup : vku::AttachmentGroup {
+        const struct AttachmentGroup : vku::AttachmentGroup {
             AttachmentGroup(
                 const vk::raii::Device &device,
                 vma::Allocator allocator
