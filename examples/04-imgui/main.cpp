@@ -102,7 +102,6 @@ public:
                 throw std::runtime_error { "Failed to wait for in-flight fences" };
             }
 
-            // Update.
             update();
 
             const std::optional imageIndex = app.swapchain.acquireImage(*swapchainImageAcquireSema);
@@ -163,13 +162,7 @@ public:
             }) };
         }
 
-        auto update() const -> void {
-            ImGui_ImplVulkan_NewFrame();
-            ImGui_ImplGlfw_NewFrame();
-            ImGui::NewFrame();
-            ImGui::ShowDemoWindow();
-            ImGui::Render();
-        }
+        auto update() const -> void { }
 
         auto drawImGui(
             const ImGuiAttachmentGroup &attachmentGroup
@@ -252,6 +245,13 @@ public:
                 break;
             }
 
+            // Update ImGui.
+            ImGui_ImplVulkan_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+            ImGui::ShowDemoWindow();
+            ImGui::Render();
+
             // Execute frame commands.
             switch (frames[frameIndex % MAX_FRAMES_IN_FLIGHT].onLoop()) {
             case Frame::OnLoopResult::Success:
@@ -299,9 +299,6 @@ private:
                     vk::KHRDynamicRenderingExtensionName,
 #pragma clang diagnostic pop
                 },
-                // For default, vku::Gpu tests that the physical device has required queue families by passed argument.
-                // Our QueueFamilyIndices constructor has two arguments (vk::PhysicalDevice, vk::SurfaceKHR), therefore
-                // queueFamilyIndicesGetter have to be manually specified.
                 .queueFamilyIndicesGetter = [this](vk::PhysicalDevice physicalDevice) {
                     return QueueFamilyIndices { physicalDevice, *surface };
                 },
