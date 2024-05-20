@@ -1,5 +1,6 @@
 {
   "dependencies": [
-    "vulkan-memory-allocator-hpp"
+    "vulkan-memory-allocator-hpp",
+    "stb"
   ]
 }
