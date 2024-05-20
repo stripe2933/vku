@@ -4,11 +4,6 @@
 
 namespace vku {
     struct MsaaAttachmentGroup : AttachmentGroupBase {
-        struct MsaaAttachment : Attachment {
-            Image resolveImage;
-            vk::raii::ImageView resolveView;
-        };
-
         vk::SampleCountFlagBits sampleCount;
         std::vector<MsaaAttachment> colorAttachments;
         std::optional<Attachment> depthStencilAttachment;

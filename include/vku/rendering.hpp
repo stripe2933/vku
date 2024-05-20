@@ -13,6 +13,11 @@ namespace vku {
         vk::raii::ImageView view;
     };
 
+    struct MsaaAttachment : Attachment {
+        Image resolveImage;
+        vk::raii::ImageView resolveView;
+    };
+
     class AttachmentGroupBase {
     public:
         vk::Extent2D extent;
