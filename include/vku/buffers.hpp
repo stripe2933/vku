@@ -35,7 +35,9 @@ namespace vku {
         void *data;
 
         MappedBuffer(AllocatedBuffer buffer);
-        template <typename T>
+        template <typename T> requires
+            (!std::same_as<T, std::from_range_t>)
+            && std::is_standard_layout_v<T>
         MappedBuffer(
             vma::Allocator allocator,
             const T &value,
@@ -53,8 +55,8 @@ namespace vku {
         }
         template <typename R> requires std::ranges::input_range<R> && std::ranges::sized_range<R>
         MappedBuffer(
-            std::from_range_t,
             vma::Allocator allocator,
+            std::from_range_t,
             R &&r,
             vk::BufferUsageFlags usage,
             const vma::AllocationCreateInfo &allocationCreateInfo = {
