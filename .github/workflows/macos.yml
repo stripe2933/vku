@@ -13,24 +13,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup LLVM and vcpkg
-        run: |
-          brew update # Ensure to use a latest version of Homebrew
-          brew install llvm
-          echo "CC=$(brew --prefix llvm)/bin/clang" >> "$GITHUB_ENV"
-          echo "CXX=$(brew --prefix llvm)/bin/clang++" >> "$GITHUB_ENV"
-          git clone https://github.com/microsoft/vcpkg "$HOME/vcpkg"
-          echo "VCPKG_ROOT=$HOME/vcpkg" >> "$GITHUB_ENV"
-
       - name: Install Vulkan SDK
         uses: humbletim/install-vulkan-sdk@v1.1.1
+
+      - name: Install LLVM, Ninja and vcpkg
+        run: |
+          brew install llvm ninja
+          git clone https://github.com/microsoft/vcpkg.git
+          ./vcpkg/bootstrap-vcpkg.sh
 
       - name: Configure
         run: |
           mkdir build
-          cmake -S . -B build                                                   \
-            -DCMAKE_BUILD_TYPE=Release                                          \
-            -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake \
+          CC=$(brew --prefix llvm)/bin/clang CXX=$(brew --prefix llvm)/bin/clang++ \
+          cmake -S . -B build -G Ninja \
+            -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS} -L/opt/homebrew/opt/llvm/lib/c++ -Wl,-rpath,/opt/homebrew/opt/llvm/lib/c++" \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake \
             -DVKU_BUILD_EXAMPLES=ON
 
       - name: Build

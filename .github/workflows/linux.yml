@@ -9,34 +9,23 @@ on:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        compiler:
-          - { c_compiler: gcc-14, cxx_compiler: g++-14 }
-          - { c_compiler: clang-18, cxx_compiler: clang++-18 }
-
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup compiler and vcpkg
-        run: |
-          echo "CC=${{ matrix.compiler.c_compiler }}" >> "$GITHUB_ENV"
-          echo "CXX=${{ matrix.compiler.cxx_compiler }}" >> "$GITHUB_ENV"
-          cd $VCPKG_INSTALLATION_ROOT
-          git reset --hard
-          git pull
-          vcpkg update
-
       - name: Install Vulkan SDK
         uses: humbletim/install-vulkan-sdk@v1.1.1
+
+      - name: Install Ninja
+        run: sudo apt-get install ninja-build
 
       - name: Configure
         run: |
           mkdir build
-          cmake -S . -B build -G Ninja                                                       \
-            -DCMAKE_BUILD_TYPE=Release                                                       \
-            -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake \
+          CC=/usr/bin/clang-18 CXX=/usr/bin/clang++-18 \
+          cmake -S . -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_TOOLCHAIN_FILE=${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake \
             -DVKU_BUILD_EXAMPLES=ON
 
       - name: Build
