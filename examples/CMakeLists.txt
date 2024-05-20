@@ -1,4 +1,4 @@
 add_subdirectory(extlibs)
 
-add_subdirectory(compute-device)
-add_subdirectory(headless-device)
+add_subdirectory(00-compute-device)
+add_subdirectory(01-headless-surface)

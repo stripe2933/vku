@@ -1,0 +1,18 @@
+#version 450 core
+
+layout (set = 0, binding = 0) buffer FloatBuffer {
+    float data[];
+};
+
+layout (push_constant, std430) uniform PushConstant {
+    uint numCount;
+    float multiplier;
+} pc;
+
+layout (local_size_x = 256) in;
+
+void main() {
+    if (gl_GlobalInvocationID.x >= pc.numCount) return;
+
+    data[gl_GlobalInvocationID.x] *= pc.multiplier;
+}

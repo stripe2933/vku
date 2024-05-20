@@ -54,37 +54,47 @@ struct Queues {
     }
 };
 
-int main(){
-    // Create vk::raii::Context and vk::raii::Instance.
-    const vku::Instance instance {
-        vk::ApplicationInfo {
-            "Compute Device", 0,
-            {}, 0,
-            vk::makeApiVersion(0, 1, 0, 0),
-        },
-        vku::Instance::Config {
-            .extensions = {
-                vk::KHRSurfaceExtensionName, // Required by VK_EXT_headless_surface.
-                vk::EXTHeadlessSurfaceExtensionName,
-            },
-        }
-    };
+class MainApp {
+public:
+    MainApp() = default;
 
-    // Create headless surface.
+private:
+    vku::Instance instance = createInstance();
     vk::raii::SurfaceKHR surface = instance.instance.createHeadlessSurfaceEXT({});
+    vku::Gpu<QueueFamilyIndices, Queues> gpu = createGpu();
 
-    // Create vk::raii::PhysicalDevice, vk::raii::Device and its queues.
-    const vku::Gpu<QueueFamilyIndices, Queues> gpu {
-        instance.instance,
-        vku::Gpu<QueueFamilyIndices, Queues>::Config<std::tuple<>> {
-            // For default, vku::Gpu tests that the physical device has required queue families by passed argument.
-            // Our QueueFamilyIndices constructor has two arguments (vk::PhysicalDevice, vk::SurfaceKHR), therefore
-            // queueFamilyIndicesGetter have to be manually specified.
-            .queueFamilyIndicesGetter = [&surface](vk::PhysicalDevice physicalDevice) {
-                return QueueFamilyIndices { physicalDevice, *surface };
+    [[nodiscard]] auto createGpu() const -> vku::Gpu<QueueFamilyIndices, Queues> {
+        return vku::Gpu<QueueFamilyIndices, Queues> {
+            instance.instance,
+            vku::Gpu<QueueFamilyIndices, Queues>::Config<std::tuple<>> {
+                // For default, vku::Gpu tests that the physical device has required queue families by passed argument.
+                // Our QueueFamilyIndices constructor has two arguments (vk::PhysicalDevice, vk::SurfaceKHR), therefore
+                // queueFamilyIndicesGetter have to be manually specified.
+                .queueFamilyIndicesGetter = [this](vk::PhysicalDevice physicalDevice) {
+                    return QueueFamilyIndices { physicalDevice, *surface };
+                },
             },
-        },
-    };
+        };
+    }
 
+    [[nodiscard]] static auto createInstance() -> vku::Instance {
+        return vku::Instance {
+            vk::ApplicationInfo {
+                "Headless surface", 0,
+                {}, 0,
+                vk::makeApiVersion(0, 1, 0, 0),
+            },
+            vku::Instance::Config {
+                .extensions = {
+                    vk::KHRSurfaceExtensionName, // Required by VK_EXT_headless_surface.
+                    vk::EXTHeadlessSurfaceExtensionName,
+                },
+            }
+        };
+    }
+};
+
+int main() {
+    MainApp app{};
     return 0;
 }
