@@ -1,6 +1,15 @@
 {
   "dependencies": [
-    "vulkan-memory-allocator-hpp",
-    "stb"
+    "glfw3",
+    "glm",
+    {
+      "name": "imgui",
+      "features": [
+        "glfw-binding",
+        "vulkan-binding"
+      ]
+    },
+    "stb",
+    "vulkan-memory-allocator-hpp"
   ]
 }
