@@ -7,7 +7,7 @@ auto vku::Shader::readCode(const std::filesystem::path &path) -> std::vector<std
     if (!file.is_open()) {
         char buffer[256];
 #ifdef _MSC_VER
-        strerror_s(errno, buffer, 256);
+        strerror_s(buffer, 256, errno);
 #else
         strerror_r(errno, buffer, 256);
 #endif
