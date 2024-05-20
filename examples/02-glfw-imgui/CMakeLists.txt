@@ -5,3 +5,6 @@ target_link_libraries(vku-examples-02-glfw-imgui PRIVATE
     vku-examples-extlibs
     vku
 )
+target_compile_definitions(vku-examples-02-glfw-imgui PRIVATE
+    VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1
+)

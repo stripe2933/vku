@@ -195,13 +195,13 @@ public:
                 std::array {
                     std::tuple { vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore, vk::ClearColorValue { 0.f, 0.f, 0.f, 1.f } },
                 }
-            ), *app.device.getDispatcher());
+            ));
 
             // Draw ImGui.
             ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), drawImGuiCommandBuffer);
 
             // End dynamic rendering.
-            drawImGuiCommandBuffer.endRenderingKHR(*app.device.getDispatcher());
+            drawImGuiCommandBuffer.endRenderingKHR();
 
             // Layout transition for present.
             drawImGuiCommandBuffer.pipelineBarrier(
@@ -384,6 +384,8 @@ private:
 };
 
 int main() {
+    VULKAN_HPP_DEFAULT_DISPATCHER.init();
+
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 

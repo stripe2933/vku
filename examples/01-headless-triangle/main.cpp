@@ -106,7 +106,7 @@ public:
             // Begin dynamic rendering.
             commandBuffer.beginRenderingKHR(attachmentGroup.getRenderingInfo(std::array {
                 std::tuple { vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore, vk::ClearColorValue{} },
-            }), *gpu.device.getDispatcher());
+            }));
 
             // Viewport and scissor are set to dynamic state.
             attachmentGroup.setViewport(commandBuffer); // Set full viewport.
@@ -116,7 +116,7 @@ public:
             triangleRenderer.draw(commandBuffer);
 
             // End dynamic rendering.
-            commandBuffer.endRenderingKHR(*gpu.device.getDispatcher());
+            commandBuffer.endRenderingKHR();
 
             // Change image layout to TRANSFER_SRC_OPTIMAL.
             commandBuffer.pipelineBarrier(
@@ -195,6 +195,7 @@ private:
 };
 
 int main() {
+    VULKAN_HPP_DEFAULT_DISPATCHER.init();
     MainApp{}.run();
     return 0;
 }
