@@ -38,10 +38,10 @@ namespace vku {
 #endif
 #if __APPLE__
 #if VKU_VK_VERSION < 1001000
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
             config.extensions.emplace_back(vk::KHRGetPhysicalDeviceProperties2ExtensionName);
-#pragma GCC diagnostic pop
+#pragma clang diagnostic pop
 #endif
             config.extensions.emplace_back(vk::KHRPortabilityEnumerationExtensionName);
 #endif

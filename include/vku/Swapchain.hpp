@@ -22,12 +22,12 @@ namespace vku {
             const auto [result, imageIndex]
                 = (*device).acquireNextImageKHR(*swapchain, timeout, imageAcquireSema);
             switch (result) {
-                case vk::Result::eSuccess: case vk::Result::eSuboptimalKHR:
-                    return imageIndex;
-                case vk::Result::eErrorOutOfDateKHR:
-                    return std::nullopt;
-                default:
-                    throw std::runtime_error { "Acquiring swapchain image failed." };
+            case vk::Result::eSuccess: case vk::Result::eSuboptimalKHR:
+                return imageIndex;
+            case vk::Result::eErrorOutOfDateKHR:
+                return std::nullopt;
+            default:
+                throw std::runtime_error { "Acquiring swapchain image failed." };
             }
         }
 
@@ -53,12 +53,12 @@ namespace vku {
             vk::ArrayProxy<const vk::Semaphore> waitSemas = {}
         ) const -> bool {
             switch (presentQueue.presentKHR(vk::PresentInfoKHR { waitSemas, *swapchain, imageIndex })) {
-                case vk::Result::eSuccess:
-                    return true;
-                case vk::Result::eErrorOutOfDateKHR: case vk::Result::eSuboptimalKHR:
-                    return false;
-                default:
-                    throw std::runtime_error { "Presenting swapchain image failed." };
+            case vk::Result::eSuccess:
+                return true;
+            case vk::Result::eErrorOutOfDateKHR: case vk::Result::eSuboptimalKHR:
+                return false;
+            default:
+                throw std::runtime_error { "Presenting swapchain image failed." };
             }
         }
 

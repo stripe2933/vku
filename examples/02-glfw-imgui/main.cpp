@@ -7,11 +7,11 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_vulkan.h>
+#include <vku/AttachmentGroup.hpp>
 #include <vku/Instance.hpp>
 #include <vku/Swapchain.hpp>
 #include <vku/GlfwWindow.hpp>
 #include <vku/Gpu.hpp>
-#include <vku/rendering.hpp>
 #include <vku/utils.hpp>
 
 #define INDEX_SEQ(Is, N, ...)                          \
@@ -254,22 +254,22 @@ public:
 
             // Execute frame commands.
             switch (frames[frameIndex % MAX_FRAMES_IN_FLIGHT].onLoop()) {
-                case Frame::OnLoopResult::Success:
-                    break;
-                case Frame::OnLoopResult::SwapchainOutdated:
-                    device.waitIdle();
+            case Frame::OnLoopResult::Success:
+                break;
+            case Frame::OnLoopResult::SwapchainOutdated:
+                device.waitIdle();
 
-                    // Yield while window is minimized.
-                    glm::ivec2 framebufferSize;
-                    while (!glfwWindowShouldClose(window) && (framebufferSize = getFramebufferSize()) == glm::ivec2 { 0 }) {
-                        std::this_thread::yield();
-                    }
+                // Yield while window is minimized.
+                glm::ivec2 framebufferSize;
+                while (!glfwWindowShouldClose(window) && (framebufferSize = getFramebufferSize()) == glm::ivec2 { 0 }) {
+                    std::this_thread::yield();
+                }
 
-                    // Recreate swapchain and related stuffs.
-                    swapchain.changeExtent(vku::convertExtent2D(framebufferSize));
-                    handleSwapchainResize();
-                    break;
-            }
+                // Recreate swapchain and related stuffs.
+                swapchain.changeExtent(vku::convertExtent2D(framebufferSize));
+                handleSwapchainResize();
+                break;
+        }
         }
         device.waitIdle();
     }

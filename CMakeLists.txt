@@ -45,8 +45,10 @@ include(cmake/CompileVulkanShaders.cmake)
 # ----------------
 
 add_library(vku
+    src/AttachmentGroup.cpp
     src/buffers.cpp
     src/images.cpp
+    src/MsaaAttachmentGroup.cpp
     src/Shader.cpp
     src/pipelines.cpp
     src/rendering.cpp

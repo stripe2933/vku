@@ -1,11 +1,11 @@
 #include <extlibs/ranges.hpp>
 #include <stb_image_write.h>
 #include <vku/Allocator.hpp>
+#include <vku/AttachmentGroup.hpp>
 #include <vku/buffers.hpp>
 #include <vku/commands.hpp>
 #include <vku/Instance.hpp>
 #include <vku/Gpu.hpp>
-#include <vku/rendering.hpp>
 #include <vulkan/vulkan_format_traits.hpp>
 
 #include "pipelines/TriangleRenderer.hpp"
