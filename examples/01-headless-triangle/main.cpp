@@ -154,6 +154,7 @@ private:
         return vku::Gpu<QueueFamilyIndices, Queues> {
             instance.instance,
             vku::Gpu<QueueFamilyIndices, Queues>::Config<std::tuple<vk::PhysicalDeviceDynamicRenderingFeatures>> {
+                // Internal physical device rater will check if the requested extension is available on the physical device, and ignore if not.
                 .extensions = {
                     vk::KHRMultiviewExtensionName, // Required by VK_KHR_create_renderpass2.
                     vk::KHRMaintenance2ExtensionName, // Required by VK_KHR_create_renderpass2.
