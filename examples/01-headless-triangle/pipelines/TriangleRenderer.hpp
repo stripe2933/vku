@@ -40,7 +40,7 @@ private:
             vku::Shader {
                 vk::ShaderStageFlagBits::eVertex,
 #ifdef NDEBUG
-
+                vku::Shader::convert(resources::shaders_triangle_vert()),
 #else
                 vku::Shader::readCode(VKU_EXAMPLES_01_HEADLESS_TRIANGLE_COMPILED_SHADER_DIR "/shaders/triangle.vert.spv"),
 #endif
@@ -48,7 +48,7 @@ private:
             vku::Shader {
                 vk::ShaderStageFlagBits::eFragment,
 #ifdef NDEBUG
-
+                vku::Shader::convert(resources::shaders_triangle_frag()),
 #else
                 vku::Shader::readCode(VKU_EXAMPLES_01_HEADLESS_TRIANGLE_COMPILED_SHADER_DIR "/shaders/triangle.frag.spv"),
 #endif
