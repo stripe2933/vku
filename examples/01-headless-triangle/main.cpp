@@ -62,7 +62,10 @@ public:
         } attachmentGroup { gpu.device, allocator };
 
         // Create pipeline.
-        const TriangleRenderer triangleRenderer { gpu.device, attachmentGroup.colorAttachments[0].image.format };
+        const TriangleRenderer triangleRenderer {
+            gpu.device,
+            attachmentGroup.colorAttachments[0].image.format,
+        };
 
         // Create host-visible buffer for tranfer destination.
         const vku::MappedBuffer destagingBuffer = vku::AllocatedBuffer { allocator, vk::BufferCreateInfo {
