@@ -81,7 +81,7 @@ private:
     [[nodiscard]] auto createPipeline(
         const vk::raii::Device &device
     ) const -> vk::raii::Pipeline {
-        const auto [_, stages] = vku::createStages(device, vku::Shader {
+        const auto [_, stages] = createStages(device, vku::Shader {
             vk::ShaderStageFlagBits::eCompute,
 #ifdef NDEBUG
             vku::Shader::convert(resources::shaders_multiply_comp()),
