@@ -87,7 +87,7 @@ namespace details {
             [[no_unique_address]] std::conditional_t<details::alternative_of<vk::PhysicalDeviceFeatures2, PNextsTuple>, details::nofield, vk::PhysicalDeviceFeatures> physicalDeviceFeatures;
             std::function<QueueFamilyIndices(vk::PhysicalDevice)> queueFamilyIndicesGetter = DefaultQueueFamilyIndicesGetter{};
             std::function<std::uint32_t(vk::PhysicalDevice)> physicalDeviceRater = DefaultPhysicalDeviceRater { extensions, &physicalDeviceFeatures, queueFamilyIndicesGetter };
-            PNextsTuple pNexts = std::tuple<>{};
+            PNextsTuple pNexts = std::tuple{};
         };
 
         vk::raii::PhysicalDevice physicalDevice;
@@ -139,7 +139,7 @@ namespace details {
                     queueCreateInfos,
                     {},
                     config.extensions,
-                    [&]() -> const vk::PhysicalDeviceFeatures* {
+                    [&] -> const vk::PhysicalDeviceFeatures* {
                         return std::convertible_to<decltype(config.physicalDeviceFeatures), vk::PhysicalDeviceFeatures>
                             ? &config.physicalDeviceFeatures
                             : nullptr;

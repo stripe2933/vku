@@ -20,7 +20,7 @@ namespace vku {
         template <typename... ConfigArgs>
         explicit Instance(
             const vk::ApplicationInfo &applicationInfo,
-            Config<ConfigArgs...> config = Config<>{}
+            Config<ConfigArgs...> config = {}
         ) : instance { createInstance(applicationInfo, config) } {
 #if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
             VULKAN_HPP_DEFAULT_DISPATCHER.init(*instance);
