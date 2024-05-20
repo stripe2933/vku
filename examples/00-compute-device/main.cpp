@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <extlibs/ranges.hpp>
 #include <vku/Allocator.hpp>
 #include <vku/buffers.hpp>
@@ -95,10 +97,10 @@ public:
         constexpr auto expect = inputData | std::views::transform([](float x) { return x * 2.f; });
         const auto [it1, it2] = std::ranges::mismatch(result, expect);
         if (it1 != result.end()) {
-            std::println(stderr, "Mismatch at {} in buffer: {}", std::distance(result.begin(), it1), *it1);
+            std::println(std::cerr, "Mismatch at {} in buffer: {}", std::distance(result.begin(), it1), *it1);
         }
         if (it2 != expect.end()) {
-            std::println(stderr, "Mismatch at {} in expectation: {}", std::distance(expect.begin(), it2), *it2);
+            std::println(std::cerr, "Mismatch at {} in expectation: {}", std::distance(expect.begin(), it2), *it2);
         }
     }
 
