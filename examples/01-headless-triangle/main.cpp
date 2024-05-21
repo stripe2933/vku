@@ -92,7 +92,7 @@ public:
                 vk::ImageMemoryBarrier {
                     {}, vk::AccessFlagBits::eColorAttachmentWrite,
                     {}, vk::ImageLayout::eColorAttachmentOptimal,
-                    {}, {},
+                    vk::QueueFamilyIgnored, vk::QueueFamilyIgnored,
                     attachmentGroup.colorAttachments[0].image,
                     vku::fullSubresourceRange(),
                 });

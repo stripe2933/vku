@@ -177,7 +177,7 @@ public:
                 vk::ImageMemoryBarrier {
                     vk::AccessFlagBits::eColorAttachmentWrite, vk::AccessFlagBits::eColorAttachmentRead | vk::AccessFlagBits::eColorAttachmentWrite,
                     {}, vk::ImageLayout::eColorAttachmentOptimal,
-                    {}, {},
+                    vk::QueueFamilyIgnored, vk::QueueFamilyIgnored,
                     attachmentGroup.colorAttachments[0].image,
                     vku::fullSubresourceRange(),
                 });
@@ -202,7 +202,7 @@ public:
                 vk::ImageMemoryBarrier {
                     vk::AccessFlagBits::eColorAttachmentWrite, {},
                     vk::ImageLayout::eColorAttachmentOptimal, vk::ImageLayout::ePresentSrcKHR,
-                    {}, {},
+                    vk::QueueFamilyIgnored, vk::QueueFamilyIgnored,
                     attachmentGroup.colorAttachments[0].image,
                     vku::fullSubresourceRange(),
                 });
