@@ -285,7 +285,7 @@ private:
     [[nodiscard]] auto createGpu() const -> Gpu {
         return Gpu {
             instance,
-            Gpu::Config<std::tuple<vk::PhysicalDeviceDynamicRenderingFeatures>> {
+            Gpu::Config {
                 .extensions = {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
