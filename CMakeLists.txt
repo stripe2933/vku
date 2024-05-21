@@ -66,6 +66,9 @@ target_compile_definitions(vku PUBLIC VKU_VK_VERSION=${VKU_VK_VERSION})
 if (APPLE)
     target_compile_definitions(vku PUBLIC VK_ENABLE_BETA_EXTENSIONS)
 endif()
+target_compile_options(vku PUBLIC
+    $<$<CXX_COMPILER_ID:MSVC>:/wd4068> # Disable unknown pragma warning (ignore #pragma clang ...)
+)
 
 if (VKU_USE_GLFW)
     target_sources(vku PRIVATE src/GlfwWindow.cpp)
