@@ -147,7 +147,7 @@ private:
     [[nodiscard]] auto createGpu() const -> vku::Gpu<QueueFamilyIndices, Queues> {
         return vku::Gpu<QueueFamilyIndices, Queues> {
             instance.instance,
-            vku::Gpu<QueueFamilyIndices, Queues>::Config {
+            vku::Gpu<QueueFamilyIndices, Queues>::Config<std::tuple<vk::PhysicalDeviceDynamicRenderingFeatures>> {
                 // Internal physical device rater will check if the requested extension is available on the physical device, and ignore if not.
                 .extensions = {
 #pragma clang diagnostic push
