@@ -66,7 +66,7 @@ target_compile_definitions(vku PUBLIC VKU_VK_VERSION=${VKU_VK_VERSION})
 if (APPLE)
     target_compile_definitions(vku PUBLIC VK_ENABLE_BETA_EXTENSIONS)
 endif()
-target_compile_options(vku PUBLIC
+target_compile_options(vku PRIVATE
     $<$<CXX_COMPILER_ID:MSVC>:/wd4068> # Disable unknown pragma warning (ignore #pragma clang ...)
 )
 
