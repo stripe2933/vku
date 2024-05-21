@@ -189,7 +189,7 @@ public:
                         vku::fullSubresourceRange(),
                     },
                     vk::ImageMemoryBarrier2 {
-                        {}, {},
+                        vk::PipelineStageFlagBits2::eColorAttachmentOutput, vk::AccessFlagBits2::eColorAttachmentWrite,
                         vk::PipelineStageFlagBits2::eColorAttachmentOutput, vk::AccessFlagBits2::eColorAttachmentWrite,
                         {}, vk::ImageLayout::eColorAttachmentOptimal,
                         {}, {},

@@ -175,7 +175,7 @@ public:
                 vk::PipelineStageFlagBits::eColorAttachmentOutput, vk::PipelineStageFlagBits::eColorAttachmentOutput,
                 {}, {}, {},
                 vk::ImageMemoryBarrier {
-                    {}, vk::AccessFlagBits::eColorAttachmentRead | vk::AccessFlagBits::eColorAttachmentWrite,
+                    vk::AccessFlagBits::eColorAttachmentWrite, vk::AccessFlagBits::eColorAttachmentRead | vk::AccessFlagBits::eColorAttachmentWrite,
                     {}, vk::ImageLayout::eColorAttachmentOptimal,
                     {}, {},
                     attachmentGroup.colorAttachments[0].image,
