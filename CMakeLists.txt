@@ -54,7 +54,8 @@ add_library(vku
     src/rendering.cpp
 )
 target_compile_features(vku PUBLIC cxx_std_23)
-target_include_directories(vku PUBLIC include)
+target_include_directories(vku PRIVATE include)
+target_include_directories(vku SYSTEM INTERFACE include) # Do not warn about warnings in public headers.
 target_link_libraries(vku PUBLIC
     Vulkan::Vulkan
     GPUOpen::VulkanMemoryAllocator
