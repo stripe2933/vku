@@ -8,7 +8,7 @@
 namespace vku {
 namespace details {
     template <typename T>
-    constexpr std::array<vk::SpecializationMapEntry, details::size<T>()> specializationMapEntries = []() {
+    constexpr std::array<vk::SpecializationMapEntry, details::size<T>()> specializationMapEntries = [] {
         std::array<vk::SpecializationMapEntry, details::size<T>()> result;
         details::for_each([&](auto I) {
             get<I>(result)

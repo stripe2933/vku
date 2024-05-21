@@ -5,15 +5,6 @@
 
 #include "macros.hpp"
 
-// TODO: remove when MSVC supports static call operator.
-#if __cpp_static_call_operator >= 202207L
-#define VKU_STATIC_CALL_OPERATOR_STATIC static
-#define VKU_STATIC_CALL_OPERATOR_CONST
-#else
-#define VKU_STATIC_CALL_OPERATOR_STATIC
-#define VKU_STATIC_CALL_OPERATOR_CONST const
-#endif
-
 namespace details::ranges {
     // --------------------
     // Ranges.
@@ -33,9 +24,9 @@ namespace details::ranges {
     template <std::size_t N>
     struct to_array : range_adaptor_closure<to_array<N>> {
         template <std::ranges::input_range R>
-        VKU_STATIC_CALL_OPERATOR_STATIC constexpr auto operator()(
+        static constexpr auto operator()(
             R &&r
-        ) VKU_STATIC_CALL_OPERATOR_CONST -> std::array<std::ranges::range_value_t<R>, N> {
+        ) -> std::array<std::ranges::range_value_t<R>, N> {
             auto it = r.begin();
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-value"

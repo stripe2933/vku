@@ -50,7 +50,7 @@ namespace vku {
             //         return Self { descriptorSetLayouts, sets | ::details::ranges::to_array<Layouts::setCount>() };
             //     })
             //     | std::ranges::to<std::vector>();
-            return std::views::iota(std::size_t { 0 }, n)
+            return std::views::iota(0UZ, n)
                 | std::views::transform([&](std::size_t i) {
                     return Self {
                         descriptorSetLayouts,

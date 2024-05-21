@@ -52,7 +52,7 @@ namespace details {
                         "vk::PhysicalDeviceFeatures must be only consisted of vk::Bool32");
                     const auto* const pFeatureEnables = reinterpret_cast<const vk::Bool32*>(&availableFeatures),
                                       *pFeatureRequests = reinterpret_cast<const vk::Bool32*>(*pFeatures);
-                    if (std::ranges::any_of(std::views::iota(std::size_t { 0 }, sizeof(vk::PhysicalDeviceFeatures) / sizeof(vk::Bool32)), [=](std::size_t featureIndex) {
+                    if (std::ranges::any_of(std::views::iota(0UZ, sizeof(vk::PhysicalDeviceFeatures) / sizeof(vk::Bool32)), [=](std::size_t featureIndex) {
                         // Find a feature that is requested but not available.
                         return pFeatureRequests[featureIndex] && !pFeatureEnables[featureIndex];
                     })) {
@@ -143,7 +143,7 @@ namespace details {
                     queueCreateInfos,
                     {},
                     config.extensions,
-                    [&]() -> const vk::PhysicalDeviceFeatures* {
+                    [&] -> const vk::PhysicalDeviceFeatures* {
                         return std::convertible_to<decltype(config.physicalDeviceFeatures), vk::PhysicalDeviceFeatures>
                             ? &config.physicalDeviceFeatures
                             : nullptr;
