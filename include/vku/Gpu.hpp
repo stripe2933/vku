@@ -6,13 +6,10 @@
 #include <vulkan/vulkan_raii.hpp>
 
 #include "details/concepts.hpp"
+#include "details/nofield.hpp"
 #include "details/ranges.hpp"
 
 namespace vku {
-namespace details {
-    struct nofield{};
-}
-
     template <typename QueueFamilyIndices, typename Queues> requires
         std::constructible_from<Queues, vk::Device, const QueueFamilyIndices&>
         && requires(const QueueFamilyIndices &queueFamilyIndices) {

@@ -16,6 +16,7 @@ public:
         explicit DescriptorSetLayouts(
             const vk::raii::Device &device
         ) : vku::DescriptorSetLayouts<1> { device, LayoutBindings {
+                {},
                 vk::DescriptorSetLayoutBinding { 0, vk::DescriptorType::eStorageBuffer, 1, vk::ShaderStageFlagBits::eCompute },
             } } { }
     };

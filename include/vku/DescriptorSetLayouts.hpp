@@ -3,6 +3,7 @@
 #include <vulkan/vulkan_raii.hpp>
 
 #include "details/concepts.hpp"
+#include "details/nofield.hpp"
 
 namespace vku {
     template <std::size_t... BindingCounts>
@@ -10,23 +11,22 @@ namespace vku {
     public:
         template <std::size_t BindingCount, bool HasBindingFlags = false>
         struct LayoutBindings {
-            std::array<vk::DescriptorSetLayoutBinding, BindingCount> bindings;
             vk::DescriptorSetLayoutCreateFlags flags = {};
-        };
-
-        template <std::size_t BindingCount>
-        struct LayoutBindings<BindingCount, true> {
             std::array<vk::DescriptorSetLayoutBinding, BindingCount> bindings;
-            vk::DescriptorSetLayoutCreateFlags flags = {};
-            std::array<vk::DescriptorBindingFlags, BindingCount> bindingFlags;
+#ifndef _MSC_VER
+            [[no_unique_address]]
+#endif
+            std::conditional_t<HasBindingFlags, std::array<vk::DescriptorBindingFlags, BindingCount>, details::nofield> bindingFlags;
         };
 
         // Type deductions.
         // TODO: tricky deduction, might be ill-formed...
         template <typename... Ts>
-        LayoutBindings(Ts...) -> LayoutBindings<
+        LayoutBindings(vk::DescriptorSetLayoutCreateFlags, Ts...) -> LayoutBindings<
             details::leading_n<vk::DescriptorSetLayoutBinding, Ts...>,
-            std::convertible_to<details::last_type<Ts...>, std::array<vk::DescriptorBindingFlags, details::leading_n<vk::DescriptorSetLayoutBinding, Ts...>>>>;
+            std::convertible_to<
+                details::last_type<Ts...>,
+                std::array<vk::DescriptorBindingFlags, details::leading_n<vk::DescriptorSetLayoutBinding, Ts...>>>>;
 
         /// Number of descriptor sets in the descriptor set layouts.
         static constexpr std::size_t setCount = sizeof...(BindingCounts);
@@ -37,10 +37,9 @@ namespace vku {
 
         std::tuple<std::array<vk::DescriptorSetLayoutBinding, BindingCounts>...> setLayouts;
 
-        template <bool... HasBindingFlags>
         explicit DescriptorSetLayouts(
             const vk::raii::Device &device,
-            const LayoutBindings<BindingCounts, HasBindingFlags> &...layoutBindings
+            const auto &...layoutBindings
         ) : setLayouts { layoutBindings.bindings... },
             raiiLayouts { vk::raii::DescriptorSetLayout { device, getDescriptorSetLayoutCreateInfo(layoutBindings).get() }... } {
             static_cast<std::array<vk::DescriptorSetLayout, setCount>&>(*this)
