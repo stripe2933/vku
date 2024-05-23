@@ -1,5 +1,6 @@
 #include <vku/Shader.hpp>
 
+#include <format>
 #include <fstream>
 
 auto vku::Shader::readCode(const std::filesystem::path &path) -> std::vector<std::uint32_t> {
