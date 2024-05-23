@@ -31,7 +31,7 @@ if (VKU_USE_GLM)
     find_package(glm CONFIG REQUIRED)
 endif()
 if (VKU_USE_GLFW)
-    find_package(GLFW3 CONFIG REQUIRED)
+    find_package(glfw3 CONFIG REQUIRED)
 endif()
 
 # ----------------
