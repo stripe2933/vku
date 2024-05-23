@@ -19,9 +19,10 @@ jobs:
       - name: Install Vulkan SDK
         uses: humbletim/install-vulkan-sdk@v1.1.1
 
-      - name: Install ninja
+      - name: Install ninja and GLFW deps
         run: |
-          sudo apt-get install ninja-build
+          sudo apt-get install ninja-build \
+            libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev pkg-config
 
       - name: Export GitHub Actions cache environment variables
         uses: actions/github-script@v7
