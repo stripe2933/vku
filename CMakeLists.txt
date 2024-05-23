@@ -52,33 +52,29 @@ add_library(vku
     src/Shader.cpp
     src/pipelines.cpp
     src/rendering.cpp
+    $<$<BOOL:${VKU_USE_GLFW}>:src/GlfwWindow.cpp>
 )
 target_compile_features(vku PUBLIC cxx_std_23)
-target_include_directories(vku PRIVATE include)
-target_include_directories(vku SYSTEM INTERFACE include) # Do not warn about warnings in public headers.
+target_include_directories(vku
+    PRIVATE include
+    SYSTEM INTERFACE include # Do not warn about warnings in public headers.
+)
 target_link_libraries(vku PUBLIC
     Vulkan::Vulkan
     GPUOpen::VulkanMemoryAllocator
     unofficial::VulkanMemoryAllocator-Hpp::VulkanMemoryAllocator-Hpp
+    $<$<BOOL:${VKU_USE_GLFW}>:glfw>
+    $<$<BOOL:${VKU_USE_GLM}>:glm::glm>
 )
-target_compile_definitions(vku PUBLIC VKU_VK_VERSION=${VKU_VK_VERSION})
-
-if (APPLE)
-    target_compile_definitions(vku PUBLIC VK_ENABLE_BETA_EXTENSIONS)
-endif()
+target_compile_definitions(vku PUBLIC
+    VKU_VK_VERSION=${VKU_VK_VERSION}
+    $<$<PLATFORM_ID:Darwin>:VK_ENABLE_BETA_EXTENSIONS>
+    $<$<BOOL:${VKU_USE_GLFW}>:GLFW_INCLUDE_VULKAN>
+    $<$<BOOL:${VKU_USE_GLM}>:VKU_USE_GLM>
+)
 target_compile_options(vku PRIVATE
     $<$<CXX_COMPILER_ID:MSVC>:/wd4068> # Disable unknown pragma warning (ignore #pragma clang ...)
 )
-
-if (VKU_USE_GLFW)
-    target_sources(vku PRIVATE src/GlfwWindow.cpp)
-    target_link_libraries(vku PUBLIC glfw)
-    target_compile_definitions(vku PUBLIC GLFW_INCLUDE_VULKAN)
-endif()
-if (VKU_USE_GLM)
-    target_link_libraries(vku PUBLIC glm::glm)
-    target_compile_definitions(vku PUBLIC VKU_USE_GLM)
-endif()
 
 # ----------------
 # Examples.
