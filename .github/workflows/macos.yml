@@ -40,6 +40,7 @@ jobs:
           cmake -S . -B build -G Ninja \
             -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS} -L/opt/homebrew/opt/llvm/lib/c++ -Wl,-rpath,/opt/homebrew/opt/llvm/lib/c++" \
             -DCMAKE_BUILD_TYPE=Release \
+            -DVCPKG_OVERLAY_PORTS=overlays \
             -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake \
             -DVKU_USE_GLFW=ON -DVKU_BUILD_EXAMPLES=ON
 
