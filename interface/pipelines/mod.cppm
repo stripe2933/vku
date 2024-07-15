@@ -1,7 +1,22 @@
+module;
+
+#ifndef VKU_USE_STD_MODULE
+#include <cstdint>
+#include <array>
+#include <bit>
+#include <concepts>
+#include <stdexcept>
+#include <tuple>
+#include <type_traits>
+#include <utility>
+#endif
+
 export module vku:pipelines;
 export import :pipelines.Shader;
 
+#ifdef VKU_USE_STD_MODULE
 import std;
+#endif
 import :utils.RefHolder;
 
 namespace vku {

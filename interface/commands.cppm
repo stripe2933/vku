@@ -1,6 +1,16 @@
+module;
+
+#ifndef VKU_USE_STD_MODULE
+#include <concepts>
+#include <functional>
+#include <type_traits>
+#endif
+
 export module vku:commands;
 
+#ifdef VKU_USE_STD_MODULE
 import std;
+#endif
 export import vulkan_hpp;
 
 #define FWD(...) static_cast<decltype(__VA_ARGS__)&&>(__VA_ARGS__)

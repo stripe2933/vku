@@ -1,6 +1,16 @@
+module;
+
+#ifndef VKU_USE_STD_MODULE
+#include <tuple>
+#include <type_traits>
+#include <utility>
+#endif
+
 export module vku:details.concepts;
 
+#ifdef VKU_USE_STD_MODULE
 import std;
+#endif
 
 namespace vku::concepts {
     template <typename>

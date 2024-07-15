@@ -1,10 +1,18 @@
 module;
 
 #include <cassert>
+#ifndef VKU_USE_STD_MODULE
+#include <optional>
+#include <ranges>
+#include <span>
+#include <vector>
+#endif
 
 export module vku:rendering.MsaaAttachmentGroup;
 
+#ifdef VKU_USE_STD_MODULE
 import std;
+#endif
 import :details;
 export import :images.AllocatedImage;
 export import :rendering.Attachment;

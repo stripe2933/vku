@@ -1,10 +1,21 @@
 module;
 
 #include <cassert>
+#ifndef VKU_USE_STD_MODULE
+#include <algorithm>
+#include <concepts>
+#include <ranges>
+#include <span>
+#include <tuple>
+#include <type_traits>
+#include <utility>
+#endif
 
 export module vku:buffers.MappedBuffer;
 
+#ifdef VKU_USE_STD_MODULE
 import std;
+#endif
 export import vk_mem_alloc_hpp;
 export import vulkan_hpp;
 export import :buffers.AllocatedBuffer;

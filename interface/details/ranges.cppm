@@ -1,10 +1,21 @@
 module;
 
 #include <version>
+#ifndef VKU_USE_STD_MODULE
+#include <cstdint>
+#include <array>
+#include <concepts>
+#include <ranges>
+#include <tuple>
+#include <type_traits>
+#include <utility>
+#endif
 
 export module vku:details.ranges;
 
+#ifdef VKU_USE_STD_MODULE
 import std;
+#endif
 
 #define INDEX_SEQ(Is, N, ...) [&]<std::size_t ...Is>(std::index_sequence<Is...>) __VA_ARGS__ (std::make_index_sequence<N>{})
 #define ARRAY_OF(N, ...) INDEX_SEQ(Is, N, { return std::array { ((void)Is, __VA_ARGS__)... }; })

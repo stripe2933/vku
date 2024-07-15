@@ -1,10 +1,22 @@
 module;
 
 #include <cerrno>
+#ifndef VKU_USE_STD_MODULE
+#include <cstdint>
+#include <cstdlib>
+#include <filesystem>
+#include <format>
+#include <fstream>
+#include <ios>
+#include <utility>
+#include <vector>
+#endif
 
 export module vku:pipelines.Shader;
 
+#ifdef VKU_USE_STD_MODULE
 import std;
+#endif
 export import vulkan_hpp;
 
 namespace vku {

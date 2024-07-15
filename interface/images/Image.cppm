@@ -1,10 +1,17 @@
 module;
 
 #include <cassert>
+#ifndef VKU_USE_STD_MODULE
+#include <cstdint>
+#include <bit>
+#include <numeric>
+#endif
 
 export module vku:images.Image;
 
+#ifdef VKU_USE_STD_MODULE
 import std;
+#endif
 export import vulkan_hpp;
 import :utils;
 

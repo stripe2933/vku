@@ -1,6 +1,5 @@
 export module vku:buffers.Buffer;
 
-import std;
 export import vulkan_hpp;
 
 namespace vku {

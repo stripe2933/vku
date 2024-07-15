@@ -1,10 +1,19 @@
 module;
 
 #include <cassert>
+#ifndef VKU_USE_STD_MODULE
+#include <cstdint>
+#include <array>
+#include <concepts>
+#include <ranges>
+#include <tuple>
+#endif
 
 export module vku:descriptors.DescriptorSetLayouts;
 
+#ifdef VKU_USE_STD_MODULE
 import std;
+#endif
 export import vulkan_hpp;
 import :details;
 

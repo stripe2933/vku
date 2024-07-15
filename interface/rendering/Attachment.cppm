@@ -1,6 +1,5 @@
 export module vku:rendering.Attachment;
 
-import std;
 export import vulkan_hpp;
 export import :images.Image;
 

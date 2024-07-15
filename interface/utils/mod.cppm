@@ -1,7 +1,16 @@
+module;
+
+#ifndef VKU_USE_STD_MODULE
+#include <initializer_list>
+#include <ranges>
+#endif
+
 export module vku:utils;
 export import :utils.RefHolder;
 
+#ifdef VKU_USE_STD_MODULE
 import std;
+#endif
 export import vulkan_hpp;
 
 namespace vku {

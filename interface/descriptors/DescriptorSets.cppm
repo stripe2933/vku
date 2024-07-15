@@ -1,6 +1,17 @@
+module;
+
+#ifndef VKU_USE_STD_MODULE
+#include <cstdint>
+#include <array>
+#include <functional>
+#include <utility>
+#endif
+
 export module vku:descriptors.DescriptorSets;
 
+#ifdef VKU_USE_STD_MODULE
 import std;
+#endif
 export import vulkan_hpp;
 export import :descriptors.DescriptorSetLayouts;
 import :details;
