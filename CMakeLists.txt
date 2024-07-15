@@ -1,89 +1,133 @@
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.30)
+
+# Enable CMake's experimental standard library module support.
+set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "0e5b6991-d74f-4b3d-a41c-cf096e0b2508")
+
 project(vku
     LANGUAGES CXX
+    VERSION 0.1.0
 )
 
-# ----------------
-# CMake options.
-# ----------------
-
-if (NOT VKU_VK_VERSION)
-    message(STATUS "VKU_VK_VERSION not set. Defaulting to Vulkan 1.0 (1000000).")
-    set(VKU_VK_VERSION 1000000)
-endif()
-
-option(VKU_USE_GLFW "Use GLFW for window system integration.")
-option(VKU_USE_GLM "Use GLM for vector/matrix mathematics. This automatically enabled when VKU_USE_GLFW ON.")
-option(VKU_BUILD_EXAMPLES "Build examples.")
-
-if (VKU_USE_GLFW)
-    set(VKU_USE_GLM ON)
-endif()
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_MODULE_STD 1)
 
 # ----------------
 # External dependencies.
 # ----------------
 
-find_package(Vulkan REQUIRED)
-find_package(VulkanMemoryAllocator CONFIG REQUIRED)
-find_package(unofficial-vulkan-memory-allocator-hpp CONFIG REQUIRED)
-if (VKU_USE_GLM)
-    find_package(glm CONFIG REQUIRED)
+find_package(Vulkan 1.3.256 REQUIRED)
+find_package(VulkanMemoryAllocator-Hpp CONFIG REQUIRED)
+
+# ----------------
+# Module configurations for the external dependencies.
+# ----------------
+
+if (NOT TARGET Vulkan-Hpp_module)
+    add_library(Vulkan-Hpp_module)
+    target_sources(Vulkan-Hpp_module
+        PUBLIC
+            FILE_SET CXX_MODULES
+            BASE_DIRS ${Vulkan_INCLUDE_DIRS}
+            FILES ${Vulkan_INCLUDE_DIRS}/vulkan/vulkan.cppm
+    )
+    target_compile_features(Vulkan-Hpp_module PUBLIC cxx_std_${CMAKE_CXX_STANDARD})
+    target_link_libraries(Vulkan-Hpp_module PUBLIC Vulkan::Vulkan)
+
+    add_library(Vulkan-Hpp::module ALIAS Vulkan-Hpp_module)
 endif()
-if (VKU_USE_GLFW)
-    find_package(GLFW3 CONFIG REQUIRED)
-endif()
 
-# ----------------
-# CMake scripts.
-# ----------------
-
-include(cmake/CompileVulkanShaders.cmake)
-
-# ----------------
-# Project libraries.
-# ----------------
-
-add_library(vku
-    src/AttachmentGroup.cpp
-    src/buffers.cpp
-    src/images.cpp
-    src/MsaaAttachmentGroup.cpp
-    src/Shader.cpp
-    src/pipelines.cpp
-    src/rendering.cpp
-)
-target_compile_features(vku PUBLIC cxx_std_23)
-target_include_directories(vku PRIVATE include)
-target_include_directories(vku SYSTEM INTERFACE include) # Do not warn about warnings in public headers.
-target_link_libraries(vku PUBLIC
-    Vulkan::Vulkan
-    GPUOpen::VulkanMemoryAllocator
-    unofficial::VulkanMemoryAllocator-Hpp::VulkanMemoryAllocator-Hpp
-)
-target_compile_definitions(vku PUBLIC VKU_VK_VERSION=${VKU_VK_VERSION})
-
-if (APPLE)
-    target_compile_definitions(vku PUBLIC VK_ENABLE_BETA_EXTENSIONS)
-endif()
-target_compile_options(vku PRIVATE
-    $<$<CXX_COMPILER_ID:MSVC>:/wd4068> # Disable unknown pragma warning (ignore #pragma clang ...)
+target_compile_definitions(Vulkan-Hpp_module PUBLIC
+    # See https://github.com/KhronosGroup/Vulkan-Hpp/blob/main/README.md#c20-named-module for the details.
+    $<$<BOOL:${MSVC}>:VULKAN_HPP_NO_SMART_HANDLE>
 )
 
-if (VKU_USE_GLFW)
-    target_sources(vku PRIVATE src/GlfwWindow.cpp)
-    target_link_libraries(vku PUBLIC glfw)
-    target_compile_definitions(vku PUBLIC GLFW_INCLUDE_VULKAN)
-endif()
-if (VKU_USE_GLM)
-    target_link_libraries(vku PUBLIC glm::glm)
-    target_compile_definitions(vku PUBLIC VKU_USE_GLM)
+if (NOT TARGET VulkanMemoryAllocator-Hpp_module)
+    add_library(VulkanMemoryAllocator-Hpp_module)
+    target_sources(VulkanMemoryAllocator-Hpp_module
+        PUBLIC
+            FILE_SET CXX_MODULES
+            FILES extlibs/module-ports/vk_mem_alloc.cppm
+    )
+    target_compile_features(VulkanMemoryAllocator-Hpp_module PUBLIC cxx_std_${CMAKE_CXX_STANDARD})
+    target_link_libraries(VulkanMemoryAllocator-Hpp_module PUBLIC VulkanMemoryAllocator-Hpp::VulkanMemoryAllocator-Hpp)
+
+    add_library(VulkanMemoryAllocator-Hpp::module ALIAS VulkanMemoryAllocator-Hpp_module)
 endif()
 
 # ----------------
-# Examples.
+# Project targets.
 # ----------------
 
-if (VKU_BUILD_EXAMPLES)
-    add_subdirectory(examples)
-endif()
+add_library(vku)
+target_sources(vku
+    PUBLIC
+        FILE_SET CXX_MODULES
+        FILES
+    interface/mod.cppm
+    interface/buffers/mod.cppm
+    interface/buffers/AllocatedBuffer.cppm
+    interface/buffers/Buffer.cppm
+    interface/buffers/MappedBuffer.cppm
+    interface/commands.cppm
+    interface/descriptors/mod.cppm
+    interface/descriptors/DescriptorSetLayouts.cppm
+    interface/descriptors/DescriptorSets.cppm
+    interface/descriptors/PoolSizes.cppm
+    interface/details/mod.cppm
+    interface/details/concepts.cppm
+    interface/details/ranges.cppm
+    interface/images/mod.cppm
+    interface/images/AllocatedImage.cppm
+    interface/images/Image.cppm
+    interface/pipelines/mod.cppm
+    interface/pipelines/Shader.cppm
+    interface/rendering/mod.cppm
+    interface/rendering/Attachment.cppm
+    interface/rendering/AttachmentGroup.cppm
+    interface/rendering/AttachmentGroupBase.cppm
+    interface/rendering/MsaaAttachment.cppm
+    interface/rendering/MsaaAttachmentGroup.cppm
+    interface/utils/mod.cppm
+    interface/utils/RefHolder.cppm
+)
+target_compile_features(vku PUBLIC cxx_std_${CMAKE_CXX_STANDARD})
+target_link_libraries(vku
+    PUBLIC
+        Vulkan-Hpp::module
+        VulkanMemoryAllocator-Hpp::module
+)
+
+# --------------------
+# Installation.
+# --------------------
+
+include(GNUInstallDirs)
+install(
+    TARGETS Vulkan-Hpp_module VulkanMemoryAllocator-Hpp_module vku
+    EXPORT "${PROJECT_NAME}Targets"
+    FILE_SET CXX_MODULES DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+install(
+    EXPORT "${PROJECT_NAME}Targets"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+    NAMESPACE ${PROJECT_NAME}::
+    CXX_MODULES_DIRECTORY ../../Desktop/active/vku
+)
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMinorVersion # Change this to SameMajorVersion when reach to the version 1.0.
+)
+configure_package_config_file(cmake/config.cmake.in
+    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+)
+install(
+    FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+)

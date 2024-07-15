@@ -1,15 +1,19 @@
 {
+  "name": "vku",
+  "version": "0.1.0",
+  "homepage": "https://github.com/stripe2933/vku",
+  "description": "Vulkan simplification library.",
+  "license": "MIT",
   "dependencies": [
-    "glfw3",
-    "glm",
     {
-      "name": "imgui",
-      "features": [
-        "glfw-binding",
-        "vulkan-binding"
-      ]
+      "name": "vcpkg-cmake",
+      "host": true
     },
-    "stb",
+    {
+      "name": "vcpkg-cmake-config",
+      "host": true
+    },
+    "vulkan",
     "vulkan-memory-allocator-hpp"
   ]
 }
