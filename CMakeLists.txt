@@ -1,15 +1,12 @@
-cmake_minimum_required(VERSION 3.30)
-
-# Enable CMake's experimental standard library module support.
-set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "0e5b6991-d74f-4b3d-a41c-cf096e0b2508")
+cmake_minimum_required(VERSION 3.28)
 
 project(vku
     LANGUAGES CXX
+    DESCRIPTION "Vulkan simplifications."
     VERSION 0.1.0
 )
 
 set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_MODULE_STD 1)
 
 # ----------------
 # External dependencies.
@@ -63,32 +60,32 @@ target_sources(vku
     PUBLIC
         FILE_SET CXX_MODULES
         FILES
-    interface/mod.cppm
-    interface/buffers/mod.cppm
-    interface/buffers/AllocatedBuffer.cppm
-    interface/buffers/Buffer.cppm
-    interface/buffers/MappedBuffer.cppm
-    interface/commands.cppm
-    interface/descriptors/mod.cppm
-    interface/descriptors/DescriptorSetLayouts.cppm
-    interface/descriptors/DescriptorSets.cppm
-    interface/descriptors/PoolSizes.cppm
-    interface/details/mod.cppm
-    interface/details/concepts.cppm
-    interface/details/ranges.cppm
-    interface/images/mod.cppm
-    interface/images/AllocatedImage.cppm
-    interface/images/Image.cppm
-    interface/pipelines/mod.cppm
-    interface/pipelines/Shader.cppm
-    interface/rendering/mod.cppm
-    interface/rendering/Attachment.cppm
-    interface/rendering/AttachmentGroup.cppm
-    interface/rendering/AttachmentGroupBase.cppm
-    interface/rendering/MsaaAttachment.cppm
-    interface/rendering/MsaaAttachmentGroup.cppm
-    interface/utils/mod.cppm
-    interface/utils/RefHolder.cppm
+            interface/mod.cppm
+            interface/buffers/mod.cppm
+            interface/buffers/AllocatedBuffer.cppm
+            interface/buffers/Buffer.cppm
+            interface/buffers/MappedBuffer.cppm
+            interface/commands.cppm
+            interface/descriptors/mod.cppm
+            interface/descriptors/DescriptorSetLayouts.cppm
+            interface/descriptors/DescriptorSets.cppm
+            interface/descriptors/PoolSizes.cppm
+            interface/details/mod.cppm
+            interface/details/concepts.cppm
+            interface/details/ranges.cppm
+            interface/images/mod.cppm
+            interface/images/AllocatedImage.cppm
+            interface/images/Image.cppm
+            interface/pipelines/mod.cppm
+            interface/pipelines/Shader.cppm
+            interface/rendering/mod.cppm
+            interface/rendering/Attachment.cppm
+            interface/rendering/AttachmentGroup.cppm
+            interface/rendering/AttachmentGroupBase.cppm
+            interface/rendering/MsaaAttachment.cppm
+            interface/rendering/MsaaAttachmentGroup.cppm
+            interface/utils/mod.cppm
+            interface/utils/RefHolder.cppm
 )
 target_compile_features(vku PUBLIC cxx_std_${CMAKE_CXX_STANDARD})
 target_link_libraries(vku
