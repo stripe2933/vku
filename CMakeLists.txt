@@ -109,14 +109,14 @@ install(
     EXPORT "${PROJECT_NAME}Targets"
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
     NAMESPACE ${PROJECT_NAME}::
-    CXX_MODULES_DIRECTORY ../../Desktop/active/vku
+    CXX_MODULES_DIRECTORY .
 )
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
     "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
     VERSION ${PROJECT_VERSION}
-    COMPATIBILITY SameMinorVersion # Change this to SameMajorVersion when reach to the version 1.0.
+    COMPATIBILITY SameMajorVersion # Change this to SameMinorVersion when reach to the version 1.0.
 )
 configure_package_config_file(cmake/config.cmake.in
     "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
