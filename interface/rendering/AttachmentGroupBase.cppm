@@ -8,6 +8,8 @@ module;
 #include <vector>
 #endif
 
+#include <vulkan/vulkan_hpp_macros.hpp>
+
 export module vku:rendering.AttachmentGroupBase;
 
 #ifdef VKU_USE_STD_MODULE
@@ -41,8 +43,12 @@ namespace vku {
         ) -> const AllocatedImage& {
             return *storedImage.emplace_back(std::make_unique<std::remove_cvref_t<decltype(image)>>(FWD(image)));
         }
-        auto setViewport(vk::CommandBuffer commandBuffer, bool negativeViewport = false) const -> void;
-        auto setScissor(vk::CommandBuffer commandBuffer) const -> void;
+
+        template <typename Dispatch>
+        auto setViewport(vk::CommandBuffer commandBuffer, bool negativeViewport = false, Dispatch const & dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT) const -> void;
+
+        template <typename Dispatch>
+        auto setScissor(vk::CommandBuffer commandBuffer, Dispatch const& dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT) const -> void;
 
     protected:
         std::vector<std::unique_ptr<AllocatedImage>> storedImage;
@@ -71,33 +77,37 @@ auto vku::AttachmentGroupBase::storeImage(
     return *storedImage.emplace_back(std::move(image));
 }
 
+template <typename Dispatch>
 auto vku::AttachmentGroupBase::setViewport(
     vk::CommandBuffer commandBuffer,
-    bool negativeViewport
+    bool negativeViewport,
+    Dispatch const& dispatch
 ) const -> void {
     if (negativeViewport) {
         commandBuffer.setViewport(0, vk::Viewport {
             0, static_cast<float>(extent.height),
             static_cast<float>(extent.width), -static_cast<float>(extent.height),
             0.f, 1.f,
-        });
+        }, dispatch);
     }
     else {
         commandBuffer.setViewport(0, vk::Viewport {
             0, 0,
             static_cast<float>(extent.width), static_cast<float>(extent.height),
             0.f, 1.f,
-        });
+        }, dispatch);
     }
 }
 
+template <typename Dispatch>
 auto vku::AttachmentGroupBase::setScissor(
-    vk::CommandBuffer commandBuffer
+    vk::CommandBuffer commandBuffer,
+    Dispatch const& dispatch
 ) const -> void {
     commandBuffer.setScissor(0, vk::Rect2D {
         { 0, 0 },
         extent,
-    });
+    }, dispatch);
 }
 
 auto vku::AttachmentGroupBase::createAttachmentImage(
