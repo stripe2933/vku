@@ -52,19 +52,9 @@ namespace vku {
             vk::CommandBuffer commandBuffer,
             bool negativeViewport = false
 #ifdef _MSC_VER
-            , Dispatch const & dispatch = VULKAN_HPP_DEFAULT_DISPATCHER
+            , Dispatch const& dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT
 #endif
-        ) const -> void {
-            commandBuffer.setViewport(0, vk::Viewport {
-                0.f, negativeViewport ? static_cast<float>(extent.height) : 0.f,
-                static_cast<float>(extent.width), negativeViewport ? -static_cast<float>(extent.height) : static_cast<float>(extent.height),
-                0.f, 1.f,
-            }
-#ifdef _MSC_VER
-            , dispatch
-#endif
-            );
-        }
+        ) const -> void;
 
         // TODO: fix getDispatchLoaderStatic build error in Clang.
 #ifdef _MSC_VER
@@ -73,15 +63,9 @@ namespace vku {
         auto setScissor(
             vk::CommandBuffer commandBuffer
 #ifdef _MSC_VER
-            , Dispatch const& dispatch = VULKAN_HPP_DEFAULT_DISPATCHER
+            , Dispatch const& dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT
 #endif
-        ) const -> void {
-            commandBuffer.setScissor(0, vk::Rect2D { { 0, 0 }, extent }
-#ifdef _MSC_VER
-            , dispatch
-#endif
-            );
-        }
+        ) const -> void;
 
     protected:
         std::vector<std::unique_ptr<AllocatedImage>> storedImage;
@@ -103,6 +87,42 @@ namespace vku {
 vku::AttachmentGroupBase::AttachmentGroupBase(
     const vk::Extent2D &extent
 ) : extent { extent } { }
+
+#ifdef _MSC_VER
+template <typename Dispatch>
+#endif
+auto vku::AttachmentGroupBase::setViewport(
+    vk::CommandBuffer commandBuffer,
+    bool negativeViewport
+#ifdef _MSC_VER
+    , Dispatch const& dispatch
+#endif
+) const -> void {
+    commandBuffer.setViewport(0, vk::Viewport {
+        0.f, negativeViewport ? static_cast<float>(extent.height) : 0.f,
+        static_cast<float>(extent.width), negativeViewport ? -static_cast<float>(extent.height) : static_cast<float>(extent.height),
+        0.f, 1.f,
+    }
+#ifdef _MSC_VER
+    , dispatch
+#endif
+    );
+}
+
+#ifdef _MSC_VER
+template <typename Dispatch>
+#endif
+auto vku::AttachmentGroupBase::setScissor(
+    vk::CommandBuffer commandBuffer
+#ifdef _MSC_VER
+    , Dispatch const& dispatch
+#endif
+) const -> void {
+    commandBuffer.setScissor(0, vk::Rect2D {
+        { 0, 0 },
+        extent,
+    }, dispatch);
+}
 
 auto vku::AttachmentGroupBase::storeImage(
     std::unique_ptr<AllocatedImage> image
