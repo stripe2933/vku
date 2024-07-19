@@ -121,7 +121,11 @@ auto vku::AttachmentGroupBase::setScissor(
     commandBuffer.setScissor(0, vk::Rect2D {
         { 0, 0 },
         extent,
-    }, dispatch);
+    }
+#ifdef _MSC_VER
+    , dispatch
+#endif
+    );
 }
 
 auto vku::AttachmentGroupBase::storeImage(
