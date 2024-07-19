@@ -1,6 +1,7 @@
 module;
 
 #ifndef VKU_USE_STD_MODULE
+#include <string_view>
 #include <tuple>
 #include <utility>
 #endif

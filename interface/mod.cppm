@@ -1,3 +1,9 @@
+module;
+
+#ifndef VKU_USE_STD_MODULE
+#include <compare>
+#endif
+
 export module vku;
 export import :buffers;
 export import :descriptors;

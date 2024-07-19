@@ -3,6 +3,7 @@ module;
 #ifndef VKU_USE_STD_MODULE
 #include <cstdint>
 #include <array>
+#include <compare>
 #include <functional>
 #include <utility>
 #endif

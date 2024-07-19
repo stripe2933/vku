@@ -4,6 +4,7 @@ module;
 #ifndef VKU_USE_STD_MODULE
 #include <cstdint>
 #include <array>
+#include <compare>
 #include <concepts>
 #include <ranges>
 #include <tuple>

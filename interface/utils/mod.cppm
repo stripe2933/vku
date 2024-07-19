@@ -1,6 +1,7 @@
 module;
 
 #ifndef VKU_USE_STD_MODULE
+#include <compare>
 #include <initializer_list>
 #include <ranges>
 #endif

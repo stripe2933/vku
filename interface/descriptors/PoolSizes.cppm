@@ -2,6 +2,7 @@ module;
 
 #ifndef VKU_USE_STD_MODULE
 #include <cstdint>
+#include <compare>
 #include <ranges>
 #include <span>
 #include <tuple>

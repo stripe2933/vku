@@ -8,6 +8,8 @@ module;
 #include <format>
 #include <fstream>
 #include <ios>
+#include <source_location>
+#include <stdexcept>
 #include <utility>
 #include <vector>
 #endif

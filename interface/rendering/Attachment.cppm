@@ -1,3 +1,9 @@
+module;
+
+#ifndef VKU_USE_STD_MODULE
+#include <compare>
+#endif
+
 export module vku:rendering.Attachment;
 
 export import vulkan_hpp;
