@@ -14,6 +14,10 @@ on:
       - '.github/workflows/linux.yml'
 jobs:
   build:
+    strategy:
+      matrix:
+        build: [Debug, Release]
+
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -45,9 +49,9 @@ jobs:
           cmake -S . -B build -G Ninja \
             -DCMAKE_C_COMPILER="/usr/bin/clang-18" \
             -DCMAKE_CXX_COMPILER="/usr/bin/clang++-18" \
-            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_BUILD_TYPE=${{ matrix.build }} \
             -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake \
             -DVCPKG_OVERLAY_PORTS=overlays
 
       - name: Install
-        run: sudo cmake --build build --target install --config release
+        run: sudo cmake --build build --target install

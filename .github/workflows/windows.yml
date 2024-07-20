@@ -15,6 +15,11 @@ on:
 
 jobs:
   build:
+    strategy:
+      matrix:
+        build: [Debug, Release]
+        use_std_module: [ON, OFF]
+
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -45,9 +50,10 @@ jobs:
         run: |
           mkdir build
           cmake -S . -B build -G Ninja `
-            -DCMAKE_BUILD_TYPE=Release `
+            -DCMAKE_BUILD_TYPE=${{ matrix.build }} `
             -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" `
-            -DVCPKG_OVERLAY_PORTS=overlays
+            -DVCPKG_OVERLAY_PORTS=overlays `
+            -DVKU_USE_STD_MODULE=${{ matrix.use_std_module }}
 
       - name: Install
-        run: cmake --build build --target install --config release
+        run: cmake --build build --target install --config ${{ matrix.build }}
