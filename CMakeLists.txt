@@ -49,7 +49,6 @@ if (NOT TARGET Vulkan-Hpp_module)
 endif()
 
 target_compile_definitions(Vulkan-Hpp_module PUBLIC
-    VK_NO_PROTOTYPES # Export vk::DispatchLoaderStatic.
     $<$<BOOL:${MSVC}>:VULKAN_HPP_NO_SMART_HANDLE> # See https://github.com/KhronosGroup/Vulkan-Hpp/blob/main/README.md#c20-named-module for the details.
 )
 
