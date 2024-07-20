@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.28)
 
+if (VKU_USE_STD_MODULE ON)
+    # Enable CMake's experimental standard library module support.
+    set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "0e5b6991-d74f-4b3d-a41c-cf096e0b2508")
+endif()
+
 project(vku
     LANGUAGES CXX
     DESCRIPTION "Vulkan simplifications."
@@ -7,6 +12,15 @@ project(vku
 )
 
 set(CMAKE_CXX_STANDARD 23)
+if (VKU_USE_STD_MODULE ON)
+    set(CMAKE_CXX_MODULE_STD 1)
+endif()
+
+# ----------------
+# Project options.
+# ----------------
+
+option(VKU_USE_STD_MODULE "Use the standard library module for compilation.")
 
 # ----------------
 # External dependencies.
@@ -97,6 +111,9 @@ target_link_libraries(vku
     PUBLIC
         Vulkan-Hpp::module
         VulkanMemoryAllocator-Hpp::module
+)
+target_compile_definitions(vku PRIVATE
+    $<$<BOOL:${VKU_USE_STD_MODULE}>:VKU_USE_STD_MODULE>
 )
 
 # --------------------
