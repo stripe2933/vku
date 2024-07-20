@@ -46,7 +46,7 @@ if (NOT TARGET VulkanMemoryAllocator-Hpp_module)
             FILES extlibs/module-ports/vk_mem_alloc.cppm
     )
     target_compile_features(VulkanMemoryAllocator-Hpp_module PUBLIC cxx_std_${CMAKE_CXX_STANDARD})
-    target_link_libraries(VulkanMemoryAllocator-Hpp_module PUBLIC VulkanMemoryAllocator-Hpp::VulkanMemoryAllocator-Hpp)
+    target_link_libraries(VulkanMemoryAllocator-Hpp_module PUBLIC Vulkan::Vulkan VulkanMemoryAllocator-Hpp::VulkanMemoryAllocator-Hpp)
 
     add_library(VulkanMemoryAllocator-Hpp::module ALIAS VulkanMemoryAllocator-Hpp_module)
 endif()
