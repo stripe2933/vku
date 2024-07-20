@@ -13,6 +13,7 @@ set(CMAKE_CXX_STANDARD 23)
 # ----------------
 
 find_package(Vulkan 1.3.256 REQUIRED)
+find_package(VulkanMemoryAllocator CONFIG REQUIRED)
 find_package(VulkanMemoryAllocator-Hpp CONFIG REQUIRED)
 
 # ----------------
@@ -46,7 +47,11 @@ if (NOT TARGET VulkanMemoryAllocator-Hpp_module)
             FILES extlibs/module-ports/vk_mem_alloc.cppm
     )
     target_compile_features(VulkanMemoryAllocator-Hpp_module PUBLIC cxx_std_${CMAKE_CXX_STANDARD})
-    target_link_libraries(VulkanMemoryAllocator-Hpp_module PUBLIC Vulkan::Vulkan VulkanMemoryAllocator-Hpp::VulkanMemoryAllocator-Hpp)
+    target_link_libraries(VulkanMemoryAllocator-Hpp_module PUBLIC
+        Vulkan::Vulkan
+        GPUOpen::VulkanMemoryAllocator
+        VulkanMemoryAllocator-Hpp::VulkanMemoryAllocator-Hpp
+    )
 
     add_library(VulkanMemoryAllocator-Hpp::module ALIAS VulkanMemoryAllocator-Hpp_module)
 endif()
