@@ -1,0 +1,50 @@
+name: Linux
+
+env:
+  VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
+
+on:
+  push:
+    paths:
+      - '**'
+      - '!README.md'
+      - '!LICENSE.txt'
+      - '!assets/**'
+      - '!.github/workflows/**'
+      - '.github/workflows/linux.yml'
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Vulkan SDK
+        uses: humbletim/setup-vulkan-sdk@v1.2.0
+        with:
+          vulkan-query-version: latest
+          vulkan-components: Vulkan-Headers, Vulkan-Loader
+          vulkan-use-cache: true
+
+      - name: Install Ninja
+        run: |
+          sudo apt-get install ninja-build
+
+      - name: Export GitHub Actions cache environment variables
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+
+      - name: Configure
+        run: |
+          mkdir build
+          cmake -S . -B build -G Ninja \
+            -DCMAKE_C_COMPILER="/usr/bin/clang-18" \
+            -DCMAKE_CXX_COMPILER="/usr/bin/clang++-18" \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake \
+            -DVCPKG_OVERLAY_PORTS=overlays
+
+      - name: Install
+        run: cmake --build build --target install --config release
