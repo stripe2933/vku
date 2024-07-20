@@ -36,6 +36,9 @@ jobs:
             core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
             core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
+      - name: Apply patch for vcpkg-based dependency management
+        run: git apply vcpkg-deps-patch.patch
+
       - name: Configure
         run: |
           mkdir build
