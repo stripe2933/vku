@@ -4,7 +4,7 @@ module;
 #ifndef VKU_USE_STD_MODULE
 #include <cstdint>
 #include <bit>
-#include <numeric>
+#include <algorithm>
 #endif
 
 export module vku:images.Image;
