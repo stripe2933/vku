@@ -1,13 +1,29 @@
 Subject: [PATCH] Patch for vcpkg use.
 ---
+Index: extlibs/module-ports/vk_mem_alloc.cppm
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/extlibs/module-ports/vk_mem_alloc.cppm b/extlibs/module-ports/vk_mem_alloc.cppm
+--- a/extlibs/module-ports/vk_mem_alloc.cppm	(revision 94d0f4925e07be173749845207fa3638f7849657)
++++ b/extlibs/module-ports/vk_mem_alloc.cppm	(date 1721478629495)
+@@ -1,6 +1,6 @@
+ module;
+ #define VMA_IMPLEMENTATION
+-#include <vk_mem_alloc.hpp>
++#include <vulkan-memory-allocator-hpp/vk_mem_alloc.hpp>
+ export module vk_mem_alloc_hpp;
+
+ export namespace VMA_HPP_NAMESPACE {
 Index: CMakeLists.txt
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/CMakeLists.txt b/CMakeLists.txt
---- a/CMakeLists.txt	(revision f7e0e0c8923410f6a22e2be67d5fd0fc67766f35)
-+++ b/CMakeLists.txt	(date 1721477986922)
+--- a/CMakeLists.txt	(revision 94d0f4925e07be173749845207fa3638f7849657)
++++ b/CMakeLists.txt	(date 1721478594257)
 @@ -13,7 +13,7 @@
  # ----------------
  
