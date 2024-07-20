@@ -17,7 +17,7 @@ jobs:
   build:
     strategy:
       matrix:
-        msvc_toolset: [14.39, 14.40]
+        msvc_toolset: ["19.39", "19.40"]
         build: [Debug, Release]
 
     runs-on: windows-latest
