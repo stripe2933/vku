@@ -1,0 +1,10 @@
+{
+  "name": "vku",
+  "version": "0.1.0",
+  "homepage": "https://github.com/stripe2933/vku",
+  "description": "Vulkan simplifications.",
+  "license": "MIT",
+  "dependencies": [
+    "vulkan-memory-allocator-hpp"
+  ]
+}

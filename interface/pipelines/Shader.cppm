@@ -3,7 +3,7 @@ module;
 #include <cerrno>
 #ifndef VKU_USE_STD_MODULE
 #include <cstdint>
-#include <cstdlib>
+#include <cstring>
 #include <filesystem>
 #include <format>
 #include <fstream>

@@ -13,6 +13,7 @@ set(CMAKE_CXX_STANDARD 23)
 # ----------------
 
 find_package(Vulkan 1.3.256 REQUIRED)
+find_package(VulkanMemoryAllocator CONFIG REQUIRED)
 find_package(VulkanMemoryAllocator-Hpp CONFIG REQUIRED)
 
 # ----------------
@@ -34,8 +35,8 @@ if (NOT TARGET Vulkan-Hpp_module)
 endif()
 
 target_compile_definitions(Vulkan-Hpp_module PUBLIC
-    # See https://github.com/KhronosGroup/Vulkan-Hpp/blob/main/README.md#c20-named-module for the details.
-    $<$<BOOL:${MSVC}>:VULKAN_HPP_NO_SMART_HANDLE>
+    VK_NO_PROTOTYPES # Export vk::DispatchLoaderStatic.
+    $<$<BOOL:${MSVC}>:VULKAN_HPP_NO_SMART_HANDLE> # See https://github.com/KhronosGroup/Vulkan-Hpp/blob/main/README.md#c20-named-module for the details.
 )
 
 if (NOT TARGET VulkanMemoryAllocator-Hpp_module)
@@ -46,7 +47,11 @@ if (NOT TARGET VulkanMemoryAllocator-Hpp_module)
             FILES extlibs/module-ports/vk_mem_alloc.cppm
     )
     target_compile_features(VulkanMemoryAllocator-Hpp_module PUBLIC cxx_std_${CMAKE_CXX_STANDARD})
-    target_link_libraries(VulkanMemoryAllocator-Hpp_module PUBLIC VulkanMemoryAllocator-Hpp::VulkanMemoryAllocator-Hpp)
+    target_link_libraries(VulkanMemoryAllocator-Hpp_module PUBLIC
+        Vulkan::Vulkan
+        GPUOpen::VulkanMemoryAllocator
+        VulkanMemoryAllocator-Hpp::VulkanMemoryAllocator-Hpp
+    )
 
     add_library(VulkanMemoryAllocator-Hpp::module ALIAS VulkanMemoryAllocator-Hpp_module)
 endif()
