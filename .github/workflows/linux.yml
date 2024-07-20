@@ -50,4 +50,4 @@ jobs:
             -DVCPKG_OVERLAY_PORTS=overlays
 
       - name: Install
-        run: cmake --build build --target install --config release
+        run: sudo cmake --build build --target install --config release
