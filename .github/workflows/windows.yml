@@ -17,7 +17,6 @@ jobs:
   build:
     strategy:
       matrix:
-        toolset: ["14.37", "14.40"]
         build: [Debug, Release]
 
     runs-on: windows-latest
@@ -27,7 +26,7 @@ jobs:
       - name: Enable Developer Command Prompt
         uses: ilammy/msvc-dev-cmd@v1
         with:
-          toolset: ${{ matrix.toolset }}
+          toolset: 14.40
 
       - name: Install Vulkan SDK
         uses: humbletim/setup-vulkan-sdk@v1.2.0
