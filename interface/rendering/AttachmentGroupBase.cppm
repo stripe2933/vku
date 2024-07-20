@@ -8,8 +8,6 @@ module;
 #include <vector>
 #endif
 
-#include <vulkan/vulkan_hpp_macros.hpp>
-
 export module vku:rendering.AttachmentGroupBase;
 
 #ifdef VKU_USE_STD_MODULE
