@@ -48,9 +48,9 @@ jobs:
         run: |
           mkdir build
           cmake -S . -B build -G Ninja \
-            -DCMAKE_C_COMPILER="/usr/bin/clang-{{ matrix.clang }}" \
-            -DCMAKE_CXX_COMPILER="/usr/bin/clang++-{{ matrix.clang }}" \
-            -DCMAKE_BUILD_TYPE={{ matrix.build }} \
+            -DCMAKE_C_COMPILER="/usr/bin/clang-${{ matrix.clang }}" \
+            -DCMAKE_CXX_COMPILER="/usr/bin/clang++-${{ matrix.clang }}" \
+            -DCMAKE_BUILD_TYPE=${{ matrix.build }} \
             -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake \
             -DVCPKG_OVERLAY_PORTS=overlays
 
