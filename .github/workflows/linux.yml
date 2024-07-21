@@ -30,9 +30,9 @@ jobs:
           vulkan-components: Vulkan-Headers, Vulkan-Loader
           vulkan-use-cache: true
 
-      - name: Install Ninja
+      - name: Install Ninja and build dependencies
         run: |
-          sudo apt-get install ninja-build
+          sudo apt-get install ninja-build libc++-dev libc++abi-dev
 
       - name: Export GitHub Actions cache environment variables
         uses: actions/github-script@v7
