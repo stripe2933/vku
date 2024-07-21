@@ -11,6 +11,7 @@ on:
       - '!LICENSE.txt'
       - '!.github/workflows/**'
       - '.github/workflows/linux.yml'
+
 jobs:
   build:
     strategy:
@@ -57,4 +58,4 @@ jobs:
             -DVKU_USE_STD_MODULE=${{ matrix.use_std_module }}
 
       - name: Install
-        run: sudo cmake --build build --target install
+        run: sudo cmake --build build --target install --config ${{ matrix.build }}
