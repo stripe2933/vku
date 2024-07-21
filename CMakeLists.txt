@@ -126,14 +126,12 @@ include(GNUInstallDirs)
 install(
     TARGETS Vulkan-Hpp_module VulkanMemoryAllocator-Hpp_module vku
     EXPORT "${PROJECT_NAME}Targets"
-    FILE_SET CXX_MODULES DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
-    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    FILE_SET CXX_MODULES DESTINATION module/${PROJECT_NAME}
 )
 install(
     EXPORT "${PROJECT_NAME}Targets"
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+    DESTINATION cmake/${PROJECT_NAME}
     NAMESPACE ${PROJECT_NAME}::
-    CXX_MODULES_DIRECTORY .
 )
 
 include(CMakePackageConfigHelpers)
@@ -142,13 +140,13 @@ write_basic_package_version_file(
     VERSION ${PROJECT_VERSION}
     COMPATIBILITY SameMajorVersion # Change this to SameMinorVersion when reach to the version 1.0.
 )
-configure_package_config_file(cmake/config.cmake.in
+configure_package_config_file(
+    cmake/config.cmake.in
     "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+    INSTALL_DESTINATION cmake/${PROJECT_NAME}
 )
-install(
-    FILES
-        "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-        "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+    DESTINATION cmake/${PROJECT_NAME}
 )
