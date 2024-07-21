@@ -115,6 +115,9 @@ target_compile_definitions(vku PRIVATE
     $<$<BOOL:${VKU_USE_STD_MODULE}>:VKU_USE_STD_MODULE>
 )
 
+# For usage consistency with FetchContent and find_package.
+add_library(vku::vku ALIAS vku)
+
 # --------------------
 # Installation.
 # --------------------
