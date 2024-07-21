@@ -42,7 +42,7 @@ jobs:
             core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
       - name: Apply patch for vcpkg-based dependency management
-        run: git apply vcpkg-deps.patch
+        run: git apply vcpkg-deps.patch --allow-empty
 
       - name: Configure
         run: |
