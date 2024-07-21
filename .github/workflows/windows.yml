@@ -9,7 +9,6 @@ on:
       - '**'
       - '!README.md'
       - '!LICENSE.txt'
-      - '!assets/**'
       - '!.github/workflows/**'
       - '.github/workflows/windows.yml'
 
