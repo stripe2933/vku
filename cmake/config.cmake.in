@@ -4,6 +4,7 @@ include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
 
 include(CMakeFindDependencyMacro)
 find_dependency(Vulkan 1.3.256)
+find_dependency(VulkanMemoryAllocator)
 find_dependency(VulkanMemoryAllocator-Hpp)
 
 check_required_components(@PROJECT_NAME@)
