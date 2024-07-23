@@ -21,6 +21,7 @@ endif()
 # ----------------
 
 option(VKU_USE_STD_MODULE "Use the standard library module for compilation.")
+option(VKU_USE_SHADERC "Add runtime GLSL compilation feature by shaderc.")
 
 # ----------------
 # External dependencies.
@@ -29,6 +30,10 @@ option(VKU_USE_STD_MODULE "Use the standard library module for compilation.")
 find_package(Vulkan 1.3.256 REQUIRED)
 find_package(VulkanMemoryAllocator CONFIG REQUIRED)
 find_package(VulkanMemoryAllocator-Hpp CONFIG REQUIRED)
+
+if (VKU_USE_SHADERC)
+    find_package(Vulkan COMPONENTS shaderc_combined REQUIRED)
+endif()
 
 # ----------------
 # Module configurations for the external dependencies.
@@ -111,9 +116,11 @@ target_link_libraries(vku
     PUBLIC
         Vulkan-Hpp::module
         VulkanMemoryAllocator-Hpp::module
+        $<$<BOOL:${VKU_USE_SHADERC}>:Vulkan::shaderc_combined>
 )
 target_compile_definitions(vku PRIVATE
     $<$<BOOL:${VKU_USE_STD_MODULE}>:VKU_USE_STD_MODULE>
+    $<$<BOOL:${VKU_USE_SHADERC}>:VKU_USE_SHADERC>
 )
 
 # For usage consistency with FetchContent and find_package.

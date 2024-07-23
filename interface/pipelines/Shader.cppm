@@ -10,8 +10,14 @@ module;
 #include <ios>
 #include <source_location>
 #include <stdexcept>
+#include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
+#endif
+
+#ifdef VKU_USE_SHADERC
+#include <shaderc/shaderc.hpp>
 #endif
 
 export module vku:pipelines.Shader;
@@ -20,6 +26,10 @@ export module vku:pipelines.Shader;
 import std;
 #endif
 export import vulkan_hpp;
+
+[[nodiscard]] constexpr auto to_string(std::source_location srcLoc) noexcept -> std::string {
+    return std::format("{}:{}:{}", srcLoc.file_name(), srcLoc.line(), srcLoc.column());
+}
 
 namespace vku {
     export struct Shader {
@@ -46,12 +56,37 @@ namespace vku {
          * @param entryPoint Entry point function name (default: "main").
          */
         Shader(const std::filesystem::path &path, vk::ShaderStageFlagBits stage, const char *entryPoint = "main");
+
+#ifdef VKU_USE_SHADERC
+        Shader(const shaderc::Compiler &compiler, std::string_view glsl, vk::ShaderStageFlagBits stage, const char *entryPoint = "main", const char *identifier = to_string(std::source_location{}).c_str());
+#endif
     };
 }
 
 // --------------------
 // Implementations.
 // --------------------
+
+[[nodiscard]] constexpr auto getShaderKind(
+    vk::ShaderStageFlagBits stage
+) -> shaderc_shader_kind {
+    switch (stage) {
+        case vk::ShaderStageFlagBits::eVertex:
+            return shaderc_glsl_vertex_shader;
+        case vk::ShaderStageFlagBits::eTessellationControl:
+            return shaderc_glsl_tess_control_shader;
+        case vk::ShaderStageFlagBits::eTessellationEvaluation:
+            return shaderc_glsl_tess_evaluation_shader;
+        case vk::ShaderStageFlagBits::eGeometry:
+            return shaderc_glsl_geometry_shader;
+        case vk::ShaderStageFlagBits::eFragment:
+            return shaderc_glsl_fragment_shader;
+        case vk::ShaderStageFlagBits::eCompute:
+            return shaderc_glsl_compute_shader;
+        default:
+            throw std::runtime_error { std::format("Unsupported shader stage: {}", to_string(stage)) };
+    }
+}
 
 [[nodiscard]] auto loadFileAsBinary(
     const std::filesystem::path &path
@@ -86,3 +121,29 @@ vku::Shader::Shader(
 ) : code { loadFileAsBinary(path) },
     stage { stage },
     entryPoint { entryPoint } { }
+
+vku::Shader::Shader(
+    const shaderc::Compiler &compiler,
+    std::string_view glsl,
+    vk::ShaderStageFlagBits stage,
+    const char *entryPoint,
+    const char *identifier
+) : stage { stage },
+    entryPoint { entryPoint } {
+    shaderc::CompileOptions compileOptions;
+    // TODO: parameter option for selecting Vulkan version?
+    compileOptions.SetTargetEnvironment(shaderc_target_env_vulkan, shaderc_env_version_vulkan_1_2);
+#ifdef NDEBUG
+    compileOptions.SetOptimizationLevel(shaderc_optimization_level_performance);
+#endif
+
+    const auto result = compiler.CompileGlslToSpv(
+        glsl.data(), glsl.size(),
+        getShaderKind(stage),
+        entryPoint, identifier, compileOptions);
+    if (result.GetCompilationStatus() != shaderc_compilation_status_success) {
+        throw std::runtime_error { std::format("Failed to compile shader: {}", result.GetErrorMessage()) };
+    }
+
+    code = { std::from_range, result };
+}
