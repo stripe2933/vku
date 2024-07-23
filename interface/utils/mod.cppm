@@ -136,4 +136,24 @@ namespace vku {
     [[nodiscard]] constexpr auto contains(vk::Flags<T> super, vk::Flags<T> sub) noexcept -> bool {
         return (super & sub) == sub;
     }
+
+    /**
+     * Convert <tt>vk::Extent3D</tt> to <tt>vk::Extent2D</tt>. The depth component is discarded.
+     * @param extent Extent to convert.
+     * @return Converted extent.
+     */
+    export
+    [[nodiscard]] constexpr auto toExtent2D(const vk::Extent3D &extent) noexcept -> vk::Extent2D {
+        return { extent.width, extent.height };
+    }
+
+    /**
+     * Convert <tt>vk::Offset3D</tt> to <tt>vk::Offset2D</tt>. The z component is discarded.
+     * @param offset Offset to convert.
+     * @return Converted offset.
+     */
+    export
+    [[nodiscard]] constexpr auto toOffset2D(const vk::Offset3D &offset) noexcept -> vk::Offset2D {
+        return { offset.x, offset.y };
+    }
 }
