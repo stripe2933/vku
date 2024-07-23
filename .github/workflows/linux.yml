@@ -18,7 +18,6 @@ jobs:
       matrix:
         build: [Debug, Release]
         use_std_module: [ON, OFF]
-        use_shaderc: [ON, OFF]
 
     runs-on: ubuntu-24.04
     steps:
@@ -56,8 +55,7 @@ jobs:
             -DCMAKE_BUILD_TYPE=${{ matrix.build }} \
             -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake \
             -DVCPKG_OVERLAY_PORTS=overlays \
-            -DVKU_USE_STD_MODULE=${{ matrix.use_std_module }} \
-            -DVKU_USE_SHADERC=${{ matrix.use_shaderc }}
+            -DVKU_USE_STD_MODULE=${{ matrix.use_std_module }}
 
       - name: Install
         run: sudo cmake --build build --target install --config ${{ matrix.build }}
