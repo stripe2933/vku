@@ -27,7 +27,7 @@ import std;
 #endif
 export import vulkan_hpp;
 
-[[nodiscard]] constexpr auto to_string(std::source_location srcLoc) noexcept -> std::string {
+[[nodiscard]] auto to_string(std::source_location srcLoc) noexcept -> std::string {
     return std::format("{}:{}:{}", srcLoc.file_name(), srcLoc.line(), srcLoc.column());
 }
 
