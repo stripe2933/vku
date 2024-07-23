@@ -22,6 +22,7 @@ endif()
 
 option(VKU_USE_STD_MODULE "Use the standard library module for compilation.")
 option(VKU_USE_SHADERC "Add runtime GLSL compilation feature by shaderc.")
+option(VKU_DEFAULT_DYNAMIC_DISPATCHER "Use the vk::DispatchLoaderDynamic as the default dispatcher.")
 
 # ----------------
 # External dependencies.
@@ -56,6 +57,7 @@ endif()
 target_compile_definitions(Vulkan-Hpp_module PUBLIC
     $<$<BOOL:${MSVC}>:VULKAN_HPP_NO_SMART_HANDLE> # See https://github.com/KhronosGroup/Vulkan-Hpp/blob/main/README.md#c20-named-module for the details.
     $<$<PLATFORM_ID:Darwin>:VK_ENABLE_BETA_EXTENSIONS> # For VK_KHR_portability_subset availability.
+    $<$<BOOL:${VKU_DEFAULT_DYNAMIC_DISPATCHER}>:VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1>
 )
 
 if (NOT TARGET VulkanMemoryAllocator-Hpp_module)
@@ -74,6 +76,12 @@ if (NOT TARGET VulkanMemoryAllocator-Hpp_module)
 
     add_library(VulkanMemoryAllocator-Hpp::module ALIAS VulkanMemoryAllocator-Hpp_module)
 endif()
+
+target_compile_definitions(VulkanMemoryAllocator-Hpp_module PUBLIC
+    $<$<BOOL:${MSVC}>:VULKAN_HPP_NO_SMART_HANDLE>
+    $<$<PLATFORM_ID:Darwin>:VK_ENABLE_BETA_EXTENSIONS>
+    $<$<BOOL:${VKU_DEFAULT_DYNAMIC_DISPATCHER}>:VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1 VMA_STATIC_VULKAN_FUNCTIONS=0 VMA_DYNAMIC_VULKAN_FUNCTIONS=1>
+)
 
 # ----------------
 # Project targets.
