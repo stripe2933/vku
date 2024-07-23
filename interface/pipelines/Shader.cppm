@@ -67,27 +67,6 @@ namespace vku {
 // Implementations.
 // --------------------
 
-[[nodiscard]] constexpr auto getShaderKind(
-    vk::ShaderStageFlagBits stage
-) -> shaderc_shader_kind {
-    switch (stage) {
-        case vk::ShaderStageFlagBits::eVertex:
-            return shaderc_glsl_vertex_shader;
-        case vk::ShaderStageFlagBits::eTessellationControl:
-            return shaderc_glsl_tess_control_shader;
-        case vk::ShaderStageFlagBits::eTessellationEvaluation:
-            return shaderc_glsl_tess_evaluation_shader;
-        case vk::ShaderStageFlagBits::eGeometry:
-            return shaderc_glsl_geometry_shader;
-        case vk::ShaderStageFlagBits::eFragment:
-            return shaderc_glsl_fragment_shader;
-        case vk::ShaderStageFlagBits::eCompute:
-            return shaderc_glsl_compute_shader;
-        default:
-            throw std::runtime_error { std::format("Unsupported shader stage: {}", to_string(stage)) };
-    }
-}
-
 [[nodiscard]] auto loadFileAsBinary(
     const std::filesystem::path &path
 ) -> std::vector<std::uint32_t> {
@@ -122,6 +101,28 @@ vku::Shader::Shader(
     stage { stage },
     entryPoint { entryPoint } { }
 
+#ifdef VKU_USE_SHADERC
+[[nodiscard]] constexpr auto getShaderKind(
+    vk::ShaderStageFlagBits stage
+) -> shaderc_shader_kind {
+    switch (stage) {
+        case vk::ShaderStageFlagBits::eVertex:
+            return shaderc_glsl_vertex_shader;
+        case vk::ShaderStageFlagBits::eTessellationControl:
+            return shaderc_glsl_tess_control_shader;
+        case vk::ShaderStageFlagBits::eTessellationEvaluation:
+            return shaderc_glsl_tess_evaluation_shader;
+        case vk::ShaderStageFlagBits::eGeometry:
+            return shaderc_glsl_geometry_shader;
+        case vk::ShaderStageFlagBits::eFragment:
+            return shaderc_glsl_fragment_shader;
+        case vk::ShaderStageFlagBits::eCompute:
+            return shaderc_glsl_compute_shader;
+        default:
+            throw std::runtime_error { std::format("Unsupported shader stage: {}", to_string(stage)) };
+    }
+}
+
 vku::Shader::Shader(
     const shaderc::Compiler &compiler,
     std::string_view glsl,
@@ -147,3 +148,4 @@ vku::Shader::Shader(
 
     code = { std::from_range, result };
 }
+#endif
