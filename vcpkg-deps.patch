@@ -6,8 +6,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/extlibs/module-ports/vk_mem_alloc.cppm b/extlibs/module-ports/vk_mem_alloc.cppm
---- a/extlibs/module-ports/vk_mem_alloc.cppm	(revision 9ae77882caac791e48166126ddb1753da4c17466)
-+++ b/extlibs/module-ports/vk_mem_alloc.cppm	(date 1721737332779)
+--- a/extlibs/module-ports/vk_mem_alloc.cppm	(revision 341cd81a2d06c494cefcdac5f5cdee50927e6d9c)
++++ b/extlibs/module-ports/vk_mem_alloc.cppm	(date 1721812045871)
 @@ -1,6 +1,6 @@
  module;
  #define VMA_IMPLEMENTATION
@@ -22,14 +22,14 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/cmake/config.cmake.in b/cmake/config.cmake.in
---- a/cmake/config.cmake.in	(revision 9ae77882caac791e48166126ddb1753da4c17466)
-+++ b/cmake/config.cmake.in	(date 1721737332779)
-@@ -5,6 +5,6 @@
- include(CMakeFindDependencyMacro)
- find_dependency(Vulkan 1.3.256)
+--- a/cmake/config.cmake.in	(revision 341cd81a2d06c494cefcdac5f5cdee50927e6d9c)
++++ b/cmake/config.cmake.in	(date 1721812056709)
+@@ -8,6 +8,6 @@
+     find_dependency(Vulkan COMPONENTS shaderc_combined)
+ endif()
  find_dependency(VulkanMemoryAllocator)
 -find_dependency(VulkanMemoryAllocator-Hpp)
-+find_dependency(unofficial-vulkan-memory-allocator-hpp)
++find_dependency(unofficial::VulkanMemoryAllocator-Hpp::VulkanMemoryAllocator-Hpp)
  
  check_required_components(@PROJECT_NAME@)
 \ No newline at end of file
@@ -39,9 +39,9 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/CMakeLists.txt b/CMakeLists.txt
---- a/CMakeLists.txt	(revision 9ae77882caac791e48166126ddb1753da4c17466)
-+++ b/CMakeLists.txt	(date 1721737349827)
-@@ -29,7 +29,7 @@
+--- a/CMakeLists.txt	(revision 341cd81a2d06c494cefcdac5f5cdee50927e6d9c)
++++ b/CMakeLists.txt	(date 1721812056713)
+@@ -31,7 +31,7 @@
  
  find_package(Vulkan 1.3.256 REQUIRED)
  find_package(VulkanMemoryAllocator CONFIG REQUIRED)
@@ -50,12 +50,12 @@ diff --git a/CMakeLists.txt b/CMakeLists.txt
  
  if (VKU_USE_SHADERC)
      find_package(Vulkan COMPONENTS shaderc_combined REQUIRED)
-@@ -69,7 +69,7 @@
-     target_link_libraries(VulkanMemoryAllocator-Hpp_module PUBLIC
-         Vulkan::Vulkan
-         GPUOpen::VulkanMemoryAllocator
--        VulkanMemoryAllocator-Hpp::VulkanMemoryAllocator-Hpp
-+        unofficial::VulkanMemoryAllocator-Hpp::VulkanMemoryAllocator-Hpp
-     )
- 
-     add_library(VulkanMemoryAllocator-Hpp::module ALIAS VulkanMemoryAllocator-Hpp_module)
+@@ -83,7 +83,7 @@
+ target_link_libraries(vku PUBLIC
+     Vulkan::Vulkan
+     GPUOpen::VulkanMemoryAllocator
+-    VulkanMemoryAllocator-Hpp::VulkanMemoryAllocator-Hpp
++    unofficial::VulkanMemoryAllocator-Hpp::VulkanMemoryAllocator-Hpp
+     $<$<BOOL:${VKU_USE_SHADERC}>:Vulkan::shaderc_combined>
+ )
+ target_compile_definitions(vku PUBLIC
