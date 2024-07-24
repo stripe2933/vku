@@ -21,6 +21,13 @@ jobs:
 
     runs-on: windows-latest
     steps:
+      - uses: actions/checkout@v4
+
+      - name: Enable Developer Command Prompt
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          toolset: 14.40
+
       - name: Install Vulkan SDK
         uses: humbletim/setup-vulkan-sdk@v1.2.0
         with:
@@ -34,13 +41,6 @@ jobs:
           script: |
             core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
             core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
-
-      - uses: actions/checkout@v4
-
-      - name: Enable Developer Command Prompt
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          toolset: 14.40
 
       - name: Apply patch for vcpkg-based dependency management
         run: git apply vcpkg-deps.patch --whitespace=fix
