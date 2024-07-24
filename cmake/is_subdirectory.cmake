@@ -1,7 +1,4 @@
-function(is_subdirectory parent_dir sub_dir result)
-    cmake_path(ABSOLUTE_PATH parent_dir NORMALIZE OUTPUT_VARIABLE parent_abs)
-    cmake_path(ABSOLUTE_PATH sub_dir NORMALIZE OUTPUT_VARIABLE sub_abs)
-
+function(is_subdirectory parent_abs sub_abs result)
     if (sub_abs MATCHES "${parent_abs}$")
         set(${result} TRUE PARENT_SCOPE)
     else()
