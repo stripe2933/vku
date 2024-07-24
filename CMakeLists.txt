@@ -49,11 +49,11 @@ endif()
 
 # CMake's target_sources BASE_DIRS requires no two base directories for a file set may be sub-directories of each other,
 # therefore we need to check if Vulkan include directory is a sub-directory of the current directory or vice versa.
-is_subdirectory("${Vulkan_INCLUDE_DIRS}/vulkan" "." rhsInLhs)
+is_subdirectory("${Vulkan_INCLUDE_DIRS}/vulkan" "" rhsInLhs)
 if (NOT rhsInLhs)
     list(APPEND base_dirs .)
 endif()
-is_subdirectory("." "${Vulkan_INCLUDE_DIRS}/vulkan" rhsInLhs)
+is_subdirectory("" "${Vulkan_INCLUDE_DIRS}/vulkan" rhsInLhs)
 if (NOT rhsInLhs)
     list(APPEND base_dirs ${Vulkan_INCLUDE_DIRS}/vulkan)
 endif()
