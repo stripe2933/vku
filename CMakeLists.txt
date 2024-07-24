@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.28)
 
 if (VKU_USE_STD_MODULE)
     # Enable CMake's experimental standard library module support.
+    cmake_minimum_required(VERSION 3.30)
     set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "0e5b6991-d74f-4b3d-a41c-cf096e0b2508")
 endif()
 
@@ -25,6 +26,12 @@ option(VKU_USE_SHADERC "Add runtime GLSL compilation feature by shaderc.")
 option(VKU_DEFAULT_DYNAMIC_DISPATCHER "Use the vk::DispatchLoaderDynamic as the default dispatcher.")
 
 # ----------------
+# CMake scripts.
+# ----------------
+
+include(cmake/is_subdirectory.cmake)
+
+# ----------------
 # External dependencies.
 # ----------------
 
@@ -37,102 +44,71 @@ if (VKU_USE_SHADERC)
 endif()
 
 # ----------------
-# Module configurations for the external dependencies.
-# ----------------
-
-if (NOT TARGET Vulkan-Hpp_module)
-    add_library(Vulkan-Hpp_module)
-    target_sources(Vulkan-Hpp_module
-        PUBLIC
-            FILE_SET CXX_MODULES
-            BASE_DIRS ${Vulkan_INCLUDE_DIRS}
-            FILES ${Vulkan_INCLUDE_DIRS}/vulkan/vulkan.cppm
-    )
-    target_compile_features(Vulkan-Hpp_module PUBLIC cxx_std_${CMAKE_CXX_STANDARD})
-    target_link_libraries(Vulkan-Hpp_module PUBLIC Vulkan::Vulkan)
-
-    add_library(Vulkan-Hpp::module ALIAS Vulkan-Hpp_module)
-endif()
-
-target_compile_definitions(Vulkan-Hpp_module PUBLIC
-    $<$<BOOL:${MSVC}>:VULKAN_HPP_NO_SMART_HANDLE> # See https://github.com/KhronosGroup/Vulkan-Hpp/blob/main/README.md#c20-named-module for the details.
-    $<$<PLATFORM_ID:Darwin>:VK_ENABLE_BETA_EXTENSIONS> # For VK_KHR_portability_subset availability.
-    $<$<BOOL:${VKU_DEFAULT_DYNAMIC_DISPATCHER}>:VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1>
-)
-
-if (NOT TARGET VulkanMemoryAllocator-Hpp_module)
-    add_library(VulkanMemoryAllocator-Hpp_module)
-    target_sources(VulkanMemoryAllocator-Hpp_module
-        PUBLIC
-            FILE_SET CXX_MODULES
-            FILES extlibs/module-ports/vk_mem_alloc.cppm
-    )
-    target_compile_features(VulkanMemoryAllocator-Hpp_module PUBLIC cxx_std_${CMAKE_CXX_STANDARD})
-    target_link_libraries(VulkanMemoryAllocator-Hpp_module PUBLIC
-        Vulkan::Vulkan
-        GPUOpen::VulkanMemoryAllocator
-        VulkanMemoryAllocator-Hpp::VulkanMemoryAllocator-Hpp
-    )
-
-    add_library(VulkanMemoryAllocator-Hpp::module ALIAS VulkanMemoryAllocator-Hpp_module)
-endif()
-
-target_compile_definitions(VulkanMemoryAllocator-Hpp_module PUBLIC
-    $<$<BOOL:${MSVC}>:VULKAN_HPP_NO_SMART_HANDLE>
-    $<$<PLATFORM_ID:Darwin>:VK_ENABLE_BETA_EXTENSIONS>
-    $<$<BOOL:${VKU_DEFAULT_DYNAMIC_DISPATCHER}>:VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1 VMA_STATIC_VULKAN_FUNCTIONS=0 VMA_DYNAMIC_VULKAN_FUNCTIONS=1>
-)
-
-# ----------------
 # Project targets.
 # ----------------
 
+# CMake's target_sources BASE_DIRS requires no two base directories for a file set may be sub-directories of each other,
+# therefore we need to check if Vulkan include directory is a sub-directory of the current directory or vice versa.
+is_subdirectory("${Vulkan_INCLUDE_DIRS}/vulkan" "" rhsInLhs)
+if (NOT rhsInLhs)
+    list(APPEND base_dirs .)
+endif()
+is_subdirectory("" "${Vulkan_INCLUDE_DIRS}/vulkan" rhsInLhs)
+if (NOT rhsInLhs)
+    list(APPEND base_dirs ${Vulkan_INCLUDE_DIRS}/vulkan)
+endif()
+
 add_library(vku)
-target_sources(vku
-    PUBLIC
-        FILE_SET CXX_MODULES
-        FILES
-            interface/mod.cppm
-            interface/buffers/mod.cppm
-            interface/buffers/AllocatedBuffer.cppm
-            interface/buffers/Buffer.cppm
-            interface/buffers/MappedBuffer.cppm
-            interface/commands.cppm
-            interface/descriptors/mod.cppm
-            interface/descriptors/DescriptorSetLayouts.cppm
-            interface/descriptors/DescriptorSets.cppm
-            interface/descriptors/PoolSizes.cppm
-            interface/details/mod.cppm
-            interface/details/concepts.cppm
-            interface/details/ranges.cppm
-            interface/images/mod.cppm
-            interface/images/AllocatedImage.cppm
-            interface/images/Image.cppm
-            interface/pipelines/mod.cppm
-            interface/pipelines/Shader.cppm
-            interface/rendering/mod.cppm
-            interface/rendering/Attachment.cppm
-            interface/rendering/AttachmentGroup.cppm
-            interface/rendering/AttachmentGroupBase.cppm
-            interface/rendering/MsaaAttachment.cppm
-            interface/rendering/MsaaAttachmentGroup.cppm
-            interface/utils/mod.cppm
-            interface/utils/RefHolder.cppm
+target_sources(vku PUBLIC
+    FILE_SET CXX_MODULES
+    BASE_DIRS ${base_dirs}
+    FILES
+        ${Vulkan_INCLUDE_DIRS}/vulkan/vulkan.cppm
+        extlibs/module-ports/vk_mem_alloc.cppm
+        interface/mod.cppm
+        interface/buffers/mod.cppm
+        interface/buffers/AllocatedBuffer.cppm
+        interface/buffers/Buffer.cppm
+        interface/buffers/MappedBuffer.cppm
+        interface/commands.cppm
+        interface/descriptors/mod.cppm
+        interface/descriptors/DescriptorSetLayouts.cppm
+        interface/descriptors/DescriptorSets.cppm
+        interface/descriptors/PoolSizes.cppm
+        interface/details/mod.cppm
+        interface/details/concepts.cppm
+        interface/details/ranges.cppm
+        interface/images/mod.cppm
+        interface/images/AllocatedImage.cppm
+        interface/images/Image.cppm
+        interface/pipelines/mod.cppm
+        interface/pipelines/Shader.cppm
+        interface/rendering/mod.cppm
+        interface/rendering/Attachment.cppm
+        interface/rendering/AttachmentGroup.cppm
+        interface/rendering/AttachmentGroupBase.cppm
+        interface/rendering/MsaaAttachment.cppm
+        interface/rendering/MsaaAttachmentGroup.cppm
+        interface/utils/mod.cppm
+        interface/utils/RefHolder.cppm
 )
 target_compile_features(vku PUBLIC cxx_std_${CMAKE_CXX_STANDARD})
-target_link_libraries(vku
-    PUBLIC
-        Vulkan-Hpp::module
-        VulkanMemoryAllocator-Hpp::module
-        $<$<BOOL:${VKU_USE_SHADERC}>:Vulkan::shaderc_combined>
+target_link_libraries(vku PUBLIC
+    Vulkan::Vulkan
+    GPUOpen::VulkanMemoryAllocator
+    VulkanMemoryAllocator-Hpp::VulkanMemoryAllocator-Hpp
+    $<$<BOOL:${VKU_USE_SHADERC}>:Vulkan::shaderc_combined>
 )
-target_compile_definitions(vku PRIVATE
+target_compile_definitions(vku PUBLIC
     $<$<BOOL:${VKU_USE_STD_MODULE}>:VKU_USE_STD_MODULE>
     $<$<BOOL:${VKU_USE_SHADERC}>:VKU_USE_SHADERC>
+    $<$<BOOL:${MSVC}>:VULKAN_HPP_NO_SMART_HANDLE> # See https://github.com/KhronosGroup/Vulkan-Hpp/blob/main/README.md#c20-named-module for the details.
+    $<$<PLATFORM_ID:Darwin>:VK_ENABLE_BETA_EXTENSIONS> # For VK_KHR_portability_subset availability.
+    $<$<BOOL:${VKU_DEFAULT_DYNAMIC_DISPATCHER}>:VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1 VMA_STATIC_VULKAN_FUNCTIONS=0 VMA_DYNAMIC_VULKAN_FUNCTIONS=1>
 )
 
 # For usage consistency with FetchContent and find_package.
-add_library(vku::vku ALIAS vku)
+add_library(${PROJECT_NAME}::vku ALIAS vku)
 
 # --------------------
 # Installation.
@@ -140,7 +116,7 @@ add_library(vku::vku ALIAS vku)
 
 include(GNUInstallDirs)
 install(
-    TARGETS Vulkan-Hpp_module VulkanMemoryAllocator-Hpp_module vku
+    TARGETS vku
     EXPORT "${PROJECT_NAME}Targets"
     FILE_SET CXX_MODULES DESTINATION module/${PROJECT_NAME}
 )
