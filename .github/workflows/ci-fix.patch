@@ -1,0 +1,19 @@
+Subject: [PATCH] CI fix.
+---
+Index: CMakeLists.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+--- a/CMakeLists.txt	(revision 18df73a0c2bd5719f896e44888ab3aeaad511fc6)
++++ b/CMakeLists.txt	(date 1721906542186)
+@@ -44,7 +44,7 @@
+ add_library(vku)
+ target_sources(vku PUBLIC
+     FILE_SET CXX_MODULES
+-    BASE_DIRS ${Vulkan_INCLUDE_DIRS} .
++    BASE_DIRS .
+     FILES
+         ${Vulkan_INCLUDE_DIRS}/vulkan/vulkan.cppm
+         extlibs/module-ports/vk_mem_alloc.cppm
