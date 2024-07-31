@@ -16,8 +16,6 @@ export module vku:buffers.MappedBuffer;
 #ifdef VKU_USE_STD_MODULE
 import std;
 #endif
-export import vk_mem_alloc_hpp;
-export import vulkan_hpp;
 export import :buffers.AllocatedBuffer;
 
 #define FWD(...) static_cast<decltype(__VA_ARGS__)&&>(__VA_ARGS__)
@@ -110,6 +108,11 @@ namespace vku {
          */
         template <typename T>
         [[nodiscard]] auto asValue(vk::DeviceSize byteOffset = 0) NOEXCEPT_IF_RELEASE -> T&;
+
+        [[nodiscard]] auto unmap() && noexcept -> AllocatedBuffer {
+            allocator.unmapMemory(allocation);
+            return static_cast<AllocatedBuffer>(std::move(*this));
+        }
     };
 }
 
