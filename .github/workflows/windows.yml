@@ -53,12 +53,9 @@ jobs:
 
       - name: Configure
         run: |
-          mkdir build
-          cmake -S . -B build -G Ninja `
+          cmake --preset=vcpkg `
             -DCMAKE_BUILD_TYPE=${{ matrix.build }} `
-            -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" `
-            -DVCPKG_OVERLAY_PORTS=overlays `
             -DVKU_USE_STD_MODULE=${{ matrix.use_std_module }}
 
       - name: Install
-        run: cmake --build build --target install --config ${{ matrix.build }}
+        run: cmake --target install --config ${{ matrix.build }}
