@@ -1,9 +1,12 @@
 module;
 
+#include <cassert>
 #ifndef VKU_USE_STD_MODULE
 #include <compare>
+#include <concepts>
 #include <initializer_list>
 #include <ranges>
+#include <utility>
 #endif
 
 export module vku:utils;
@@ -13,6 +16,12 @@ export import :utils.RefHolder;
 import std;
 #endif
 export import vulkan_hpp;
+
+#ifdef NDEBUG
+#define NOEXCEPT_IF_RELEASE noexcept
+#else
+#define NOEXCEPT_IF_RELEASE
+#endif
 
 namespace vku {
     /**
@@ -148,6 +157,18 @@ namespace vku {
     }
 
     /**
+     * Convert <tt>vk::Offset2D</tt> to <tt>vk::Extent2D</tt>. Negative component is converted to the least unsigned
+     * integer congruent to the source integer.
+     * @param offset Offset to convert.
+     * @return Converted extent.
+     * @note Negative component will be casted to unsigned int, with C++ standard conversion rule.
+     */
+    export
+    [[nodiscard]] constexpr auto toExtent2D(const vk::Offset2D &offset) noexcept -> vk::Extent2D {
+        return { static_cast<std::uint32_t>(offset.x), static_cast<std::uint32_t>(offset.y) };
+    }
+
+    /**
      * Convert <tt>vk::Offset3D</tt> to <tt>vk::Offset2D</tt>. The z component is discarded.
      * @param offset Offset to convert.
      * @return Converted offset.
@@ -155,5 +176,34 @@ namespace vku {
     export
     [[nodiscard]] constexpr auto toOffset2D(const vk::Offset3D &offset) noexcept -> vk::Offset2D {
         return { offset.x, offset.y };
+    }
+
+    /**
+     * Convert <tt>vk::Extent2D</tt> to <tt>vk::Offset2D</tt>.
+     * @param extent Extent to convert.
+     * @return Converted offset.
+     * @throw
+     * - Assertion error if width or height is overflowing (> 2^31 - 1).
+     * @note Signed integer overflow is UB in C++. Make sure that the width and height are less than 2^31 - 1.
+     */
+    export
+    [[nodiscard]] constexpr auto toOffset2D(const vk::Extent2D &extent) NOEXCEPT_IF_RELEASE -> vk::Offset2D {
+        assert(std::in_range<std::int32_t>(extent.width) && "Overflowing width.");
+        assert(std::in_range<std::int32_t>(extent.height) && "Overflowing height.");
+        return { static_cast<std::int32_t>(extent.width), static_cast<std::int32_t>(extent.height) };
+    }
+
+    /**
+     * Get aspect ratio (width / height) of the extent.
+     * @tparam T Floating point type to calculate the aspect ratio. Default is <tt>float</tt>.
+     * @param extent Extent to calculate the aspect ratio.
+     * @return Aspect ratio of the extent.
+     * @throw
+     * - Assertion error if height is zero (zero division).
+     */
+    export template <std::floating_point T = float>
+    [[nodiscard]] constexpr auto aspect(const vk::Extent2D &extent) NOEXCEPT_IF_RELEASE -> T {
+        assert(extent.height != 0 && "Height must not be zero.");
+        return static_cast<T>(extent.width) / static_cast<T>(extent.height);
     }
 }
