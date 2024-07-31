@@ -37,7 +37,6 @@
       "name": "msvc",
       "displayName": "MSVC",
       "inherits": "vcpkg",
-      "toolset": "v143",
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
