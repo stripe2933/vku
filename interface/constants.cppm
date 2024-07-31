@@ -6,7 +6,7 @@ module;
 
 export module vku:constants;
 
-#ifdef VKU_USE_STD_MODULE && defined(_MSC_VER)
+#if defined(VKU_USE_STD_MODULE) && defined(_MSC_VER)
 import std;
 #endif
 export import vulkan_hpp;
