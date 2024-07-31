@@ -61,4 +61,4 @@ jobs:
             -DVKU_USE_STD_MODULE=${{ matrix.use_std_module }}
 
       - name: Install
-        run: cmake --target install --config ${{ matrix.build }}
+        run: cmake --build --target install
