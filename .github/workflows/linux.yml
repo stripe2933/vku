@@ -52,13 +52,10 @@ jobs:
 
       - name: Configure
         run: |
-          cmake --preset=vcpkg \
-            -DCMAKE_C_COMPILER="/usr/bin/clang-18" \
-            -DCMAKE_CXX_COMPILER="/usr/bin/clang++-18" \
-            -DCMAKE_CXX_FLAGS="-stdlib=libc++" \
-            -DCMAKE_EXE_LINKER_FLAGS="-stdlib=libc++ -lc++abi" \
+          mv .github/workflows/CMakeUserPresets.json .
+          cmake --preset=${{ matrix.use_std_module == 'ON' && 'clang-libcxx' || 'clang-libstdcxx' }} \
             -DCMAKE_BUILD_TYPE=${{ matrix.build }} \
             -DVKU_USE_STD_MODULE=${{ matrix.use_std_module }}
 
       - name: Install
-        run: cmake --build --preset=vcpkg --target install
+        run: cmake --build --preset=${{ matrix.use_std_module == 'ON' && 'clang-libcxx' || 'clang-libstdcxx' }} --target install

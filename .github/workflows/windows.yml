@@ -53,9 +53,10 @@ jobs:
 
       - name: Configure
         run: |
-          cmake --preset=vcpkg `
+          mv .github\workflows\CMakeUserPresets.json .\
+          cmake --preset=msvc `
             -DCMAKE_BUILD_TYPE=${{ matrix.build }} `
             -DVKU_USE_STD_MODULE=${{ matrix.use_std_module }}
 
       - name: Install
-        run: cmake --build --preset=vcpkg --target install
+        run: cmake --build --preset=msvc --target install
