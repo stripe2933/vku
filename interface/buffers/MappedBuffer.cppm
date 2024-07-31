@@ -108,6 +108,11 @@ namespace vku {
          */
         template <typename T>
         [[nodiscard]] auto asValue(vk::DeviceSize byteOffset = 0) NOEXCEPT_IF_RELEASE -> T&;
+
+        [[nodiscard]] auto unmap() && noexcept -> AllocatedBuffer {
+            allocator.unmapMemory(allocation);
+            return static_cast<AllocatedBuffer>(std::move(*this));
+        }
     };
 }
 
