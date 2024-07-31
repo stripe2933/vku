@@ -23,8 +23,7 @@ namespace vku {
         AllocatedImage(
             vma::Allocator allocator,
             const vk::ImageCreateInfo &createInfo,
-            const vma::AllocationCreateInfo &allocationCreateInfo = { {}, vma::MemoryUsage::eAutoPreferDevice }
-        );
+            const vma::AllocationCreateInfo &allocationCreateInfo = { {}, vma::MemoryUsage::eAutoPreferDevice });
         AllocatedImage(const AllocatedImage&) = delete;
         AllocatedImage(AllocatedImage &&src) noexcept;
         auto operator=(const AllocatedImage&) -> AllocatedImage& = delete;
