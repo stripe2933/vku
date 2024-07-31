@@ -2,6 +2,7 @@ module;
 
 #include <cassert>
 #ifndef VKU_USE_STD_MODULE
+#include <cstdint>
 #include <compare>
 #include <concepts>
 #include <initializer_list>
