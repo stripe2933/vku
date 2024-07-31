@@ -12,7 +12,6 @@ export module vku:images.AllocatedImage;
 import std;
 #endif
 export import vk_mem_alloc_hpp;
-export import vulkan_hpp;
 export import :images.Image;
 
 namespace vku {

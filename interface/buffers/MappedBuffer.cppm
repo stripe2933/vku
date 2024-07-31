@@ -16,8 +16,6 @@ export module vku:buffers.MappedBuffer;
 #ifdef VKU_USE_STD_MODULE
 import std;
 #endif
-export import vk_mem_alloc_hpp;
-export import vulkan_hpp;
 export import :buffers.AllocatedBuffer;
 
 #define FWD(...) static_cast<decltype(__VA_ARGS__)&&>(__VA_ARGS__)

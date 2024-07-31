@@ -12,7 +12,6 @@ export module vku:buffers.AllocatedBuffer;
 import std;
 #endif
 export import vk_mem_alloc_hpp;
-export import vulkan_hpp;
 export import :buffers.Buffer;
 
 namespace vku {
