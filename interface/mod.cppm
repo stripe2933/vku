@@ -6,6 +6,7 @@ module;
 
 export module vku;
 export import :buffers;
+export import :constants;
 export import :descriptors;
 export import :commands;
 export import :images;

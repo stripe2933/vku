@@ -54,6 +54,7 @@ target_sources(vku PUBLIC
         interface/buffers/Buffer.cppm
         interface/buffers/MappedBuffer.cppm
         interface/commands.cppm
+        interface/constants.cppm
         interface/descriptors/mod.cppm
         interface/descriptors/DescriptorSetLayouts.cppm
         interface/descriptors/DescriptorSets.cppm
