@@ -6,6 +6,8 @@ module;
 #include <type_traits>
 #endif
 
+#include <vulkan/vulkan_hpp_macros.hpp>
+
 export module vku:commands;
 
 #ifdef VKU_USE_STD_MODULE

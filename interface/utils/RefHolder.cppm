@@ -4,6 +4,7 @@ module;
 #include <concepts>
 #include <functional>
 #include <tuple>
+#include <type_traits>
 #endif
 
 export module vku:utils.RefHolder;
