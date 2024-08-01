@@ -5,6 +5,6 @@ module;
 #endif
 
 export module vku:descriptors;
-export import :descriptors.DescriptorSetLayouts;
-export import :descriptors.DescriptorSets;
+export import :descriptors.DescriptorSetLayout;
+export import :descriptors.DescriptorSet;
 export import :descriptors.PoolSizes;

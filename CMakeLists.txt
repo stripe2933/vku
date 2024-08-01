@@ -56,11 +56,12 @@ target_sources(vku PUBLIC
         interface/commands.cppm
         interface/constants.cppm
         interface/descriptors/mod.cppm
-        interface/descriptors/DescriptorSetLayouts.cppm
-        interface/descriptors/DescriptorSets.cppm
+        interface/descriptors/DescriptorSetLayout.cppm
+        interface/descriptors/DescriptorSet.cppm
         interface/descriptors/PoolSizes.cppm
         interface/details/mod.cppm
         interface/details/concepts.cppm
+        interface/details/functional.cppm
         interface/details/ranges.cppm
         interface/images/mod.cppm
         interface/images/AllocatedImage.cppm

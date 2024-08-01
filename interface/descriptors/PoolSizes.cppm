@@ -17,16 +17,16 @@ export module vku:descriptors.PoolSizes;
 import std;
 #endif
 export import vulkan_hpp;
-import :descriptors.DescriptorSetLayouts;
 import :details;
 import :utils.RefHolder;
 
 namespace vku {
-    export class PoolSizes {
-    public:
-        PoolSizes() = default;
-        explicit PoolSizes(concepts::derived_from_value_specialization_of<DescriptorSetLayouts> auto const &layouts);
-        PoolSizes(const PoolSizes&) = default;
+    export struct PoolSizes {
+        std::uint32_t setCount;
+        std::unordered_map<vk::DescriptorType, std::uint32_t> typeCounts;
+
+        PoolSizes() noexcept = default;
+        PoolSizes(const PoolSizes&) noexcept = default;
         PoolSizes(PoolSizes&&) noexcept = default;
 
         // Addition/scalar multiplication operators.
@@ -37,10 +37,6 @@ namespace vku {
         auto operator*=(std::uint32_t multiplier) noexcept -> PoolSizes&;
 
         [[nodiscard]] auto getDescriptorPoolCreateInfo(vk::DescriptorPoolCreateFlags flags = {}) const noexcept -> RefHolder<vk::DescriptorPoolCreateInfo, std::vector<vk::DescriptorPoolSize>>;
-
-    private:
-        std::uint32_t setCount;
-        std::unordered_map<vk::DescriptorType, std::uint32_t> descriptorTypeCountMap;
     };
 }
 
@@ -50,31 +46,18 @@ namespace vku {
 
 // module :private;
 
-vku::PoolSizes::PoolSizes(
-    concepts::derived_from_value_specialization_of<DescriptorSetLayouts> auto const &layouts
-) : setCount { std::remove_cvref_t<decltype(layouts)>::setCount } {
-    std::apply([this](const auto &...layoutBindings){
-        const auto accumBindings = [this](std::span<const vk::DescriptorSetLayoutBinding> bindings) {
-            for (const auto &binding : bindings) {
-                descriptorTypeCountMap[binding.descriptorType] += binding.descriptorCount;
-            }
-        };
-        (accumBindings(layoutBindings), ...);
-    }, layouts.layoutBindingsPerSet);
-}
-
 auto vku::PoolSizes::operator+(PoolSizes rhs) const noexcept -> PoolSizes {
     rhs.setCount += setCount;
-    for (const auto &[type, count] : descriptorTypeCountMap) {
-        rhs.descriptorTypeCountMap[type] += count;
+    for (const auto &[type, count] : typeCounts) {
+        rhs.typeCounts[type] += count;
     }
     return rhs;
 }
 
 auto vku::PoolSizes::operator+=(const PoolSizes &rhs) noexcept -> PoolSizes & {
     setCount += rhs.setCount;
-    for (const auto &[type, count] : rhs.descriptorTypeCountMap) {
-        descriptorTypeCountMap[type] += count;
+    for (const auto &[type, count] : rhs.typeCounts) {
+        typeCounts[type] += count;
     }
     return *this;
 }
@@ -82,7 +65,7 @@ auto vku::PoolSizes::operator+=(const PoolSizes &rhs) noexcept -> PoolSizes & {
 auto vku::PoolSizes::operator*(std::uint32_t multiplier) const noexcept -> PoolSizes {
     PoolSizes result { *this };
     result.setCount *= multiplier;
-    for (std::uint32_t &count : result.descriptorTypeCountMap | std::views::values) {
+    for (std::uint32_t &count : result.typeCounts | std::views::values) {
         count *= multiplier;
     }
     return result;
@@ -90,7 +73,7 @@ auto vku::PoolSizes::operator*(std::uint32_t multiplier) const noexcept -> PoolS
 
 auto vku::PoolSizes::operator*=(std::uint32_t multiplier) noexcept -> PoolSizes & {
     setCount *= multiplier;
-    for (std::uint32_t &count : descriptorTypeCountMap | std::views::values) {
+    for (std::uint32_t &count : typeCounts | std::views::values) {
         count *= multiplier;
     }
     return *this;
@@ -107,7 +90,7 @@ auto vku::PoolSizes::getDescriptorPoolCreateInfo(
                 poolSizes,
             };
         },
-        descriptorTypeCountMap
+        typeCounts
             | std::views::transform([](const auto &keyValue) {
                 return vk::DescriptorPoolSize { keyValue.first, keyValue.second };
             })
