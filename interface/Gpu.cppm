@@ -4,6 +4,7 @@ module;
 #include <cstdint>
 #include <algorithm>
 #include <concepts>
+#include <format>
 #include <functional>
 #include <iostream>
 #include <print>
@@ -28,6 +29,7 @@ import std;
 export import vk_mem_alloc_hpp;
 export import vulkan_hpp;
 import :details;
+import :utils;
 
 #define CHECK_FEATURE(feature) if (pPhysicalDeviceFeatures->feature && !availableFeatures.feature) { unavailableFeatures.push_back(#feature); }
 
@@ -292,7 +294,7 @@ namespace vku {
                 *physicalDevice, *device,
                 {}, {}, {}, {},
 #if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
-                vku::unsafeAddress(vma::VulkanFunctions{
+                unsafeAddress(vma::VulkanFunctions{
                     instance.getDispatcher()->vkGetInstanceProcAddr,
                     device.getDispatcher()->vkGetDeviceProcAddr,
                 }),
