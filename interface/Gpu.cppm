@@ -1,5 +1,6 @@
 module;
 
+#include <version>
 #ifndef VKU_USE_STD_MODULE
 #include <cstdint>
 #include <algorithm>
