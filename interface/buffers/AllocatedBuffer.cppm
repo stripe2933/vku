@@ -1,9 +1,11 @@
 module;
 
 #ifndef VKU_USE_STD_MODULE
-#include <string_view>
 #include <tuple>
 #include <utility>
+#ifdef _MSC_VER
+#include <string_view>
+#endif
 #endif
 
 export module vku:buffers.AllocatedBuffer;

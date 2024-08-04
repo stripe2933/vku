@@ -63,11 +63,13 @@ target_sources(vku PUBLIC
         interface/details/concepts.cppm
         interface/details/functional.cppm
         interface/details/ranges.cppm
+        interface/Gpu.cppm
         interface/images/mod.cppm
         interface/images/AllocatedImage.cppm
         interface/images/Image.cppm
         interface/pipelines/mod.cppm
         interface/pipelines/Shader.cppm
+        interface/queue.cppm
         interface/rendering/mod.cppm
         interface/rendering/Attachment.cppm
         interface/rendering/AttachmentGroup.cppm
