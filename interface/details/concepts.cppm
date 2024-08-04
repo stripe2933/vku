@@ -1,6 +1,7 @@
 module;
 
 #ifndef VKU_USE_STD_MODULE
+#include <concepts>
 #include <tuple>
 #include <type_traits>
 #include <utility>
@@ -23,6 +24,9 @@ namespace vku::concepts {
     struct is_tuple_like<std::array<T, N>> : std::true_type{};
     export template <typename T>
     concept tuple_like = is_tuple_like<T>::value;
+
+    export template <typename T, typename... Ts>
+    concept one_of = (std::same_as<T, Ts> || ...);
 
     template <typename, typename>
     struct is_alternative_of : std::false_type{};

@@ -22,6 +22,9 @@ import std;
 #define FWD(...) static_cast<decltype(__VA_ARGS__)&&>(__VA_ARGS__)
 
 namespace vku::ranges {
+    export template <typename R, typename T>
+    concept contiguous_range_of = std::ranges::contiguous_range<R> && std::same_as<std::ranges::range_value_t<R>, T>;
+
     export template <typename Derived>
 #if !defined(_LIBCPP_VERSION) && __cpp_lib_ranges >= 202202L // https://github.com/llvm/llvm-project/issues/70557#issuecomment-1851936055
         using range_adaptor_closure = std::ranges::range_adaptor_closure<Derived>;

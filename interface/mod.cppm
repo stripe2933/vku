@@ -8,6 +8,7 @@ export module vku;
 export import :buffers;
 export import :constants;
 export import :descriptors;
+export import :Gpu;
 export import :commands;
 export import :images;
 export import :pipelines;
