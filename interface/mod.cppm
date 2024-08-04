@@ -11,5 +11,6 @@ export import :descriptors;
 export import :commands;
 export import :images;
 export import :pipelines;
+export import :queue;
 export import :rendering;
 export import :utils;
