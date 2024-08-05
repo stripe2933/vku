@@ -113,17 +113,6 @@ namespace vku {
     }
 
     /**
-     * Creating <tt>vk::ImageSubresourceRange</tt> that contains the whole mip levels and array layers, with specified
-     * \p aspectFlags.
-     * @param aspectFlags Image aspect. Default is <tt>vk::ImageAspectFlagBits::eColor</tt>.
-     * @return <tt>vk::ImageSubresourceRange</tt> that contains the whole mip levels and array layers.
-     */
-    export
-    [[nodiscard]] constexpr auto fullSubresourceRange(vk::ImageAspectFlags aspectFlags = vk::ImageAspectFlagBits::eColor) noexcept -> vk::ImageSubresourceRange {
-        return { aspectFlags, 0, vk::RemainingMipLevels, 0, vk::RemainingArrayLayers };
-    }
-
-    /**
      * Check whether \p flag is contained in \p flags.
      * @param flags Vulkan flags.
      * @param flag Vulkan flag bit.

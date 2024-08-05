@@ -130,6 +130,17 @@ namespace vku {
          */
         [[nodiscard]] static constexpr auto mipExtent(const vk::Extent2D &extent, std::uint32_t mipLevel) NOEXCEPT_IF_RELEASE -> vk::Extent2D;
     };
+
+    /**
+     * Creating <tt>vk::ImageSubresourceRange</tt> that contains the whole mip levels and array layers, with specified
+     * \p aspectFlags.
+     * @param aspectFlags Image aspect. Default is <tt>vk::ImageAspectFlagBits::eColor</tt>.
+     * @return <tt>vk::ImageSubresourceRange</tt> that contains the whole mip levels and array layers.
+     */
+    export
+    [[nodiscard]] constexpr auto fullSubresourceRange(vk::ImageAspectFlags aspectFlags = vk::ImageAspectFlagBits::eColor) noexcept -> vk::ImageSubresourceRange {
+        return { aspectFlags, 0, vk::RemainingMipLevels, 0, vk::RemainingArrayLayers };
+    }
 }
 
 // --------------------
