@@ -70,6 +70,40 @@ export namespace vku {
             std::span<const ColorAttachmentInfo> colorAttachmentInfos,
             const DepthStencilAttachmentInfo &depthStencilAttachmentInfo
         ) const -> RefHolder<vk::RenderingInfo, std::vector<vk::RenderingAttachmentInfo>, vk::RenderingAttachmentInfo>;
+
+        /**
+         * Get <tt>vk::FramebufferCreateInfo</tt> for the attachment group. The order of the image views are:
+         * - Input attachment views (given as \p inputAttachmentViews)
+         * - Color attachment views
+         * - Depth-stencil attachment view (if exists)
+         * @param renderPass Render pass to create the framebuffer for.
+         * @param inputAttachmentViews Optional input attachment views to be used in the framebuffer (default: empty).
+         * @return RefHolder of <tt>vk::FramebufferCreateInfo</tt> and a vector of image views.
+         */
+        [[nodiscard]] auto getFramebufferCreateInfo(
+            vk::RenderPass renderPass,
+            vk::ArrayProxy<const vk::ImageView> inputAttachmentViews = {}
+        ) const -> RefHolder<vk::FramebufferCreateInfo, std::vector<vk::ImageView>> {
+            std::vector imageViews { std::from_range, inputAttachmentViews };
+            imageViews.append_range(colorAttachments | std::views::transform([](const Attachment &attachment) { return *attachment.view; }));
+            if (depthStencilAttachment) {
+                imageViews.emplace_back(*depthStencilAttachment->view);
+            }
+
+            return {
+                [&](std::span<const vk::ImageView> imageViews) {
+                    return vk::FramebufferCreateInfo {
+                        {},
+                        renderPass,
+                        imageViews,
+                        extent.width,
+                        extent.height,
+                        1,
+                    };
+                },
+                std::move(imageViews),
+            };
+        }
     };
 }
 

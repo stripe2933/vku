@@ -5,9 +5,11 @@ module;
 #include <cstdint>
 #include <compare>
 #include <concepts>
+#include <functional>
 #include <initializer_list>
 #include <ranges>
 #include <utility>
+#include <vector>
 #endif
 
 export module vku:utils;
@@ -23,6 +25,7 @@ export import vulkan_hpp;
 #else
 #define NOEXCEPT_IF_RELEASE
 #endif
+#define FWD(...) static_cast<decltype(__VA_ARGS__) &&>(__VA_ARGS__)
 
 namespace vku {
     /**
@@ -217,5 +220,37 @@ namespace vku {
     [[nodiscard]] constexpr auto aspect(const vk::Extent2D &extent) NOEXCEPT_IF_RELEASE -> T {
         assert(extent.height != 0 && "Height must not be zero.");
         return static_cast<T>(extent.width) / static_cast<T>(extent.height);
+    }
+
+    /**
+     * Merge <tt>vk::FramebufferCreateInfo</tt>s into one, with order preserved combined attachments.
+     * @tparam CreateInfos <tt>vk::FramebufferCreateInfo</tt> types.
+     * @param createInfos <tt>vk::FramebufferCreateInfo</tt> instances to merge. All instances must have the same <tt>flags</tt>, <tt>render pass</tt>, <tt>width</tt>, <tt>height</tt>, and <tt>layer</tt>.
+     * @return RefHolder of <tt>vk::FramebufferCreateInfo</tt> and its attachment image view references.
+     * @throw
+     * - Assertion error if the <tt>flags</tt>, <tt>render pass</tt>, <tt>width</tt>, <tt>height</tt>, or <tt>layer</tt> of the \p createInfos are not the same.
+     */
+    export template <std::convertible_to<vk::FramebufferCreateInfo>... CreateInfos>
+    [[nodiscard]] auto mergeFramebufferCreateInfos(const CreateInfos &...createInfos) NOEXCEPT_IF_RELEASE -> RefHolder<vk::FramebufferCreateInfo, std::vector<vk::ImageView>> {
+        constexpr auto all_same = [](auto head, auto ...tail) { return ((head == tail) && ...); };
+        assert(all_same(createInfos.flags...) && "All flags in the createInfos must be the same.");
+        assert(all_same(createInfos.renderPass...) && "All render passes in the createInfos must be the same.");
+        assert(all_same(createInfos.width...) && "All widths in the createInfos must be the same.");
+        assert(all_same(createInfos.height...) && "All heights in the createInfos must be the same.");
+        assert(all_same(createInfos.layer...) && "All layers in the createInfos must be the same.");
+        // TODO: should I check the pNexts consistency?
+
+        std::vector<vk::ImageView> imageViews;
+        imageViews.reserve((createInfos.attachmentCount + ...));
+        (imageViews.append_range(std::views::counted(createInfos.pAttachments, createInfos.attachmentCount)), ...);
+
+        return {
+            [&](std::span<const vk::ImageView> imageViews) {
+                return [=](vk::FramebufferCreateInfo createInfo, const auto&...) {
+                    return createInfo.setAttachments(imageViews);
+                }(createInfos...);
+            },
+            std::move(imageViews),
+        };
     }
 }
