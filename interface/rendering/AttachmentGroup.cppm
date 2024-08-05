@@ -2,6 +2,7 @@ module;
 
 #include <cassert>
 #ifndef VKU_USE_STD_MODULE
+#include <algorithm>
 #include <optional>
 #include <ranges>
 #include <span>
@@ -84,8 +85,11 @@ export namespace vku {
             vk::RenderPass renderPass,
             vk::ArrayProxy<const vk::ImageView> inputAttachmentViews = {}
         ) const -> RefHolder<vk::FramebufferCreateInfo, std::vector<vk::ImageView>> {
-            std::vector imageViews { std::from_range, inputAttachmentViews };
-            imageViews.append_range(colorAttachments | std::views::transform([](const Attachment &attachment) { return *attachment.view; }));
+            std::vector<vk::ImageView> imageViews;
+            imageViews.reserve(inputAttachmentViews.size() + colorAttachments.size() + depthStencilAttachment.has_value());
+
+            std::ranges::copy(inputAttachmentViews, back_inserter(imageViews));
+            std::ranges::copy(colorAttachments | std::views::transform([](const Attachment &attachment) { return *attachment.view; }), back_inserter(imageViews));
             if (depthStencilAttachment) {
                 imageViews.emplace_back(*depthStencilAttachment->view);
             }

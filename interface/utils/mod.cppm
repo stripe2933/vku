@@ -3,6 +3,7 @@ module;
 #include <cassert>
 #ifndef VKU_USE_STD_MODULE
 #include <cstdint>
+#include <algorithm>
 #include <compare>
 #include <concepts>
 #include <functional>
@@ -242,7 +243,7 @@ namespace vku {
 
         std::vector<vk::ImageView> imageViews;
         imageViews.reserve((createInfos.attachmentCount + ...));
-        (imageViews.append_range(std::views::counted(createInfos.pAttachments, createInfos.attachmentCount)), ...);
+        (std::ranges::copy_n(createInfos.pAttachments, createInfos.attachmentCount, back_inserter(imageViews)), ...);
 
         return {
             [&](std::span<const vk::ImageView> imageViews) {
