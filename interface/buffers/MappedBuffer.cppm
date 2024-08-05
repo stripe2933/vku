@@ -45,12 +45,31 @@ namespace vku {
                 vma::AllocationCreateFlagBits::eHostAccessSequentialWrite | vma::AllocationCreateFlagBits::eMapped,
                 vma::MemoryUsage::eAuto,
             });
+        template <typename T> requires (!std::same_as<T, std::from_range_t> && std::is_standard_layout_v<T>)
+        MappedBuffer(
+            vma::Allocator allocator,
+            const T &value,
+            vk::BufferUsageFlags usage,
+            vk::ArrayProxy<const std::uint32_t> queueFamilyIndices,
+            const vma::AllocationCreateInfo &allocationCreateInfo = {
+                vma::AllocationCreateFlagBits::eHostAccessSequentialWrite | vma::AllocationCreateFlagBits::eMapped,
+                vma::MemoryUsage::eAuto,
+            });
         template <std::ranges::input_range R> requires (std::ranges::sized_range<R> && std::is_standard_layout_v<std::ranges::range_value_t<R>>)
         MappedBuffer(
             vma::Allocator allocator,
-            std::from_range_t,
-            R &&r,
+            std::from_range_t, R &&r,
             vk::BufferUsageFlags usage,
+            const vma::AllocationCreateInfo &allocationCreateInfo = {
+                vma::AllocationCreateFlagBits::eHostAccessSequentialWrite | vma::AllocationCreateFlagBits::eMapped,
+                vma::MemoryUsage::eAuto,
+            });
+        template <std::ranges::input_range R> requires (std::ranges::sized_range<R> && std::is_standard_layout_v<std::ranges::range_value_t<R>>)
+        MappedBuffer(
+            vma::Allocator allocator,
+            std::from_range_t, R &&r,
+            vk::BufferUsageFlags usage,
+            vk::ArrayProxy<const std::uint32_t> queueFamilyIndices,
             const vma::AllocationCreateInfo &allocationCreateInfo = {
                 vma::AllocationCreateFlagBits::eHostAccessSequentialWrite | vma::AllocationCreateFlagBits::eMapped,
                 vma::MemoryUsage::eAuto,
@@ -141,6 +160,22 @@ vku::MappedBuffer::MappedBuffer(
     *static_cast<T*>(data) = value;
 }
 
+template <typename T> requires (!std::same_as<T, std::from_range_t> && std::is_standard_layout_v<T>)
+vku::MappedBuffer::MappedBuffer(
+    vma::Allocator allocator,
+    const T &value,
+    vk::BufferUsageFlags usage,
+    vk::ArrayProxy<const std::uint32_t> queueFamilyIndices,
+    const vma::AllocationCreateInfo &allocationCreateInfo
+) : MappedBuffer { allocator, vk::BufferCreateInfo {
+        {},
+        sizeof(T),
+        usage,
+        queueFamilyIndices.size() == 1 ? vk::SharingMode::eExclusive : vk::SharingMode::eConcurrent, queueFamilyIndices,
+    }, allocationCreateInfo } {
+    *static_cast<T*>(data) = value;
+}
+
 template <std::ranges::input_range R> requires (std::ranges::sized_range<R> && std::is_standard_layout_v<std::ranges::range_value_t<R>>)
 vku::MappedBuffer::MappedBuffer(
     vma::Allocator allocator,
@@ -152,6 +187,23 @@ vku::MappedBuffer::MappedBuffer(
         {},
         r.size() * sizeof(std::ranges::range_value_t<R>),
         usage,
+    }, allocationCreateInfo } {
+    std::ranges::copy(FWD(r), static_cast<std::ranges::range_value_t<R>*>(data));
+}
+
+template <std::ranges::input_range R> requires (std::ranges::sized_range<R> && std::is_standard_layout_v<std::ranges::range_value_t<R>>)
+vku::MappedBuffer::MappedBuffer(
+    vma::Allocator allocator,
+    std::from_range_t,
+    R &&r,
+    vk::BufferUsageFlags usage,
+    vk::ArrayProxy<const std::uint32_t> queueFamilyIndices,
+    const vma::AllocationCreateInfo &allocationCreateInfo
+) : MappedBuffer { allocator, vk::BufferCreateInfo {
+        {},
+        r.size() * sizeof(std::ranges::range_value_t<R>),
+        usage,
+        queueFamilyIndices.size() == 1 ? vk::SharingMode::eExclusive : vk::SharingMode::eConcurrent, queueFamilyIndices,
     }, allocationCreateInfo } {
     std::ranges::copy(FWD(r), static_cast<std::ranges::range_value_t<R>*>(data));
 }
