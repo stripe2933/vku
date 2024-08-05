@@ -184,6 +184,28 @@ namespace vku {
     }
 
     /**
+     * Convert <tt>vk::Extent2D</tt> to <tt>vk::Viewport</tt>, with depth=0..1 and additional negative height flag.
+     * @param extent Extent to convert.
+     * @param negativeHeight Whether the height is negative. Default is <tt>false</tt>.
+     * @return Converted viewport.
+     * @note
+     * - For about negative viewport height, see https://www.saschawillems.de/blog/2019/03/29/flipping-the-vulkan-viewport/ for detail.
+     * @example
+     * Setting viewport and scissor as full region of the swapchain for pipeline dynamic state:
+     * @code
+     * vk::Extent2D swapchainExtent = ...;
+     * cb.setViewport(0, vku::toViewport(swapchainExtent, true)); // Use negative viewport height.
+     * cb.setScissor(0, vk::Rect2D { { 0, 0 }, swapchainExtent });
+     * @endcode
+     */
+    export
+    [[nodiscard]] constexpr auto toViewport(const vk::Extent2D &extent, bool negativeHeight = false) noexcept -> vk::Viewport {
+        return negativeHeight
+            ? vk::Viewport { 0.f, static_cast<float>(extent.height), static_cast<float>(extent.width), -static_cast<float>(extent.height), 0.f, 1.f }
+            : vk::Viewport { 0.f, 0.f, static_cast<float>(extent.width), static_cast<float>(extent.height), 0.f, 1.f };
+    }
+
+    /**
      * Get aspect ratio (width / height) of the extent.
      * @tparam T Floating point type to calculate the aspect ratio. Default is <tt>float</tt>.
      * @param extent Extent to calculate the aspect ratio.
