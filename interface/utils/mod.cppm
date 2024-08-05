@@ -3,11 +3,14 @@ module;
 #include <cassert>
 #ifndef VKU_USE_STD_MODULE
 #include <cstdint>
+#include <algorithm>
 #include <compare>
 #include <concepts>
+#include <functional>
 #include <initializer_list>
 #include <ranges>
 #include <utility>
+#include <vector>
 #endif
 
 export module vku:utils;
@@ -23,6 +26,7 @@ export import vulkan_hpp;
 #else
 #define NOEXCEPT_IF_RELEASE
 #endif
+#define FWD(...) static_cast<decltype(__VA_ARGS__) &&>(__VA_ARGS__)
 
 namespace vku {
     /**
@@ -113,17 +117,6 @@ namespace vku {
     }
 
     /**
-     * Creating <tt>vk::ImageSubresourceRange</tt> that contains the whole mip levels and array layers, with specified
-     * \p aspectFlags.
-     * @param aspectFlags Image aspect. Default is <tt>vk::ImageAspectFlagBits::eColor</tt>.
-     * @return <tt>vk::ImageSubresourceRange</tt> that contains the whole mip levels and array layers.
-     */
-    export
-    [[nodiscard]] constexpr auto fullSubresourceRange(vk::ImageAspectFlags aspectFlags = vk::ImageAspectFlagBits::eColor) noexcept -> vk::ImageSubresourceRange {
-        return { aspectFlags, 0, vk::RemainingMipLevels, 0, vk::RemainingArrayLayers };
-    }
-
-    /**
      * Check whether \p flag is contained in \p flags.
      * @param flags Vulkan flags.
      * @param flag Vulkan flag bit.
@@ -195,6 +188,28 @@ namespace vku {
     }
 
     /**
+     * Convert <tt>vk::Extent2D</tt> to <tt>vk::Viewport</tt>, with depth=0..1 and additional negative height flag.
+     * @param extent Extent to convert.
+     * @param negativeHeight Whether the height is negative. Default is <tt>false</tt>.
+     * @return Converted viewport.
+     * @note
+     * - For about negative viewport height, see https://www.saschawillems.de/blog/2019/03/29/flipping-the-vulkan-viewport/ for detail.
+     * @example
+     * Setting viewport and scissor as full region of the swapchain for pipeline dynamic state:
+     * @code
+     * vk::Extent2D swapchainExtent = ...;
+     * cb.setViewport(0, vku::toViewport(swapchainExtent, true)); // Use negative viewport height.
+     * cb.setScissor(0, vk::Rect2D { { 0, 0 }, swapchainExtent });
+     * @endcode
+     */
+    export
+    [[nodiscard]] constexpr auto toViewport(const vk::Extent2D &extent, bool negativeHeight = false) noexcept -> vk::Viewport {
+        return negativeHeight
+            ? vk::Viewport { 0.f, static_cast<float>(extent.height), static_cast<float>(extent.width), -static_cast<float>(extent.height), 0.f, 1.f }
+            : vk::Viewport { 0.f, 0.f, static_cast<float>(extent.width), static_cast<float>(extent.height), 0.f, 1.f };
+    }
+
+    /**
      * Get aspect ratio (width / height) of the extent.
      * @tparam T Floating point type to calculate the aspect ratio. Default is <tt>float</tt>.
      * @param extent Extent to calculate the aspect ratio.
@@ -206,5 +221,37 @@ namespace vku {
     [[nodiscard]] constexpr auto aspect(const vk::Extent2D &extent) NOEXCEPT_IF_RELEASE -> T {
         assert(extent.height != 0 && "Height must not be zero.");
         return static_cast<T>(extent.width) / static_cast<T>(extent.height);
+    }
+
+    /**
+     * Merge <tt>vk::FramebufferCreateInfo</tt>s into one, with order preserved combined attachments.
+     * @tparam CreateInfos <tt>vk::FramebufferCreateInfo</tt> types.
+     * @param createInfos <tt>vk::FramebufferCreateInfo</tt> instances to merge. All instances must have the same <tt>flags</tt>, <tt>render pass</tt>, <tt>width</tt>, <tt>height</tt>, and <tt>layer</tt>.
+     * @return RefHolder of <tt>vk::FramebufferCreateInfo</tt> and its attachment image view references.
+     * @throw
+     * - Assertion error if the <tt>flags</tt>, <tt>render pass</tt>, <tt>width</tt>, <tt>height</tt>, or <tt>layer</tt> of the \p createInfos are not the same.
+     */
+    export template <std::convertible_to<vk::FramebufferCreateInfo>... CreateInfos>
+    [[nodiscard]] auto mergeFramebufferCreateInfos(const CreateInfos &...createInfos) NOEXCEPT_IF_RELEASE -> RefHolder<vk::FramebufferCreateInfo, std::vector<vk::ImageView>> {
+        constexpr auto all_same = [](auto head, auto ...tail) { return ((head == tail) && ...); };
+        assert(all_same(createInfos.flags...) && "All flags in the createInfos must be the same.");
+        assert(all_same(createInfos.renderPass...) && "All render passes in the createInfos must be the same.");
+        assert(all_same(createInfos.width...) && "All widths in the createInfos must be the same.");
+        assert(all_same(createInfos.height...) && "All heights in the createInfos must be the same.");
+        assert(all_same(createInfos.layer...) && "All layers in the createInfos must be the same.");
+        // TODO: should I check the pNexts consistency?
+
+        std::vector<vk::ImageView> imageViews;
+        imageViews.reserve((createInfos.attachmentCount + ...));
+        (std::ranges::copy_n(createInfos.pAttachments, createInfos.attachmentCount, back_inserter(imageViews)), ...);
+
+        return {
+            [&](std::span<const vk::ImageView> imageViews) {
+                return [=](vk::FramebufferCreateInfo createInfo, const auto&...) {
+                    return createInfo.setAttachments(imageViews);
+                }(createInfos...);
+            },
+            std::move(imageViews),
+        };
     }
 }

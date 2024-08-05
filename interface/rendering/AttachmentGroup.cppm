@@ -2,6 +2,7 @@ module;
 
 #include <cassert>
 #ifndef VKU_USE_STD_MODULE
+#include <algorithm>
 #include <optional>
 #include <ranges>
 #include <span>
@@ -70,6 +71,43 @@ export namespace vku {
             std::span<const ColorAttachmentInfo> colorAttachmentInfos,
             const DepthStencilAttachmentInfo &depthStencilAttachmentInfo
         ) const -> RefHolder<vk::RenderingInfo, std::vector<vk::RenderingAttachmentInfo>, vk::RenderingAttachmentInfo>;
+
+        /**
+         * Get <tt>vk::FramebufferCreateInfo</tt> for the attachment group. The order of the image views are:
+         * - Input attachment views (given as \p inputAttachmentViews)
+         * - Color attachment views
+         * - Depth-stencil attachment view (if exists)
+         * @param renderPass Render pass to create the framebuffer for.
+         * @param inputAttachmentViews Optional input attachment views to be used in the framebuffer (default: empty).
+         * @return RefHolder of <tt>vk::FramebufferCreateInfo</tt> and a vector of image views.
+         */
+        [[nodiscard]] auto getFramebufferCreateInfo(
+            vk::RenderPass renderPass,
+            vk::ArrayProxy<const vk::ImageView> inputAttachmentViews = {}
+        ) const -> RefHolder<vk::FramebufferCreateInfo, std::vector<vk::ImageView>> {
+            std::vector<vk::ImageView> imageViews;
+            imageViews.reserve(inputAttachmentViews.size() + colorAttachments.size() + depthStencilAttachment.has_value());
+
+            std::ranges::copy(inputAttachmentViews, back_inserter(imageViews));
+            std::ranges::copy(colorAttachments | std::views::transform([](const Attachment &attachment) { return *attachment.view; }), back_inserter(imageViews));
+            if (depthStencilAttachment) {
+                imageViews.emplace_back(*depthStencilAttachment->view);
+            }
+
+            return {
+                [&](std::span<const vk::ImageView> imageViews) {
+                    return vk::FramebufferCreateInfo {
+                        {},
+                        renderPass,
+                        imageViews,
+                        extent.width,
+                        extent.height,
+                        1,
+                    };
+                },
+                std::move(imageViews),
+            };
+        }
     };
 }
 

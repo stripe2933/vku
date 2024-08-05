@@ -16,7 +16,7 @@ import std;
 export import vk_mem_alloc_hpp;
 export import vulkan_hpp;
 export import :images.AllocatedImage;
-export import :utils.RefHolder;
+export import :utils;
 
 #define FWD(...) static_cast<decltype(__VA_ARGS__)&&>(__VA_ARGS__)
 
@@ -42,17 +42,17 @@ namespace vku {
             return *storedImage.emplace_back(std::make_unique<std::remove_cvref_t<decltype(image)>>(FWD(image)));
         }
 
-        [[nodiscard]] auto getViewport(
-            bool negativeViewport = false
+        [[nodiscard]]
+        [[deprecated("Use vku::toViewport instead.")]]
+        auto getViewport(
+            bool negativeHeight = false
         ) const noexcept -> vk::Viewport {
-            return {
-                0.f, negativeViewport ? static_cast<float>(extent.height) : 0.f,
-                static_cast<float>(extent.width), negativeViewport ? -static_cast<float>(extent.height) : static_cast<float>(extent.height),
-                0.f, 1.f,
-            };
+            return toViewport(extent, negativeHeight);
         }
 
-        [[nodiscard]] auto getScissor() const noexcept -> vk::Rect2D {
+        [[nodiscard]]
+        [[deprecated("Use vk::Rect2D instead.")]]
+        auto getScissor() const noexcept -> vk::Rect2D {
             return { { 0, 0 }, extent };
         }
 
