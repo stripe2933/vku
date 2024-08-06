@@ -204,9 +204,12 @@ namespace vku {
      */
     export
     [[nodiscard]] constexpr auto toViewport(const vk::Extent2D &extent, bool negativeHeight = false) noexcept -> vk::Viewport {
-        return negativeHeight
-            ? vk::Viewport { 0.f, static_cast<float>(extent.height), static_cast<float>(extent.width), -static_cast<float>(extent.height), 0.f, 1.f }
-            : vk::Viewport { 0.f, 0.f, static_cast<float>(extent.width), static_cast<float>(extent.height), 0.f, 1.f };
+        if (negativeHeight) {
+            return { 0.f, static_cast<float>(extent.height), static_cast<float>(extent.width), -static_cast<float>(extent.height), 0.f, 1.f };
+        }
+        else {
+            return { 0.f, 0.f, static_cast<float>(extent.width), static_cast<float>(extent.height), 0.f, 1.f };
+        }
     }
 
     /**
