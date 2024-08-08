@@ -236,10 +236,10 @@ namespace vku {
 
     private:
         template <typename... DevicePNexts>
-        [[nodiscard]] auto selectPhysicalDevice(
+        [[nodiscard]] static auto selectPhysicalDevice(
             const vk::raii::Instance &instance,
             const Config<DevicePNexts...> &config
-        ) const -> vk::raii::PhysicalDevice {
+        ) -> vk::raii::PhysicalDevice {
             std::vector physicalDevices = instance.enumeratePhysicalDevices();
             vk::raii::PhysicalDevice bestPhysicalDevice = *std::ranges::max_element(physicalDevices, {}, config.physicalDeviceRater);
             if (config.physicalDeviceRater(*bestPhysicalDevice) == 0) {

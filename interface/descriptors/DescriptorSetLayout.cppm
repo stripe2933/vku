@@ -24,6 +24,8 @@ namespace vku {
         static constexpr std::uint32_t bindingCount = sizeof...(BindingTypes);
         static constexpr std::array bindingTypes = { BindingTypes... };
 
+        std::array<std::uint32_t, bindingCount> descriptorCounts;
+
         DescriptorSetLayout(
             const vk::raii::Device &device [[clang::lifetimebound]],
             const vk::DescriptorSetLayoutCreateInfo &createInfo
@@ -31,24 +33,22 @@ namespace vku {
             assert(createInfo.bindingCount == bindingCount && "The binding count must match the template parameter count.");
             INDEX_SEQ(Is, bindingCount, {
                 assert(((createInfo.pBindings[Is].descriptorType == BindingTypes) && ...) && "The descriptor types must match the template parameter.");
+                ((descriptorCounts[Is] = createInfo.pBindings[Is].descriptorCount), ...);
             });
         }
 
-        [[nodiscard]] static auto getPoolSize() noexcept -> PoolSizes {
+        [[nodiscard]] auto getPoolSize() const noexcept -> PoolSizes {
             PoolSizes poolSizes;
             poolSizes.setCount = 1;
-            (++poolSizes.typeCounts[BindingTypes], ...);
+            apply([&](auto... counts) {
+                ((poolSizes.typeCounts[BindingTypes] += counts), ...);
+            }, descriptorCounts);
             return poolSizes;
         }
     };
 
     export template <concepts::derived_from_value_specialization_of<DescriptorSetLayout>... Layouts>
-    [[nodiscard]] auto getPoolSizes() noexcept -> PoolSizes {
-        return (Layouts::getPoolSize() + ...);
-    }
-
-    export template <concepts::derived_from_value_specialization_of<DescriptorSetLayout>... Layouts>
-    [[nodiscard]] auto getPoolSizes(const Layouts &...) noexcept -> PoolSizes {
-        return (Layouts::getPoolSize() + ...);
+    [[nodiscard]] auto getPoolSizes(const Layouts &...layouts) noexcept -> PoolSizes {
+        return (layouts.getPoolSize() + ...);
     }
 }

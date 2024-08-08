@@ -33,15 +33,14 @@ namespace vku {
         [[nodiscard]] auto operator+(PoolSizes rhs) const noexcept -> PoolSizes;
         auto operator+=(const PoolSizes &rhs) noexcept -> PoolSizes&;
         [[nodiscard]] auto operator*(std::uint32_t multiplier) const noexcept -> PoolSizes;
-        friend auto operator*(std::uint32_t multiplier, const PoolSizes &rhs) noexcept -> PoolSizes;
         auto operator*=(std::uint32_t multiplier) noexcept -> PoolSizes&;
 
         [[nodiscard]] auto getDescriptorPoolCreateInfo(vk::DescriptorPoolCreateFlags flags = {}) const noexcept -> RefHolder<vk::DescriptorPoolCreateInfo, std::vector<vk::DescriptorPoolSize>>;
     };
-}
 
-[[nodiscard]] auto operator*(std::uint32_t multiplier, const vku::PoolSizes &rhs) noexcept -> vku::PoolSizes {
-    return rhs * multiplier;
+    // TODO: looks like this operator overloading is invisible outside the module. Need to investigate.
+    export
+    [[nodiscard]] auto operator*(std::uint32_t multiplier, PoolSizes rhs) noexcept -> PoolSizes;
 }
 
 // module :private;
@@ -96,4 +95,9 @@ auto vku::PoolSizes::getDescriptorPoolCreateInfo(
             })
             | std::ranges::to<std::vector>(),
     };
+}
+
+auto vku::operator*(std::uint32_t multiplier, PoolSizes rhs) noexcept -> PoolSizes {
+    rhs *= multiplier;
+    return rhs;
 }
