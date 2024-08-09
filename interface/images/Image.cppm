@@ -34,6 +34,10 @@ namespace vku {
         std::uint32_t mipLevels;
         std::uint32_t arrayLayers;
 
+        Image(vk::Image image, vk::Extent3D extent, vk::Format format, std::uint32_t mipLevels, std::uint32_t arrayLayers) noexcept
+            : image { image }, extent { extent }, format { format }, mipLevels { mipLevels }, arrayLayers { arrayLayers } { }
+        virtual ~Image() = default;
+
         // --------------------
         // User-defined conversion functions.
         // --------------------

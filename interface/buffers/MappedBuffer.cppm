@@ -79,7 +79,7 @@ namespace vku {
         MappedBuffer(MappedBuffer &&src) noexcept = default;
         auto operator=(const MappedBuffer&) -> MappedBuffer& = delete;
         auto operator=(MappedBuffer &&src) noexcept -> MappedBuffer&;
-        ~MappedBuffer();
+        ~MappedBuffer() override;
 
         /**
          * Get <tt>std::span<const T></tt> from the mapped memory range.
