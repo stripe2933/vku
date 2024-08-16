@@ -61,6 +61,7 @@ target_sources(vku PUBLIC
         interface/descriptors/PoolSizes.cppm
         interface/details/mod.cppm
         interface/details/concepts.cppm
+        interface/details/container/OnDemandCounterStorage.cppm
         interface/details/functional.cppm
         interface/details/ranges.cppm
         interface/Gpu.cppm
