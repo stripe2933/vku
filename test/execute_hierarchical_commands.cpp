@@ -11,9 +11,8 @@ public:
     std::uint32_t graphics;
     std::uint32_t transfer;
 
-    explicit QueueFamilies(vk::PhysicalDevice physicalDevice) {
-        const std::vector queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
-    }
+    explicit QueueFamilies(vk::PhysicalDevice physicalDevice)
+        : QueueFamilies { physicalDevice.getQueueFamilyProperties() } { }
 
 private:
     explicit QueueFamilies(std::span<const vk::QueueFamilyProperties> queueFamilyProperties)
