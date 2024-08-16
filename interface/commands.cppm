@@ -91,8 +91,8 @@ namespace vku {
 
             // Execute the following lambda for every executionInfoTuples parameter packs.
             ([&]() {
-                constexpr std::uint64_t waitSemaphoreValue = Is;
-                constexpr std::uint64_t signalSemaphoreValue = Is + 1;
+                static constexpr std::uint64_t waitSemaphoreValue = Is;
+                static constexpr std::uint64_t signalSemaphoreValue = Is + 1;
 
                 apply([&](auto &...executionInfo) {
                     // Execute the following lambda for every executionInfo entry in executionInfoTuples.
