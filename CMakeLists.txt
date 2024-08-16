@@ -99,6 +99,15 @@ target_compile_definitions(vku PUBLIC
 add_library(${PROJECT_NAME}::vku ALIAS vku)
 
 # --------------------
+# Tests.
+# --------------------
+
+if (PROJECT_IS_TOP_LEVEL)
+    enable_testing()
+    add_subdirectory(test)
+endif()
+
+# --------------------
 # Installation.
 # --------------------
 
