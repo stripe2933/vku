@@ -1,5 +1,7 @@
 #include <cassert>
 
+#include <vulkan/vulkan_hpp_macros.hpp>
+
 import std;
 import vku;
 
@@ -36,18 +38,22 @@ struct Queues {
 
     [[nodiscard]] static auto getCreateInfos(vk::PhysicalDevice, const QueueFamilies &queueFamilies) noexcept {
         return vku::RefHolder {
-            [&](const float &priority) {
+            [&](std::span<const float> priorities) {
                 std::vector uniqueIndices { queueFamilies.compute, queueFamilies.graphics, queueFamilies.transfer };
                 const auto [begin, end] = std::ranges::unique(uniqueIndices);
                 uniqueIndices.erase(begin, end);
 
                 return uniqueIndices
                     | std::views::transform([&](std::uint32_t queueFamilyIndex) {
-                        return vk::DeviceQueueCreateInfo { {}, queueFamilyIndex, vk::ArrayProxyNoTemporaries(priority) };
+                        return vk::DeviceQueueCreateInfo {
+                            {},
+                            queueFamilyIndex,
+                            priorities,
+                        };
                     })
                     | std::ranges::to<std::vector>();
             },
-            1.f,
+            std::array { 1.f },
         };
     }
 };
