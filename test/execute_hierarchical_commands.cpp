@@ -99,7 +99,7 @@ int main() {
     const Gpu gpu { instance };
 
     std::vector<vku::MappedBuffer> buffers;
-    std::generate_n(back_inserter(buffers), 5, [&] -> vku::MappedBuffer {
+    std::generate_n(back_inserter(buffers), 5, [&]() -> vku::MappedBuffer {
         return { gpu.allocator, vk::BufferCreateInfo {
             {},
             sizeof(std::uint32_t),
