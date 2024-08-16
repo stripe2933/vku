@@ -20,9 +20,6 @@ namespace vku {
         vk::Buffer buffer;
         vk::DeviceSize size;
 
-        Buffer(vk::Buffer buffer, vk::DeviceSize size) noexcept : buffer { buffer }, size { size } { }
-        virtual ~Buffer() = default;
-
         // --------------------
         // User-defined conversion functions.
         // --------------------

@@ -29,7 +29,7 @@ namespace vku {
         AllocatedImage(AllocatedImage &&src) noexcept;
         auto operator=(const AllocatedImage&) -> AllocatedImage& = delete;
         auto operator=(AllocatedImage &&src) noexcept -> AllocatedImage&;
-        ~AllocatedImage() override;
+        virtual ~AllocatedImage();
     };
 }
 
