@@ -79,7 +79,11 @@ namespace vku {
         MappedBuffer(MappedBuffer &&src) noexcept = default;
         auto operator=(const MappedBuffer&) -> MappedBuffer& = delete;
         auto operator=(MappedBuffer &&src) noexcept -> MappedBuffer&;
-        ~MappedBuffer() override;
+        ~MappedBuffer() override {
+            if (allocation) {
+                allocator.unmapMemory(allocation);
+            }
+        }
 
         /**
          * Get <tt>std::span<const T></tt> from the mapped memory range.
@@ -218,12 +222,6 @@ auto vku::MappedBuffer::operator=(
     static_cast<AllocatedBuffer &>(*this) = std::move(static_cast<AllocatedBuffer &>(src));
     data = src.data;
     return *this;
-}
-
-vku::MappedBuffer::~MappedBuffer() {
-    if (allocation) {
-        allocator.unmapMemory(allocation);
-    }
 }
 
 template <typename T>
