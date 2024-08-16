@@ -81,7 +81,7 @@ namespace vku {
      * @return The index of the transfer specialized queue family, or <tt>std::nullopt</tt> if not found.
      */
     export
-    [[nodiscard]] auto getTransferQueueFamily(
+    [[nodiscard]] auto getTransferSpecializedQueueFamily(
         std::span<const vk::QueueFamilyProperties> queueFamilyProperties
     ) noexcept -> std::optional<std::uint32_t> {
         for (std::uint32_t i = 0; const vk::QueueFamilyProperties &properties : queueFamilyProperties) {
