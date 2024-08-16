@@ -75,7 +75,7 @@ namespace vku {
         }
 
         container::OnDemandCounterStorage timelineSemaphores
-            = container::makeOnDemandCounterStorage<std::uint64_t>([&] -> vk::raii::Semaphore {
+            = container::makeOnDemandCounterStorage<std::uint64_t>([&]() -> vk::raii::Semaphore {
                 return { device, vk::StructureChain {
                     vk::SemaphoreCreateInfo{},
                     vk::SemaphoreTypeCreateInfo { vk::SemaphoreType::eTimeline, 0 },
