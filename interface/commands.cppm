@@ -75,13 +75,18 @@ namespace vku {
                     commandBufferCount,
                 })));
 #else
-            std::queue<vk::CommandBuffer> commandBuffers;
-            commandBuffers.push_range((*device).allocateCommandBuffers({
+            std::vector commandBuffers = (*device).allocateCommandBuffers({
                 commandPool,
                 vk::CommandBufferLevel::ePrimary,
                 commandBufferCount,
-            }));
-            commandBufferQueues.emplace(commandPool, std::move(commandBuffers));
+            });
+
+            std::queue<vk::CommandBuffer> commandBufferQueue;
+            for (vk::CommandBuffer commandBuffer : commandBuffers) {
+                commandBufferQueue.push(commandBuffer);
+            }
+
+            commandBufferQueues.emplace(commandPool, std::move(commandBufferQueue));
 #endif
         }
 
