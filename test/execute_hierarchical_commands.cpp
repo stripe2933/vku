@@ -1,8 +1,19 @@
 #include <cassert>
+#ifndef VKU_USE_STD_MODULE
+#include <cstdint>
+#include <algorithm>
+#include <array>
+#include <span>
+#include <stdexcept>
+#include <tuple>
+#include <vector>
+#endif
 
 #include <vulkan/vulkan_hpp_macros.hpp>
 
+#ifdef VKU_USE_STD_MODULE
 import std;
+#endif
 import vku;
 
 class QueueFamilies {
