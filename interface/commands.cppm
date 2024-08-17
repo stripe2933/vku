@@ -110,7 +110,7 @@ namespace vku {
                 static constexpr std::uint64_t waitSemaphoreValue = Is;
                 static constexpr std::uint64_t signalSemaphoreValue = Is + 1;
 
-                apply([&](auto &...executionInfo) {
+                std::apply([&](auto &...executionInfo) {
                     // Execute the following lambda for every executionInfo entry in executionInfoTuples.
                     ([&]() {
                         // Get command buffer from FIFO queue and pop it.
