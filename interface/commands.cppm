@@ -65,13 +65,12 @@ namespace vku {
         std::unordered_map<vk::CommandPool, std::queue<vk::CommandBuffer>> commandBufferQueues;
         for (auto [commandPool, commandBufferCount] : commandBufferCounts) {
             commandBufferQueues.emplace(
-                std::piecewise_construct,
-                std::tuple { commandPool },
-                std::forward_as_tuple(std::from_range, (*device).allocateCommandBuffers({
+                commandPool,
+                (*device).allocateCommandBuffers({
                     commandPool,
                     vk::CommandBufferLevel::ePrimary,
                     commandBufferCount,
-                })));
+                }) | std::ranges::to<std::queue>());
         }
 
         container::OnDemandCounterStorage timelineSemaphores
