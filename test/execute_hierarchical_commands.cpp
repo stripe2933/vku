@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <algorithm>
 #include <array>
+#include <iterator>
+#include <ranges>
 #include <span>
 #include <stdexcept>
 #include <tuple>
