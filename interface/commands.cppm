@@ -1,5 +1,6 @@
 module;
 
+#include <version>
 #ifndef VKU_USE_STD_MODULE
 #include <cstdint>
 #include <algorithm>
@@ -64,13 +65,24 @@ namespace vku {
         // Make FIFO command buffer queue for each command pools. When all command buffers are submitted, they must be empty.
         std::unordered_map<vk::CommandPool, std::queue<vk::CommandBuffer>> commandBufferQueues;
         for (auto [commandPool, commandBufferCount] : commandBufferCounts) {
+#if __cpp_lib_containers_ranges >= 202202L
             commandBufferQueues.emplace(
-                commandPool,
-                (*device).allocateCommandBuffers({
+                std::piecewise_construct,
+                std::tuple { commandPool },
+                std::forward_as_tuple(std::from_range, (*device).allocateCommandBuffers({
                     commandPool,
                     vk::CommandBufferLevel::ePrimary,
                     commandBufferCount,
-                }) | std::ranges::to<std::queue>());
+                })));
+#else
+            std::queue<vk::CommandBuffer> commandBuffers;
+            commandBuffers.push_range((*device).allocateCommandBuffers({
+                commandPool,
+                vk::CommandBufferLevel::ePrimary,
+                commandBufferCount,
+            }));
+            commandBufferQueues.emplace(commandPool, std::move(commandBuffers));
+#endif
         }
 
         container::OnDemandCounterStorage timelineSemaphores
