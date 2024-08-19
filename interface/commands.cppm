@@ -6,6 +6,7 @@ module;
 #include <algorithm>
 #include <concepts>
 #include <functional>
+#include <iterator>
 #include <list>
 #include <map>
 #include <optional>
