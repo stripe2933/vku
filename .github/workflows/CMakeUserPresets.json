@@ -2,11 +2,17 @@
   "version": 6,
   "configurePresets": [
     {
-      "name": "clang-libstdcxx",
-      "displayName": "Clang + libstdc++",
+      "name": "ci-test",
+      "hidden": true,
       "inherits": "vcpkg",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
+        "VKU_ENABLE_TEST": "ON"
+      }
+    },
+    {
+      "name": "clang",
+      "inherits": "ci-test",
+      "cacheVariables": {
         "CMAKE_C_COMPILER": "/usr/bin/clang-18",
         "CMAKE_CXX_COMPILER": "/usr/bin/clang++-18"
       },
@@ -19,24 +25,16 @@
     {
       "name": "clang-libcxx",
       "displayName": "Clang + libc++",
-      "inherits": "vcpkg",
+      "inherits": "clang",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_C_COMPILER": "/usr/bin/clang-18",
-        "CMAKE_CXX_COMPILER": "/usr/bin/clang++-18",
         "CMAKE_CXX_FLAGS": "-stdlib=libc++",
         "CMAKE_EXE_LINKER_FLAGS": "-stdlib=libc++ -lc++abi"
-      },
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Linux"
       }
     },
     {
       "name": "msvc",
       "displayName": "MSVC",
-      "inherits": "vcpkg",
+      "inherits": "ci-test",
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
@@ -46,31 +44,16 @@
   ],
   "buildPresets": [
     {
-      "name": "clang-libstdcxx",
-      "configurePreset": "clang-libstdcxx",
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Linux"
-      }
+      "name": "clang",
+      "configurePreset": "clang"
     },
     {
       "name": "clang-libcxx",
-      "configurePreset": "clang-libcxx",
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Linux"
-      }
+      "configurePreset": "clang-libcxx"
     },
     {
       "name": "msvc",
-      "configurePreset": "msvc",
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Windows"
-      }
+      "configurePreset": "msvc"
     }
   ]
 }
