@@ -20,6 +20,9 @@ module;
 #endif
 
 #include <vulkan/vulkan_hpp_macros.hpp>
+#ifdef _MSC_VER
+#include <vulkan/vulkan_hash.hpp> // std::hash<vk::Queue>. TODO: why vulkan_hpp does not export it?
+#endif
 
 export module vku:commands;
 
