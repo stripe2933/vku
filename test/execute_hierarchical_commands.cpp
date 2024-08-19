@@ -18,6 +18,10 @@ import std;
 #endif
 import vku;
 
+#if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
+VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
+#endif
+
 class QueueFamilies {
 public:
     std::uint32_t compute;
@@ -88,6 +92,10 @@ struct Gpu : vku::Gpu<QueueFamilies, Queues> {
 };
 
 int main() {
+#if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
+    VULKAN_HPP_DEFAULT_DISPATCHER.init();
+#endif
+
     const vk::raii::Context context;
     const vk::raii::Instance instance { context, vk::InstanceCreateInfo {
 #if __APPLE__
