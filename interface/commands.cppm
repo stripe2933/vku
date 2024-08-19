@@ -20,9 +20,6 @@ module;
 #endif
 
 #include <vulkan/vulkan_hpp_macros.hpp>
-#ifdef _MSC_VER
-#include <vulkan/vulkan_hash.hpp> // std::hash<vk::Queue>. TODO: why vulkan_hpp does not export it?
-#endif
 
 export module vku:commands;
 
@@ -152,7 +149,12 @@ namespace vku {
                 , waitSemaphoreValues { std::vector(waitSemaphores.size(), waitValue) } { }
         };
 
+#ifdef _MSC_VER
+        // TODO: currently MSVC cannot find std::hash<vk::Queue> specialization. Fix when it available.
+        std::map<vk::Queue, std::vector<vk::SubmitInfo>> submitInfosPerQueue;
+#else
         std::unordered_map<vk::Queue, std::vector<vk::SubmitInfo>> submitInfosPerQueue;
+#endif
         std::vector<TimelineSemaphoreWaitInfo> waitInfos;
         std::list<vk::TimelineSemaphoreSubmitInfo> timelineSemaphoreSubmitInfos;
         // Total dstStageMasks does not exceed the total wait semaphore count (=timelineSemaphores.getValueStorage().size()).
