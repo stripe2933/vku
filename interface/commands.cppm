@@ -33,6 +33,29 @@ import :utils;
 
 #define FWD(...) static_cast<decltype(__VA_ARGS__)&&>(__VA_ARGS__)
 
+#ifdef _MSC_VER
+template <>
+struct hash<VULKAN_HPP_NAMESPACE::CommandPool> {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::CommandPool const & commandPool ) const VULKAN_HPP_NOEXCEPT {
+        return std::hash<VkCommandPool>{}( static_cast<VkCommandPool>( commandPool ) );
+    }
+};
+
+template <>
+struct hash<VULKAN_HPP_NAMESPACE::Queue> {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::Queue const & queue ) const VULKAN_HPP_NOEXCEPT {
+        return std::hash<VkQueue>{}( static_cast<VkQueue>( queue ) );
+    }
+};
+
+template <>
+struct hash<VULKAN_HPP_NAMESPACE::Semaphore> {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::Semaphore const & semaphore ) const VULKAN_HPP_NOEXCEPT {
+        return std::hash<VkSemaphore>{}( static_cast<VkSemaphore>( semaphore ) );
+    }
+};
+#endif
+
 namespace vku {
     export template <std::invocable<vk::CommandBuffer> F>
     struct ExecutionInfo {
@@ -149,12 +172,7 @@ namespace vku {
                 , waitSemaphoreValues { std::vector(waitSemaphores.size(), waitValue) } { }
         };
 
-#ifdef _MSC_VER
-        // TODO: currently MSVC cannot find std::hash<vk::Queue> specialization. Fix when it available.
-        std::map<vk::Queue, std::vector<vk::SubmitInfo>> submitInfosPerQueue;
-#else
         std::unordered_map<vk::Queue, std::vector<vk::SubmitInfo>> submitInfosPerQueue;
-#endif
         std::vector<TimelineSemaphoreWaitInfo> waitInfos;
         std::list<vk::TimelineSemaphoreSubmitInfo> timelineSemaphoreSubmitInfos;
         // Total dstStageMasks does not exceed the total wait semaphore count (=timelineSemaphores.getValueStorage().size()).
