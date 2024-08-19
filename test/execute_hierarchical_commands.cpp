@@ -52,7 +52,11 @@ struct Queues {
         , graphics { device.getQueue(queueFamilies.graphics, 0) }
         , transfer { device.getQueue(queueFamilies.transfer, 0) } { }
 
-    [[nodiscard]] static auto getCreateInfos(vk::PhysicalDevice, const QueueFamilies &queueFamilies) noexcept {
+    [[nodiscard]] static auto getCreateInfos(vk::PhysicalDevice, const QueueFamilies &queueFamilies) noexcept
+#ifdef _MSC_VER
+        -> vku::RefHolder<std::array<vk::DeviceQueueCreateInfo, 1>, std::array<float, 1>>
+#endif
+    {
         return vku::RefHolder {
             [&](std::span<const float> priorities) {
                 std::vector uniqueIndices { queueFamilies.compute, queueFamilies.graphics, queueFamilies.transfer };

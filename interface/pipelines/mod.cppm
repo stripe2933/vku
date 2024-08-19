@@ -56,23 +56,30 @@ namespace vku {
      * @endcode
      */
     export
-    [[nodiscard]] auto createPipelineStages(
-        const vk::raii::Device &device,
-        std::convertible_to<Shader> auto const &...shaders
-    ) {
+    [[nodiscard]] auto createPipelineStages(const vk::raii::Device &device, std::convertible_to<Shader> auto const &...shaders)
+#ifdef _MSC_VER
+        -> RefHolder<std::array<vk::PipelineShaderStageCreateInfo, sizeof...(shaders)>, std::array<vk::raii::ShaderModule, sizeof...(shaders)>>
+#endif
+    {
         return RefHolder {
-            [&](const auto &...shaderModules) {
-                return std::array { vk::PipelineShaderStageCreateInfo {
-                    {},
-                    shaders.stage,
-                    *shaderModules,
-                    shaders.entryPoint,
-                }... };
+            [&](const auto &shaderModules) {
+                return std::apply([&](const auto &...shaderModule) {
+                    return std::array {
+                        vk::PipelineShaderStageCreateInfo {
+                            {},
+                            shaders.stage,
+                            *shaderModule,
+                            shaders.entryPoint,
+                        }...
+                    };
+                }, shaderModules);
             },
-            vk::raii::ShaderModule { device, vk::ShaderModuleCreateInfo {
-                {},
-                shaders.code,
-            } }...
+            std::array {
+                vk::raii::ShaderModule { device, vk::ShaderModuleCreateInfo {
+                    {},
+                    shaders.code,
+                } }...
+            },
         };
     }
 
