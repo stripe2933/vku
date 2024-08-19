@@ -11,7 +11,6 @@
     },
     {
       "name": "clang",
-      "hidden": true,
       "inherits": "ci-test",
       "cacheVariables": {
         "CMAKE_C_COMPILER": "/usr/bin/clang-18",
