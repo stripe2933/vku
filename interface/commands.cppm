@@ -37,21 +37,21 @@ import :utils;
 template <>
 struct std::hash<VULKAN_HPP_NAMESPACE::CommandPool> {
     size_t operator()( VULKAN_HPP_NAMESPACE::CommandPool const & commandPool ) const VULKAN_HPP_NOEXCEPT {
-        return hash<VkCommandPool>{}( static_cast<VkCommandPool>( commandPool ) );
+        return hash<VULKAN_HPP_NAMESPACE::CommandPool::CType>{}( static_cast<VULKAN_HPP_NAMESPACE::CommandPool::CType>( commandPool ) );
     }
 };
 
 template <>
 struct std::hash<VULKAN_HPP_NAMESPACE::Queue> {
     size_t operator()( VULKAN_HPP_NAMESPACE::Queue const & queue ) const VULKAN_HPP_NOEXCEPT {
-        return hash<VkQueue>{}( static_cast<VkQueue>( queue ) );
+        return hash<VULKAN_HPP_NAMESPACE::Queue::CType>{}( static_cast<VULKAN_HPP_NAMESPACE::Queue::CType>( queue ) );
     }
 };
 
 template <>
 struct std::hash<VULKAN_HPP_NAMESPACE::Semaphore> {
     size_t operator()( VULKAN_HPP_NAMESPACE::Semaphore const & semaphore ) const VULKAN_HPP_NOEXCEPT {
-        return hash<VkSemaphore>{}( static_cast<VkSemaphore>( semaphore ) );
+        return hash<VULKAN_HPP_NAMESPACE::Semaphore::CType>{}( static_cast<VULKAN_HPP_NAMESPACE::Semaphore::CType>( semaphore ) );
     }
 };
 #endif
