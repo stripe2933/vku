@@ -24,6 +24,7 @@ endif()
 option(VKU_USE_STD_MODULE "Use the standard library module for compilation.")
 option(VKU_USE_SHADERC "Add runtime GLSL compilation feature by shaderc.")
 option(VKU_DEFAULT_DYNAMIC_DISPATCHER "Use the vk::DispatchLoaderDynamic as the default dispatcher.")
+option(VKU_ENABLE_TEST "Enable the test targets.")
 
 # ----------------
 # External dependencies.
@@ -103,7 +104,7 @@ add_library(${PROJECT_NAME}::vku ALIAS vku)
 # Tests.
 # --------------------
 
-if (PROJECT_IS_TOP_LEVEL)
+if (VKU_ENABLE_TEST)
     enable_testing()
     add_subdirectory(test)
 endif()
