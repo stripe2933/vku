@@ -122,7 +122,7 @@ namespace vku {
                 const std::tuple key {
                     executionInfo.queue,
                     waitSemaphoreValue,
-                    executionInfo.signalValue.transform([](auto v) { return v == 0 ? signalSemaphoreValue : v; }),
+                    executionInfo.signalValue.transform([=](auto v) { return v == 0 ? signalSemaphoreValue : v; }),
                 };
                 auto it = submitInfos.find(key);
                 if (it == submitInfos.end()) {
