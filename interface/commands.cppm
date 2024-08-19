@@ -6,7 +6,6 @@ module;
 #include <algorithm>
 #include <concepts>
 #include <functional>
-#include <iterator>
 #include <list>
 #include <map>
 #include <optional>
@@ -29,9 +28,9 @@ import std;
 #endif
 export import vulkan_hpp;
 import :details.container.OnDemandCounterStorage;
+import :details.tuple;
 import :utils;
 
-#define INDEX_SEQ(Is, N, ...) [&]<std::size_t ...Is>(std::index_sequence<Is...>) __VA_ARGS__ (std::make_index_sequence<N>{})
 #define FWD(...) static_cast<decltype(__VA_ARGS__)&&>(__VA_ARGS__)
 
 namespace vku {
@@ -100,110 +99,105 @@ namespace vku {
             });
         std::unordered_map<vk::Semaphore, std::uint64_t> finalSignalSemaphoreValues;
 
-        INDEX_SEQ(Is, sizeof...(ExecutionInfoTuples), {
-            // Collect the submission command buffers and the signal semaphore by 1) destination queue, 2) wait semaphore
-            // value, 3) signal semaphore value (if exist).
-            std::map<std::tuple<vk::Queue, std::uint64_t, std::optional<std::uint64_t>>, std::pair<std::vector<vk::CommandBuffer>, vk::Semaphore>> submitInfos;
-            std::unordered_multimap<std::uint64_t, vk::Semaphore> waitSemaphoresPerSignalValues;
+        // Collect the submission command buffers and the signal semaphore by
+        // 1) destination queue, 2) wait semaphore value, 3) signal semaphore value (if exist).
+        std::map<std::tuple<vk::Queue, std::uint64_t, std::optional<std::uint64_t>>, std::pair<std::vector<vk::CommandBuffer>, vk::Semaphore>> submitInfos;
+        std::unordered_multimap<std::uint64_t, vk::Semaphore> waitSemaphoresPerSignalValues;
 
-            // Execute the following lambda for every executionInfoTuples parameter packs.
-            ([&]() {
-                static constexpr std::uint64_t waitSemaphoreValue = Is;
-                static constexpr std::uint64_t signalSemaphoreValue = Is + 1;
+        apply_with_index([&]<std::size_t Is>(std::integral_constant<std::size_t, Is>, auto &&executionInfos){
+            constexpr std::uint64_t waitSemaphoreValue = Is;
+            constexpr std::uint64_t signalSemaphoreValue = Is + 1;
 
-                std::apply([&](auto &...executionInfo) {
-                    // Execute the following lambda for every executionInfo entry in executionInfoTuples.
-                    ([&]() {
-                        // Get command buffer from FIFO queue and pop it.
-                        auto &dedicatedCommandBufferQueue = commandBufferQueues[executionInfo.commandPool];
-                        vk::CommandBuffer commandBuffer = dedicatedCommandBufferQueue.front();
-                        dedicatedCommandBufferQueue.pop();
+            apply_by_value([&](auto &&executionInfo) {
+                // Get command buffer from FIFO queue and pop it.
+                auto &dedicatedCommandBufferQueue = commandBufferQueues[executionInfo.commandPool];
+                vk::CommandBuffer commandBuffer = dedicatedCommandBufferQueue.front();
+                dedicatedCommandBufferQueue.pop();
 
-                        // Record commands into the commandBuffer by executing executionInfo.commandRecorder.
-                        commandBuffer.begin({ vk::CommandBufferUsageFlagBits::eOneTimeSubmit });
-                        executionInfo.commandRecorder(commandBuffer);
-                        commandBuffer.end();
+                // Record commands into the commandBuffer by executing executionInfo.commandRecorder.
+                commandBuffer.begin({ vk::CommandBufferUsageFlagBits::eOneTimeSubmit });
+                executionInfo.commandRecorder(commandBuffer);
+                commandBuffer.end();
 
-                        // Push commandBuffer into the corresponding submitInfos entry.
-                        const std::tuple key {
-                            executionInfo.queue,
-                            waitSemaphoreValue,
-                            executionInfo.signalValue.transform([](auto v) { return v == 0 ? signalSemaphoreValue : v; }),
-                        };
-                        auto it = submitInfos.find(key);
-                        if (it == submitInfos.end()) {
-                            vk::Semaphore signalSemaphore = nullptr;
-                            if (get<2>(key) /* modified signal value */) {
-                                // Register the semaphore for a submission whose waitSemaphoreValue is current's signalSemaphoreValue.
-                                signalSemaphore = *timelineSemaphores.at(*get<2>(key));
-                                waitSemaphoresPerSignalValues.emplace(signalSemaphoreValue, signalSemaphore);
-                            }
-
-                            it = submitInfos.emplace_hint(it, key, std::pair { std::vector<vk::CommandBuffer>{}, signalSemaphore });
-                        }
-                        it->second.first/*commandBuffers*/.push_back(commandBuffer);
-                    }(), ...);
-                }, executionInfoTuples);
-            }(), ...);
-
-            struct TimelineSemaphoreWaitInfo {
-                std::vector<vk::Semaphore> waitSemaphores;
-                std::vector<std::uint64_t> waitSemaphoreValues;
-
-                TimelineSemaphoreWaitInfo(std::vector<vk::Semaphore> _waitSemaphores, std::uint64_t waitValue)
-                    : waitSemaphores { std::move(_waitSemaphores) }
-                    , waitSemaphoreValues { std::vector(waitSemaphores.size(), waitValue) } { }
-            };
-
-            std::unordered_map<vk::Queue, std::vector<vk::SubmitInfo>> submitInfosPerQueue;
-            std::vector<TimelineSemaphoreWaitInfo> waitInfos;
-            std::list<vk::TimelineSemaphoreSubmitInfo> timelineSemaphoreSubmitInfos;
-            // Total dstStageMasks does not exceed the total wait semaphore count (=timelineSemaphores.getValueStorage().size()).
-            const std::vector waitDstStageMasks(timelineSemaphores.getValueStorage().size(), vk::Flags { vk::PipelineStageFlagBits::eTopOfPipe });
-
-            for (const auto &[key, value] : submitInfos) {
-                const auto &[queue, waitSemaphoreValue, signalSemaphoreValue] = key;
-                const auto &[commandBuffers, signalSemaphore] = value;
-
-                constexpr auto make_subrange = []<typename It>(std::pair<It, It> pairs) {
-                    return std::ranges::subrange(pairs.first, pairs.second);
+                // Push commandBuffer into the corresponding submitInfos entry.
+                const std::tuple key {
+                    executionInfo.queue,
+                    waitSemaphoreValue,
+                    executionInfo.signalValue.transform([](auto v) { return v == 0 ? signalSemaphoreValue : v; }),
                 };
-                const auto &[waitSemaphores, waitSemaphoreValues] = waitInfos.emplace_back(
-                    make_subrange(waitSemaphoresPerSignalValues.equal_range(waitSemaphoreValue)) | std::views::values | std::ranges::to<std::vector>(),
-                    waitSemaphoreValue);
+                auto it = submitInfos.find(key);
+                if (it == submitInfos.end()) {
+                    vk::Semaphore signalSemaphore = nullptr;
+                    if (get<2>(key) /* modified signal value */) {
+                        // Register the semaphore for a submission whose waitSemaphoreValue is current's signalSemaphoreValue.
+                        signalSemaphore = *timelineSemaphores.at(*get<2>(key));
+                        waitSemaphoresPerSignalValues.emplace(signalSemaphoreValue, signalSemaphore);
+                    }
 
-                if (signalSemaphoreValue) {
-                    submitInfosPerQueue[queue].emplace_back(
-                        waitSemaphores,
-                        unsafeProxy(std::span { waitDstStageMasks }.subspan(0, waitSemaphores.size())),
-                        commandBuffers,
-                        signalSemaphore,
-                        &timelineSemaphoreSubmitInfos.emplace_back(waitSemaphoreValues, *signalSemaphoreValue));
+                    it = submitInfos.emplace_hint(it, key, std::pair { std::vector<vk::CommandBuffer>{}, signalSemaphore });
+                }
+                it->second.first/*commandBuffers*/.push_back(commandBuffer);
 
-                    // Update the final signal semaphore value for current signal semaphore,
-                    // i.e. update the value to current value if value < current value.
-                    std::uint64_t &finalSignalValue = finalSignalSemaphoreValues[signalSemaphore];
-                    finalSignalValue = std::max(finalSignalValue, *signalSemaphoreValue);
-                }
-                else if (waitSemaphores.empty()) {
-                    // Don't need to use vk::TimelineSemaphoreSubmitInfo.
-                    submitInfosPerQueue[queue].push_back({ {}, {}, commandBuffers });
-                }
-                else {
-                    submitInfosPerQueue[queue].push_back({
-                        waitSemaphores,
-                        unsafeProxy(std::span { waitDstStageMasks }.subspan(0, waitSemaphores.size())),
-                        commandBuffers,
-                        {},
-                        &timelineSemaphoreSubmitInfos.emplace_back(waitSemaphoreValues),
-                    });
-                }
+            }, FWD(executionInfos));
+        }, std::forward_as_tuple(FWD(executionInfoTuples)...));
+
+        struct TimelineSemaphoreWaitInfo {
+            std::vector<vk::Semaphore> waitSemaphores;
+            std::vector<std::uint64_t> waitSemaphoreValues;
+
+            TimelineSemaphoreWaitInfo(std::vector<vk::Semaphore> _waitSemaphores, std::uint64_t waitValue)
+                : waitSemaphores { std::move(_waitSemaphores) }
+                , waitSemaphoreValues { std::vector(waitSemaphores.size(), waitValue) } { }
+        };
+
+        std::unordered_map<vk::Queue, std::vector<vk::SubmitInfo>> submitInfosPerQueue;
+        std::vector<TimelineSemaphoreWaitInfo> waitInfos;
+        std::list<vk::TimelineSemaphoreSubmitInfo> timelineSemaphoreSubmitInfos;
+        // Total dstStageMasks does not exceed the total wait semaphore count (=timelineSemaphores.getValueStorage().size()).
+        const std::vector waitDstStageMasks(timelineSemaphores.getValueStorage().size(), vk::Flags { vk::PipelineStageFlagBits::eTopOfPipe });
+
+        for (const auto &[key, value] : submitInfos) {
+            const auto &[queue, waitSemaphoreValue, signalSemaphoreValue] = key;
+            const auto &[commandBuffers, signalSemaphore] = value;
+
+            constexpr auto make_subrange = []<typename It>(std::pair<It, It> pairs) {
+                return std::ranges::subrange(pairs.first, pairs.second);
+            };
+            const auto &[waitSemaphores, waitSemaphoreValues] = waitInfos.emplace_back(
+                make_subrange(waitSemaphoresPerSignalValues.equal_range(waitSemaphoreValue)) | std::views::values | std::ranges::to<std::vector>(),
+                waitSemaphoreValue);
+
+            if (signalSemaphoreValue) {
+                submitInfosPerQueue[queue].emplace_back(
+                    waitSemaphores,
+                    unsafeProxy(std::span { waitDstStageMasks }.subspan(0, waitSemaphores.size())),
+                    commandBuffers,
+                    signalSemaphore,
+                    &timelineSemaphoreSubmitInfos.emplace_back(waitSemaphoreValues, *signalSemaphoreValue));
+
+                // Update the final signal semaphore value for current signal semaphore,
+                // i.e. update the value to current value if value < current value.
+                std::uint64_t &finalSignalValue = finalSignalSemaphoreValues[signalSemaphore];
+                finalSignalValue = std::max(finalSignalValue, *signalSemaphoreValue);
             }
-
-            for (const auto &[queue, submitInfos] : submitInfosPerQueue) {
-                queue.submit(submitInfos);
+            else if (waitSemaphores.empty()) {
+                // Don't need to use vk::TimelineSemaphoreSubmitInfo.
+                submitInfosPerQueue[queue].push_back({ {}, {}, commandBuffers });
             }
-        });
+            else {
+                submitInfosPerQueue[queue].push_back({
+                    waitSemaphores,
+                    unsafeProxy(std::span { waitDstStageMasks }.subspan(0, waitSemaphores.size())),
+                    commandBuffers,
+                    {},
+                    &timelineSemaphoreSubmitInfos.emplace_back(waitSemaphoreValues),
+                });
+            }
+        }
+
+        for (const auto &[queue, submitInfos] : submitInfosPerQueue) {
+            queue.submit(submitInfos);
+        }
 
         std::pair<std::vector<vk::raii::Semaphore>, std::vector<std::uint64_t>> result;
         for (vk::raii::Semaphore &timelineSemaphore : timelineSemaphores.getValueStorage()) {
