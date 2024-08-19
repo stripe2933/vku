@@ -105,9 +105,6 @@ namespace vku {
         std::unordered_multimap<std::uint64_t, vk::Semaphore> waitSemaphoresPerSignalValues;
 
         apply_with_index([&]<std::size_t Is>(std::integral_constant<std::size_t, Is>, auto &&executionInfos){
-            constexpr std::uint64_t waitSemaphoreValue = Is;
-            constexpr std::uint64_t signalSemaphoreValue = Is + 1;
-
             apply_by_value([&](auto &&executionInfo) {
                 // Get command buffer from FIFO queue and pop it.
                 auto &dedicatedCommandBufferQueue = commandBufferQueues[executionInfo.commandPool];
@@ -120,6 +117,8 @@ namespace vku {
                 commandBuffer.end();
 
                 // Push commandBuffer into the corresponding submitInfos entry.
+                constexpr std::uint64_t waitSemaphoreValue = Is;
+                constexpr std::uint64_t signalSemaphoreValue = Is + 1;
                 const std::tuple key {
                     executionInfo.queue,
                     waitSemaphoreValue,
