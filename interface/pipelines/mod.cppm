@@ -55,10 +55,10 @@ namespace vku {
      * } };
      * @endcode
      */
-    export
-    [[nodiscard]] auto createPipelineStages(const vk::raii::Device &device, std::convertible_to<Shader> auto const &...shaders)
+    export template <std::convertible_to<Shader>... Shaders>
+    [[nodiscard]] auto createPipelineStages(const vk::raii::Device &device, const Shaders &...shaders)
 #ifdef _MSC_VER
-        -> RefHolder<std::array<vk::PipelineShaderStageCreateInfo, sizeof...(shaders)>, std::array<vk::raii::ShaderModule, sizeof...(shaders)>>
+        -> RefHolder<std::array<vk::PipelineShaderStageCreateInfo, sizeof...(Shaders)>, std::array<vk::raii::ShaderModule, sizeof...(Shaders)>>
 #endif
     {
         return RefHolder {
