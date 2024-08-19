@@ -35,23 +35,23 @@ import :utils;
 
 #ifdef _MSC_VER
 template <>
-struct hash<VULKAN_HPP_NAMESPACE::CommandPool> {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::CommandPool const & commandPool ) const VULKAN_HPP_NOEXCEPT {
-        return std::hash<VkCommandPool>{}( static_cast<VkCommandPool>( commandPool ) );
+struct std::hash<VULKAN_HPP_NAMESPACE::CommandPool> {
+    size_t operator()( VULKAN_HPP_NAMESPACE::CommandPool const & commandPool ) const VULKAN_HPP_NOEXCEPT {
+        return hash<VkCommandPool>{}( static_cast<VkCommandPool>( commandPool ) );
     }
 };
 
 template <>
-struct hash<VULKAN_HPP_NAMESPACE::Queue> {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::Queue const & queue ) const VULKAN_HPP_NOEXCEPT {
-        return std::hash<VkQueue>{}( static_cast<VkQueue>( queue ) );
+struct std::hash<VULKAN_HPP_NAMESPACE::Queue> {
+    size_t operator()( VULKAN_HPP_NAMESPACE::Queue const & queue ) const VULKAN_HPP_NOEXCEPT {
+        return hash<VkQueue>{}( static_cast<VkQueue>( queue ) );
     }
 };
 
 template <>
-struct hash<VULKAN_HPP_NAMESPACE::Semaphore> {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::Semaphore const & semaphore ) const VULKAN_HPP_NOEXCEPT {
-        return std::hash<VkSemaphore>{}( static_cast<VkSemaphore>( semaphore ) );
+struct std::hash<VULKAN_HPP_NAMESPACE::Semaphore> {
+    size_t operator()( VULKAN_HPP_NAMESPACE::Semaphore const & semaphore ) const VULKAN_HPP_NOEXCEPT {
+        return hash<VkSemaphore>{}( static_cast<VkSemaphore>( semaphore ) );
     }
 };
 #endif
