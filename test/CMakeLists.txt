@@ -1,0 +1,3 @@
+add_executable(execute_hierarchical_commands execute_hierarchical_commands.cpp)
+target_link_libraries(execute_hierarchical_commands PRIVATE vku::vku)
+add_test(NAME execute_hierarchical_commands COMMAND execute_hierarchical_commands)

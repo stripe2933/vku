@@ -32,7 +32,11 @@ jobs:
 
       - name: Install Ninja and build dependencies
         run: |
-          sudo apt-get install ninja-build libc++-dev libc++abi-dev
+          sudo apt-get install ninja-build
+
+      - name: Install libc++ if using standard library module
+        if: matrix.use_std_module == 'ON'
+        run: sudo apt-get install libc++-dev libc++abi-dev
 
       - name: Install vcpkg
         run: |

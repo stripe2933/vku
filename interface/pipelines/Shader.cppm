@@ -146,6 +146,6 @@ vku::Shader::Shader(
         throw std::runtime_error { std::format("Failed to compile shader: {}", result.GetErrorMessage()) };
     }
 
-    code = { std::from_range, result };
+    code = result | std::ranges::to<std::vector>();
 }
 #endif

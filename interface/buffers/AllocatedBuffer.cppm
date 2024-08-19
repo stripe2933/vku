@@ -29,7 +29,7 @@ namespace vku {
         AllocatedBuffer(AllocatedBuffer &&src) noexcept;
         auto operator=(const AllocatedBuffer&) -> AllocatedBuffer& = delete;
         auto operator=(AllocatedBuffer &&src) noexcept -> AllocatedBuffer&;
-        ~AllocatedBuffer();
+        virtual ~AllocatedBuffer();
     };
 }
 

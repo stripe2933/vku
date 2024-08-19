@@ -61,8 +61,10 @@ target_sources(vku PUBLIC
         interface/descriptors/PoolSizes.cppm
         interface/details/mod.cppm
         interface/details/concepts.cppm
+        interface/details/container/OnDemandCounterStorage.cppm
         interface/details/functional.cppm
         interface/details/ranges.cppm
+        interface/details/tuple.cppm
         interface/Gpu.cppm
         interface/images/mod.cppm
         interface/images/AllocatedImage.cppm
@@ -96,6 +98,15 @@ target_compile_definitions(vku PUBLIC
 
 # For usage consistency with FetchContent and find_package.
 add_library(${PROJECT_NAME}::vku ALIAS vku)
+
+# --------------------
+# Tests.
+# --------------------
+
+if (PROJECT_IS_TOP_LEVEL)
+    enable_testing()
+    add_subdirectory(test)
+endif()
 
 # --------------------
 # Installation.
