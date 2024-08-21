@@ -120,7 +120,7 @@ namespace vku {
 
                 // Record commands into the commandBuffer by executing executionInfo.commandRecorder.
                 commandBuffer.begin({ vk::CommandBufferUsageFlagBits::eOneTimeSubmit });
-                executionInfo.commandRecorder(commandBuffer);
+                std::invoke(FWD(executionInfo.commandRecorder), commandBuffer);
                 commandBuffer.end();
 
                 // Push commandBuffer into the corresponding submitInfos entry.
