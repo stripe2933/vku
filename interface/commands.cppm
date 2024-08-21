@@ -86,31 +86,13 @@ namespace vku {
         }(), ...);
 
         // Make FIFO command buffer queue for each command pools. When all command buffers are submitted, they must be empty.
-        std::unordered_map<vk::CommandPool, std::queue<vk::CommandBuffer>> commandBufferQueues;
+        std::unordered_map<vk::CommandPool, std::vector<vk::CommandBuffer>> commandBuffersPerPool;
         for (auto [commandPool, commandBufferCount] : commandBufferCounts) {
-#if __cpp_lib_containers_ranges >= 202202L
-            commandBufferQueues.emplace(
-                std::piecewise_construct,
-                std::tuple { commandPool },
-                std::forward_as_tuple(std::from_range, (*device).allocateCommandBuffers({
-                    commandPool,
-                    vk::CommandBufferLevel::ePrimary,
-                    commandBufferCount,
-                })));
-#else
-            std::vector commandBuffers = (*device).allocateCommandBuffers({
+            commandBuffersPerPool.emplace(commandPool, (*device).allocateCommandBuffers({
                 commandPool,
                 vk::CommandBufferLevel::ePrimary,
                 commandBufferCount,
-            });
-
-            std::queue<vk::CommandBuffer> commandBufferQueue;
-            for (vk::CommandBuffer commandBuffer : commandBuffers) {
-                commandBufferQueue.push(commandBuffer);
-            }
-
-            commandBufferQueues.emplace(commandPool, std::move(commandBufferQueue));
-#endif
+            }));
         }
 
         container::OnDemandCounterStorage timelineSemaphores
@@ -132,9 +114,9 @@ namespace vku {
             static constexpr std::uint64_t signalSemaphoreValue = Is + 1;
             apply_by_value([&](auto &&executionInfo) {
                 // Get command buffer from FIFO queue and pop it.
-                auto &dedicatedCommandBufferQueue = commandBufferQueues[executionInfo.commandPool];
-                vk::CommandBuffer commandBuffer = dedicatedCommandBufferQueue.front();
-                dedicatedCommandBufferQueue.pop();
+                auto &poolCommandBuffers = commandBuffersPerPool[executionInfo.commandPool];
+                vk::CommandBuffer commandBuffer = poolCommandBuffers.back();
+                poolCommandBuffers.pop_back();
 
                 // Record commands into the commandBuffer by executing executionInfo.commandRecorder.
                 commandBuffer.begin({ vk::CommandBufferUsageFlagBits::eOneTimeSubmit });
