@@ -5,8 +5,8 @@ module;
 #include <cstdint>
 #include <algorithm>
 #include <concepts>
+#include <forward_list>
 #include <functional>
-#include <list>
 #include <map>
 #include <optional>
 #include <queue>
@@ -174,7 +174,7 @@ namespace vku {
 
         std::unordered_map<vk::Queue, std::vector<vk::SubmitInfo>> submitInfosPerQueue;
         std::vector<TimelineSemaphoreWaitInfo> waitInfos;
-        std::list<vk::TimelineSemaphoreSubmitInfo> timelineSemaphoreSubmitInfos;
+        std::forward_list<vk::TimelineSemaphoreSubmitInfo> timelineSemaphoreSubmitInfos;
         // Total dstStageMasks does not exceed the total wait semaphore count (=timelineSemaphores.getValueStorage().size()).
         const std::vector waitDstStageMasks(timelineSemaphores.getValueStorage().size(), vk::Flags { vk::PipelineStageFlagBits::eTopOfPipe });
 
@@ -195,7 +195,7 @@ namespace vku {
                     unsafeProxy(std::span { waitDstStageMasks }.subspan(0, waitSemaphores.size())),
                     commandBuffers,
                     signalSemaphore,
-                    &timelineSemaphoreSubmitInfos.emplace_back(waitSemaphoreValues, *signalSemaphoreValue));
+                    &timelineSemaphoreSubmitInfos.emplace_front(waitSemaphoreValues, *signalSemaphoreValue));
 
                 // Update the final signal semaphore value for current signal semaphore,
                 // i.e. update the value to current value if value < current value.
@@ -212,7 +212,7 @@ namespace vku {
                     unsafeProxy(std::span { waitDstStageMasks }.subspan(0, waitSemaphores.size())),
                     commandBuffers,
                     {},
-                    &timelineSemaphoreSubmitInfos.emplace_back(waitSemaphoreValues),
+                    &timelineSemaphoreSubmitInfos.emplace_front(waitSemaphoreValues),
                 });
             }
         }
