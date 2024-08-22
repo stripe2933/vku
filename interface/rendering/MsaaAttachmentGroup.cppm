@@ -1,6 +1,7 @@
 module;
 
 #include <cassert>
+#include <version>
 #ifndef VKU_USE_STD_MODULE
 #include <algorithm>
 #include <optional>
@@ -276,6 +277,7 @@ auto vku::MsaaAttachmentGroup::getRenderingInfo(
 
     std::vector<VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo> renderingAttachmentInfos;
     renderingAttachmentInfos.reserve(colorAttachmentInfos.size() + 1);
+#if __cpp_lib_containers_ranges >= 202202L
     renderingAttachmentInfos.append_range(ranges::views::zip_transform([](const MsaaAttachment &attachment, const ColorAttachmentInfo &info) {
         return VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo {
             *attachment.view, VULKAN_HPP_NAMESPACE::ImageLayout::eColorAttachmentOptimal,
@@ -283,6 +285,15 @@ auto vku::MsaaAttachmentGroup::getRenderingInfo(
             info.loadOp, info.storeOp, info.clearValue,
         };
     }, colorAttachments, colorAttachmentInfos));
+#else
+    for (const auto &[attachment, info] : std::views::zip(colorAttachments, colorAttachmentInfos)) {
+        renderingAttachmentInfos.push_back({
+            *attachment.view, VULKAN_HPP_NAMESPACE::ImageLayout::eColorAttachmentOptimal,
+            info.resolveMode, *attachment.resolveView, VULKAN_HPP_NAMESPACE::ImageLayout::eColorAttachmentOptimal,
+            info.loadOp, info.storeOp, info.clearValue,
+        });
+    }
+#endif
     renderingAttachmentInfos.push_back({
         *depthStencilAttachment->view, VULKAN_HPP_NAMESPACE::ImageLayout::eDepthStencilAttachmentOptimal,
         {}, {}, {},
