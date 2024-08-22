@@ -3,7 +3,7 @@
 #include <array>
 #include <span>
 #include <tuple>
-#ifdef _MSC_VER_
+#ifdef _MSC_VER
 #include <string_view>
 #endif
 #endif
