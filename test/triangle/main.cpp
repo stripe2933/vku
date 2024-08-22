@@ -3,6 +3,9 @@
 #include <array>
 #include <span>
 #include <tuple>
+#ifdef _MSC_VER_
+#include <string_view>
+#endif
 #endif
 
 #include <vulkan/vulkan_hpp_macros.hpp>
