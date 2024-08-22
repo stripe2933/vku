@@ -3,3 +3,4 @@ target_link_libraries(execute_hierarchical_commands PRIVATE vku::vku)
 add_test(NAME execute_hierarchical_commands COMMAND execute_hierarchical_commands)
 
 add_subdirectory(triangle)
+add_subdirectory(msaa-triangle)
