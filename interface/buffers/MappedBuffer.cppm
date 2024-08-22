@@ -126,7 +126,7 @@ namespace vku {
          * (NDEBUG is not defined) environment.
          */
         template <typename T>
-        [[nodiscard]] auto asValue(vk::DeviceSize byteOffset = 0) const NOEXCEPT_IF_RELEASE -> const T&;
+        [[nodiscard]] auto asValue(VULKAN_HPP_NAMESPACE::DeviceSize byteOffset = 0) const NOEXCEPT_IF_RELEASE -> const T&;
 
         /**
          * Get const reference of <tt>T</tt> from the mapped memory.
@@ -138,7 +138,7 @@ namespace vku {
          * (NDEBUG is not defined) environment.
          */
         template <typename T>
-        [[nodiscard]] auto asValue(vk::DeviceSize byteOffset = 0) NOEXCEPT_IF_RELEASE -> T&;
+        [[nodiscard]] auto asValue(VULKAN_HPP_NAMESPACE::DeviceSize byteOffset = 0) NOEXCEPT_IF_RELEASE -> T&;
 
         [[nodiscard]] auto unmap() && noexcept -> AllocatedBuffer {
             allocator.unmapMemory(allocation);
@@ -153,7 +153,7 @@ namespace vku {
 
 vku::MappedBuffer::MappedBuffer(
     VMA_HPP_NAMESPACE::Allocator allocator,
-    const vk::BufferCreateInfo &createInfo,
+    const VULKAN_HPP_NAMESPACE::BufferCreateInfo &createInfo,
     const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo
 ) : AllocatedBuffer { allocator, createInfo, allocationCreateInfo },
     data { allocator.mapMemory(allocation) } { }
@@ -162,9 +162,9 @@ template <typename T> requires (!std::same_as<T, std::from_range_t> && std::is_s
 vku::MappedBuffer::MappedBuffer(
     VMA_HPP_NAMESPACE::Allocator allocator,
     const T &value,
-    vk::BufferUsageFlags usage,
+    VULKAN_HPP_NAMESPACE::BufferUsageFlags usage,
     const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo
-) : MappedBuffer { allocator, vk::BufferCreateInfo {
+) : MappedBuffer { allocator, VULKAN_HPP_NAMESPACE::BufferCreateInfo {
         {},
         sizeof(T),
         usage,
@@ -176,14 +176,14 @@ template <typename T> requires (!std::same_as<T, std::from_range_t> && std::is_s
 vku::MappedBuffer::MappedBuffer(
     VMA_HPP_NAMESPACE::Allocator allocator,
     const T &value,
-    vk::BufferUsageFlags usage,
-    vk::ArrayProxy<const std::uint32_t> queueFamilyIndices,
+    VULKAN_HPP_NAMESPACE::BufferUsageFlags usage,
+    VULKAN_HPP_NAMESPACE::ArrayProxy<const std::uint32_t> queueFamilyIndices,
     const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo
-) : MappedBuffer { allocator, vk::BufferCreateInfo {
+) : MappedBuffer { allocator, VULKAN_HPP_NAMESPACE::BufferCreateInfo {
         {},
         sizeof(T),
         usage,
-        queueFamilyIndices.size() == 1 ? vk::SharingMode::eExclusive : vk::SharingMode::eConcurrent, queueFamilyIndices,
+        queueFamilyIndices.size() == 1 ? VULKAN_HPP_NAMESPACE::SharingMode::eExclusive : VULKAN_HPP_NAMESPACE::SharingMode::eConcurrent, queueFamilyIndices,
     }, allocationCreateInfo } {
     *static_cast<T*>(data) = value;
 }
@@ -193,9 +193,9 @@ vku::MappedBuffer::MappedBuffer(
     VMA_HPP_NAMESPACE::Allocator allocator,
     std::from_range_t,
     R &&r,
-    vk::BufferUsageFlags usage,
+    VULKAN_HPP_NAMESPACE::BufferUsageFlags usage,
     const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo
-) : MappedBuffer { allocator, vk::BufferCreateInfo {
+) : MappedBuffer { allocator, VULKAN_HPP_NAMESPACE::BufferCreateInfo {
         {},
         r.size() * sizeof(std::ranges::range_value_t<R>),
         usage,
@@ -205,17 +205,17 @@ vku::MappedBuffer::MappedBuffer(
 
 template <std::ranges::input_range R> requires (std::ranges::sized_range<R> && std::is_standard_layout_v<std::ranges::range_value_t<R>>)
 vku::MappedBuffer::MappedBuffer(
-    vma::Allocator allocator,
+    VMA_HPP_NAMESPACE::Allocator allocator,
     std::from_range_t,
     R &&r,
-    vk::BufferUsageFlags usage,
-    vk::ArrayProxy<const std::uint32_t> queueFamilyIndices,
-    const vma::AllocationCreateInfo &allocationCreateInfo
-) : MappedBuffer { allocator, vk::BufferCreateInfo {
+    VULKAN_HPP_NAMESPACE::BufferUsageFlags usage,
+    VULKAN_HPP_NAMESPACE::ArrayProxy<const std::uint32_t> queueFamilyIndices,
+    const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo
+) : MappedBuffer { allocator, VULKAN_HPP_NAMESPACE::BufferCreateInfo {
         {},
         r.size() * sizeof(std::ranges::range_value_t<R>),
         usage,
-        queueFamilyIndices.size() == 1 ? vk::SharingMode::eExclusive : vk::SharingMode::eConcurrent, queueFamilyIndices,
+        queueFamilyIndices.size() == 1 ? VULKAN_HPP_NAMESPACE::SharingMode::eExclusive : VULKAN_HPP_NAMESPACE::SharingMode::eConcurrent, queueFamilyIndices,
     }, allocationCreateInfo } {
     std::ranges::copy(FWD(r), static_cast<std::ranges::range_value_t<R>*>(data));
 }
@@ -233,7 +233,7 @@ auto vku::MappedBuffer::operator=(
 
 template <typename T>
 auto vku::MappedBuffer::asRange(
-    vk::DeviceSize byteOffset
+    VULKAN_HPP_NAMESPACE::DeviceSize byteOffset
 ) const NOEXCEPT_IF_RELEASE -> std::span<const T> {
     assert(byteOffset <= size && "Out of bound: byteOffset > size");
     return { reinterpret_cast<const T*>(static_cast<const char*>(data) + byteOffset), (size - byteOffset) / sizeof(T) };
@@ -241,7 +241,7 @@ auto vku::MappedBuffer::asRange(
 
 template <typename T>
 auto vku::MappedBuffer::asRange(
-    vk::DeviceSize byteOffset
+    VULKAN_HPP_NAMESPACE::DeviceSize byteOffset
 ) NOEXCEPT_IF_RELEASE -> std::span<T> {
     assert(byteOffset <= size && "Out of bound: byteOffset > size");
     return { reinterpret_cast<T*>(static_cast<char*>(data) + byteOffset), (size - byteOffset) / sizeof(T) };
@@ -249,7 +249,7 @@ auto vku::MappedBuffer::asRange(
 
 template <typename T>
 auto vku::MappedBuffer::asValue(
-    vk::DeviceSize byteOffset
+    VULKAN_HPP_NAMESPACE::DeviceSize byteOffset
 ) const NOEXCEPT_IF_RELEASE -> const T& {
     assert(byteOffset + sizeof(T) <= size && "Out of bound: byteOffset + sizeof(T) > size");
     return *reinterpret_cast<const T*>(static_cast<const char*>(data) + byteOffset);
@@ -257,7 +257,7 @@ auto vku::MappedBuffer::asValue(
 
 template <typename T>
 auto vku::MappedBuffer::asValue(
-    vk::DeviceSize byteOffset
+    VULKAN_HPP_NAMESPACE::DeviceSize byteOffset
 ) NOEXCEPT_IF_RELEASE -> T& {
     assert(byteOffset + sizeof(T) <= size && "Out of bound: byteOffset + sizeof(T) > size");
     return *reinterpret_cast<T*>(static_cast<char*>(data) + byteOffset);

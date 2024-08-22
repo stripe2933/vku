@@ -8,6 +8,8 @@ module;
 #endif
 #endif
 
+#include <vulkan/vulkan_hpp_macros.hpp>
+
 export module vku:images.AllocatedImage;
 
 #ifdef VKU_USE_STD_MODULE
@@ -28,7 +30,7 @@ namespace vku {
 
         AllocatedImage(
             VMA_HPP_NAMESPACE::Allocator allocator,
-            const vk::ImageCreateInfo &createInfo,
+            const VULKAN_HPP_NAMESPACE::ImageCreateInfo &createInfo,
             const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo = { {}, VMA_HPP_NAMESPACE::MemoryUsage::eAutoPreferDevice });
         AllocatedImage(const AllocatedImage&) = delete;
         AllocatedImage(AllocatedImage &&src) noexcept;
@@ -44,7 +46,7 @@ namespace vku {
 
 vku::AllocatedImage::AllocatedImage(
     VMA_HPP_NAMESPACE::Allocator allocator,
-    const vk::ImageCreateInfo &createInfo,
+    const VULKAN_HPP_NAMESPACE::ImageCreateInfo &createInfo,
     const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo
 ) : Image { nullptr, createInfo.extent, createInfo.format, createInfo.mipLevels, createInfo.arrayLayers },
    allocator { allocator } {

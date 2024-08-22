@@ -222,13 +222,13 @@ namespace vku {
 
         VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PhysicalDevice physicalDevice;
         QueueFamilies queueFamilies;
-        vk::raii::Device device;
+        VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device device;
         Queues queues { *device, queueFamilies };
         VMA_HPP_NAMESPACE::Allocator allocator;
 
         template <typename... DevicePNexts>
         explicit Gpu(
-            const vk::raii::Instance &instance [[clang::lifetimebound]],
+            const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance &instance [[clang::lifetimebound]],
             const Config<DevicePNexts...> &config = {}
         ) : physicalDevice { selectPhysicalDevice(instance, config) },
             queueFamilies { config.queueFamilyGetter(physicalDevice) },
@@ -242,11 +242,11 @@ namespace vku {
     private:
         template <typename... DevicePNexts>
         [[nodiscard]] static auto selectPhysicalDevice(
-            const vk::raii::Instance &instance,
+            const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance &instance,
             const Config<DevicePNexts...> &config
-        ) -> vk::raii::PhysicalDevice {
+        ) -> VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PhysicalDevice {
             std::vector physicalDevices = instance.enumeratePhysicalDevices();
-            vk::raii::PhysicalDevice bestPhysicalDevice = *std::ranges::max_element(physicalDevices, {}, config.physicalDeviceRater);
+            VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PhysicalDevice bestPhysicalDevice = *std::ranges::max_element(physicalDevices, {}, config.physicalDeviceRater);
             if (config.physicalDeviceRater(*bestPhysicalDevice) == 0) {
                 throw std::runtime_error { "No suitable GPU for the application." };
             }
@@ -256,12 +256,12 @@ namespace vku {
         template <typename... PNexts>
         [[nodiscard]] auto createDevice(
             const Config<PNexts...> &config
-        ) const -> vk::raii::Device {
+        ) const -> VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device {
             // This have to be here, because after end of the RefHolder::get() expression, queue priorities are
             // destroyed (which makes the pointer to them becomes invalid), but it is still in the std::apply scope.
             const auto queueCreateInfos = Queues::getCreateInfos(*physicalDevice, queueFamilies);
-            vk::raii::Device device { physicalDevice, std::apply([&](const auto &...pNexts) {
-                const vk::PhysicalDeviceFeatures *pPhysicalDeviceFeatures = nullptr;
+            VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device device { physicalDevice, std::apply([&](const auto &...pNexts) {
+                const VULKAN_HPP_NAMESPACE::PhysicalDeviceFeatures *pPhysicalDeviceFeatures = nullptr;
                 if constexpr (Config<PNexts...>::hasPhysicalDeviceFeatures) {
                     pPhysicalDeviceFeatures = &config.physicalDeviceFeatures;
                 }
@@ -270,8 +270,8 @@ namespace vku {
                  * Directly returning vk::StructureChain will cause runtime error, because pNexts pointer chain gets
                  * invalidated. Creating non-const result value and returning it works because of the RVO. After C++17,
                  * RVO is guaranteed by the standard. */
-                vk::StructureChain createInfo {
-                    vk::DeviceCreateInfo {
+                VULKAN_HPP_NAMESPACE::StructureChain createInfo {
+                    VULKAN_HPP_NAMESPACE::DeviceCreateInfo {
                         {},
                         queueCreateInfos.get(),
                         {},
@@ -292,7 +292,7 @@ namespace vku {
 
         template <typename... DevicePNexts>
         [[nodiscard]] auto createAllocator(
-            const vk::raii::Instance &instance,
+            const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance &instance,
             const Config<DevicePNexts...> &config
         ) const -> VMA_HPP_NAMESPACE::Allocator {
             return VMA_HPP_NAMESPACE::createAllocator(VMA_HPP_NAMESPACE::AllocatorCreateInfo {

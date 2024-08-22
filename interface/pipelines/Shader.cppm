@@ -20,6 +20,8 @@ module;
 #include <shaderc/shaderc.hpp>
 #endif
 
+#include <vulkan/vulkan_hpp_macros.hpp>
+
 export module vku:pipelines.Shader;
 
 #ifdef VKU_USE_STD_MODULE
@@ -34,7 +36,7 @@ export import vulkan_hpp;
 namespace vku {
     export struct Shader {
         std::vector<std::uint32_t> code;
-        vk::ShaderStageFlagBits stage;
+        VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage;
         const char *entryPoint;
 
         // --------------------
@@ -47,7 +49,7 @@ namespace vku {
          * @param stage Shader stage.
          * @param entryPoint Entry point function name (default: "main").
          */
-        Shader(std::vector<std::uint32_t> code, vk::ShaderStageFlagBits stage, const char *entryPoint = "main");
+        Shader(std::vector<std::uint32_t> code, VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage, const char *entryPoint = "main");
 
         /**
          * Construct <tt>Shader</tt> from compiled SPIR-V file.
@@ -55,10 +57,10 @@ namespace vku {
          * @param stage Shader stage.
          * @param entryPoint Entry point function name (default: "main").
          */
-        Shader(const std::filesystem::path &path, vk::ShaderStageFlagBits stage, const char *entryPoint = "main");
+        Shader(const std::filesystem::path &path, VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage, const char *entryPoint = "main");
 
 #ifdef VKU_USE_SHADERC
-        Shader(const shaderc::Compiler &compiler, std::string_view glsl, vk::ShaderStageFlagBits stage, const char *entryPoint = "main", const char *identifier = to_string(std::source_location{}).c_str());
+        Shader(const shaderc::Compiler &compiler, std::string_view glsl, VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage, const char *entryPoint = "main", const char *identifier = to_string(std::source_location{}).c_str());
 #endif
     };
 }
@@ -87,7 +89,7 @@ namespace vku {
 
 vku::Shader::Shader(
     std::vector<std::uint32_t> code,
-    vk::ShaderStageFlagBits stage,
+    VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage,
     const char *entryPoint
 ) : code { std::move(code) },
     stage { stage },
@@ -95,7 +97,7 @@ vku::Shader::Shader(
 
 vku::Shader::Shader(
     const std::filesystem::path &path,
-    vk::ShaderStageFlagBits stage,
+    VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage,
     const char *entryPoint
 ) : code { loadFileAsBinary(path) },
     stage { stage },
@@ -103,20 +105,20 @@ vku::Shader::Shader(
 
 #ifdef VKU_USE_SHADERC
 [[nodiscard]] constexpr auto getShaderKind(
-    vk::ShaderStageFlagBits stage
+    VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage
 ) -> shaderc_shader_kind {
     switch (stage) {
-        case vk::ShaderStageFlagBits::eVertex:
+        case VULKAN_HPP_NAMESPACE::ShaderStageFlagBits::eVertex:
             return shaderc_glsl_vertex_shader;
-        case vk::ShaderStageFlagBits::eTessellationControl:
+        case VULKAN_HPP_NAMESPACE::ShaderStageFlagBits::eTessellationControl:
             return shaderc_glsl_tess_control_shader;
-        case vk::ShaderStageFlagBits::eTessellationEvaluation:
+        case VULKAN_HPP_NAMESPACE::ShaderStageFlagBits::eTessellationEvaluation:
             return shaderc_glsl_tess_evaluation_shader;
-        case vk::ShaderStageFlagBits::eGeometry:
+        case VULKAN_HPP_NAMESPACE::ShaderStageFlagBits::eGeometry:
             return shaderc_glsl_geometry_shader;
-        case vk::ShaderStageFlagBits::eFragment:
+        case VULKAN_HPP_NAMESPACE::ShaderStageFlagBits::eFragment:
             return shaderc_glsl_fragment_shader;
-        case vk::ShaderStageFlagBits::eCompute:
+        case VULKAN_HPP_NAMESPACE::ShaderStageFlagBits::eCompute:
             return shaderc_glsl_compute_shader;
         default:
             throw std::runtime_error { std::format("Unsupported shader stage: {}", to_string(stage)) };
@@ -126,7 +128,7 @@ vku::Shader::Shader(
 vku::Shader::Shader(
     const shaderc::Compiler &compiler,
     std::string_view glsl,
-    vk::ShaderStageFlagBits stage,
+    VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage,
     const char *entryPoint,
     const char *identifier
 ) : stage { stage },

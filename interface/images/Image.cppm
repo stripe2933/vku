@@ -7,6 +7,8 @@ module;
 #include <algorithm>
 #endif
 
+#include <vulkan/vulkan_hpp_macros.hpp>
+
 export module vku:images.Image;
 
 #ifdef VKU_USE_STD_MODULE
@@ -28,9 +30,9 @@ namespace vku {
      * <tt>vk::Image</tt>.
      *     */
     export struct Image {
-        vk::Image image;
-        vk::Extent3D extent;
-        vk::Format format;
+        VULKAN_HPP_NAMESPACE::Image image;
+        VULKAN_HPP_NAMESPACE::Extent3D extent;
+        VULKAN_HPP_NAMESPACE::Format format;
         std::uint32_t mipLevels;
         std::uint32_t arrayLayers;
 
@@ -38,7 +40,7 @@ namespace vku {
         // User-defined conversion functions.
         // --------------------
 
-        [[nodiscard]] operator vk::Image() const noexcept; // can be implicitly converted to vk::Image.
+        [[nodiscard]] operator VULKAN_HPP_NAMESPACE::Image() const noexcept; // can be implicitly converted to vk::Image.
 
         // --------------------
         // Member functions.
@@ -54,7 +56,7 @@ namespace vku {
          * It internally asserts format is not <tt>vk::Format::eUndefined</tt> for debug (NDEBUG is not defined) environment.<br>
          * It internally calls <tt>inferAspectFlags(vk::Format)</tt> and <tt>getViewCreateInfo(const vk::ImageSubresourceRange&, vk::ImageViewType)</tt>.
          */
-        [[nodiscard]] auto getViewCreateInfo(vk::ImageViewType type = vk::ImageViewType::e2D) const NOEXCEPT_IF_RELEASE -> vk::ImageViewCreateInfo;
+        [[nodiscard]] auto getViewCreateInfo(VULKAN_HPP_NAMESPACE::ImageViewType type = VULKAN_HPP_NAMESPACE::ImageViewType::e2D) const NOEXCEPT_IF_RELEASE -> VULKAN_HPP_NAMESPACE::ImageViewCreateInfo;
 
         /**
          * Get <tt>vk::ImageViewCreateInfo</tt> struct with the specified \p subresourceRange, \p type and identity
@@ -66,7 +68,7 @@ namespace vku {
          * You can use <tt>getViewCreateInfo(vk::ImageViewType)</tt> convenience function for full subresource range with
          * automatically inferred aspect flags from the format.
          */
-        [[nodiscard]] auto getViewCreateInfo(const vk::ImageSubresourceRange &subresourceRange, vk::ImageViewType type = vk::ImageViewType::e2D) const noexcept -> vk::ImageViewCreateInfo;
+        [[nodiscard]] auto getViewCreateInfo(const VULKAN_HPP_NAMESPACE::ImageSubresourceRange &subresourceRange, VULKAN_HPP_NAMESPACE::ImageViewType type = VULKAN_HPP_NAMESPACE::ImageViewType::e2D) const noexcept -> VULKAN_HPP_NAMESPACE::ImageViewCreateInfo;
 
         /**
          * Get the extent of the specified mip level.
@@ -76,7 +78,7 @@ namespace vku {
          * This will internally call <tt>Image::mipExtent(const vk::Extent2D&, std::uint32_t)</tt> with current image
          * extent. See the function for more details.
          */
-        [[nodiscard]] auto mipExtent(std::uint32_t mipLevel) const NOEXCEPT_IF_RELEASE -> vk::Extent2D;
+        [[nodiscard]] auto mipExtent(std::uint32_t mipLevel) const NOEXCEPT_IF_RELEASE -> VULKAN_HPP_NAMESPACE::Extent2D;
 
         // --------------------
         // Functions.
@@ -93,7 +95,7 @@ namespace vku {
          * - format=[<tt>S8Uint</tt>] -> Stencil
          * - otherwise -> Color.
          */
-        [[nodiscard]] static constexpr auto inferAspectFlags(vk::Format format) NOEXCEPT_IF_RELEASE -> vk::ImageAspectFlags;
+        [[nodiscard]] static constexpr auto inferAspectFlags(VULKAN_HPP_NAMESPACE::Format format) NOEXCEPT_IF_RELEASE -> VULKAN_HPP_NAMESPACE::ImageAspectFlags;
 
         /**
          * Get the available maximum mip levels for image that width=height=\p size.
@@ -117,7 +119,7 @@ namespace vku {
          * maxMipLevels({ 512, 512 }) -> 10
          * @note maxMipLevels({ width, height }) is equivalent to maxMipLevels(std::min(width, height)).
          */
-        [[nodiscard]] static constexpr auto maxMipLevels(const vk::Extent2D &extent) NOEXCEPT_IF_RELEASE -> std::uint32_t;
+        [[nodiscard]] static constexpr auto maxMipLevels(const VULKAN_HPP_NAMESPACE::Extent2D &extent) NOEXCEPT_IF_RELEASE -> std::uint32_t;
 
         /**
          * Get the extent of the specified mip level.
@@ -128,7 +130,7 @@ namespace vku {
          * mipExtent({ 512, 512 }, 3) -> { 64, 64 } // 512x512 image's 3rd (use zero-based indexing) mip image has 64x64 dimension.
          * @note On debug environment (NDEBUG is not defined), this function will assert if \p mipLevel is greater than maxMipLevels(\p extent).
          */
-        [[nodiscard]] static constexpr auto mipExtent(const vk::Extent2D &extent, std::uint32_t mipLevel) NOEXCEPT_IF_RELEASE -> vk::Extent2D;
+        [[nodiscard]] static constexpr auto mipExtent(const VULKAN_HPP_NAMESPACE::Extent2D &extent, std::uint32_t mipLevel) NOEXCEPT_IF_RELEASE -> VULKAN_HPP_NAMESPACE::Extent2D;
     };
 
     /**
@@ -138,8 +140,8 @@ namespace vku {
      * @return <tt>vk::ImageSubresourceRange</tt> that contains the whole mip levels and array layers.
      */
     export
-    [[nodiscard]] constexpr auto fullSubresourceRange(vk::ImageAspectFlags aspectFlags = vk::ImageAspectFlagBits::eColor) noexcept -> vk::ImageSubresourceRange {
-        return { aspectFlags, 0, vk::RemainingMipLevels, 0, vk::RemainingArrayLayers };
+    [[nodiscard]] constexpr auto fullSubresourceRange(VULKAN_HPP_NAMESPACE::ImageAspectFlags aspectFlags = VULKAN_HPP_NAMESPACE::ImageAspectFlagBits::eColor) noexcept -> VULKAN_HPP_NAMESPACE::ImageSubresourceRange {
+        return { aspectFlags, 0, VULKAN_HPP_NAMESPACE::RemainingMipLevels, 0, VULKAN_HPP_NAMESPACE::RemainingArrayLayers };
     }
 }
 
@@ -147,45 +149,45 @@ namespace vku {
 // Implementations.
 // --------------------
 
-vku::Image::operator vk::Image() const noexcept {
+vku::Image::operator VULKAN_HPP_NAMESPACE::Image() const noexcept {
     return image;
 }
 
 auto vku::Image::getViewCreateInfo(
-    vk::ImageViewType type
-) const NOEXCEPT_IF_RELEASE -> vk::ImageViewCreateInfo {
-    assert(format != vk::Format::eUndefined && "Cannot infer image aspect flags from undefined format");
+    VULKAN_HPP_NAMESPACE::ImageViewType type
+) const NOEXCEPT_IF_RELEASE -> VULKAN_HPP_NAMESPACE::ImageViewCreateInfo {
+    assert(format != VULKAN_HPP_NAMESPACE::Format::eUndefined && "Cannot infer image aspect flags from undefined format");
     return getViewCreateInfo(fullSubresourceRange(inferAspectFlags(format)), type);
 }
 
 auto vku::Image::getViewCreateInfo(
-    const vk::ImageSubresourceRange &subresourceRange,
-    vk::ImageViewType type
-) const noexcept -> vk::ImageViewCreateInfo {
+    const VULKAN_HPP_NAMESPACE::ImageSubresourceRange &subresourceRange,
+    VULKAN_HPP_NAMESPACE::ImageViewType type
+) const noexcept -> VULKAN_HPP_NAMESPACE::ImageViewCreateInfo {
     return { {}, image, type, format, {}, subresourceRange };
 }
 
 auto vku::Image::mipExtent(
     std::uint32_t mipLevel
-) const NOEXCEPT_IF_RELEASE -> vk::Extent2D {
+) const NOEXCEPT_IF_RELEASE -> VULKAN_HPP_NAMESPACE::Extent2D {
     return mipExtent({ extent.width, extent.height }, mipLevel);
 }
 
 constexpr auto vku::Image::inferAspectFlags(
-    vk::Format format
-) NOEXCEPT_IF_RELEASE -> vk::ImageAspectFlags {
+    VULKAN_HPP_NAMESPACE::Format format
+) NOEXCEPT_IF_RELEASE -> VULKAN_HPP_NAMESPACE::ImageAspectFlags {
     switch (format) {
-        case vk::Format::eD16Unorm:
-        case vk::Format::eD32Sfloat:
-            return vk::ImageAspectFlagBits::eDepth;
-        case vk::Format::eD16UnormS8Uint:
-        case vk::Format::eD24UnormS8Uint:
-        case vk::Format::eD32SfloatS8Uint:
-            return vk::ImageAspectFlagBits::eDepth | vk::ImageAspectFlagBits::eStencil;
-        case vk::Format::eS8Uint:
-            return vk::ImageAspectFlagBits::eStencil;
+        case VULKAN_HPP_NAMESPACE::Format::eD16Unorm:
+        case VULKAN_HPP_NAMESPACE::Format::eD32Sfloat:
+            return VULKAN_HPP_NAMESPACE::ImageAspectFlagBits::eDepth;
+        case VULKAN_HPP_NAMESPACE::Format::eD16UnormS8Uint:
+        case VULKAN_HPP_NAMESPACE::Format::eD24UnormS8Uint:
+        case VULKAN_HPP_NAMESPACE::Format::eD32SfloatS8Uint:
+            return VULKAN_HPP_NAMESPACE::ImageAspectFlagBits::eDepth | VULKAN_HPP_NAMESPACE::ImageAspectFlagBits::eStencil;
+        case VULKAN_HPP_NAMESPACE::Format::eS8Uint:
+            return VULKAN_HPP_NAMESPACE::ImageAspectFlagBits::eStencil;
         default:
-            return vk::ImageAspectFlagBits::eColor;
+            return VULKAN_HPP_NAMESPACE::ImageAspectFlagBits::eColor;
     }
 }
 
@@ -197,15 +199,15 @@ constexpr auto vku::Image::maxMipLevels(
 }
 
 constexpr auto vku::Image::maxMipLevels(
-    const vk::Extent2D &extent
+    const VULKAN_HPP_NAMESPACE::Extent2D &extent
 ) NOEXCEPT_IF_RELEASE -> std::uint32_t {
     return maxMipLevels(std::min(extent.width, extent.height));
 }
 
 constexpr auto vku::Image::mipExtent(
-    const vk::Extent2D &extent,
+    const VULKAN_HPP_NAMESPACE::Extent2D &extent,
     std::uint32_t mipLevel
-) NOEXCEPT_IF_RELEASE -> vk::Extent2D {
+) NOEXCEPT_IF_RELEASE -> VULKAN_HPP_NAMESPACE::Extent2D {
     assert(mipLevel < maxMipLevels(extent) && "mipLevel must be less than maxMipLevels(extent)");
     return { extent.width >> mipLevel, extent.height >> mipLevel };
 }

@@ -11,6 +11,8 @@ module;
 #include <vector>
 #endif
 
+#include <vulkan/vulkan_hpp_macros.hpp>
+
 export module vku:descriptors.PoolSizes;
 
 #ifdef VKU_USE_STD_MODULE
@@ -23,7 +25,7 @@ import :utils.RefHolder;
 namespace vku {
     export struct PoolSizes {
         std::uint32_t setCount;
-        std::unordered_map<vk::DescriptorType, std::uint32_t> typeCounts;
+        std::unordered_map<VULKAN_HPP_NAMESPACE::DescriptorType, std::uint32_t> typeCounts;
 
         PoolSizes() noexcept = default;
         PoolSizes(const PoolSizes&) noexcept = default;
@@ -35,7 +37,7 @@ namespace vku {
         [[nodiscard]] auto operator*(std::uint32_t multiplier) const noexcept -> PoolSizes;
         auto operator*=(std::uint32_t multiplier) noexcept -> PoolSizes&;
 
-        [[nodiscard]] auto getDescriptorPoolCreateInfo(vk::DescriptorPoolCreateFlags flags = {}) const noexcept -> RefHolder<vk::DescriptorPoolCreateInfo, std::vector<vk::DescriptorPoolSize>>;
+        [[nodiscard]] auto getDescriptorPoolCreateInfo(VULKAN_HPP_NAMESPACE::DescriptorPoolCreateFlags flags = {}) const noexcept -> RefHolder<VULKAN_HPP_NAMESPACE::DescriptorPoolCreateInfo, std::vector<VULKAN_HPP_NAMESPACE::DescriptorPoolSize>>;
     };
 
     // TODO: looks like this operator overloading is invisible outside the module. Need to investigate.
@@ -79,11 +81,11 @@ auto vku::PoolSizes::operator*=(std::uint32_t multiplier) noexcept -> PoolSizes 
 }
 
 auto vku::PoolSizes::getDescriptorPoolCreateInfo(
-    vk::DescriptorPoolCreateFlags flags
-) const noexcept -> RefHolder<vk::DescriptorPoolCreateInfo, std::vector<vk::DescriptorPoolSize>> {
+    VULKAN_HPP_NAMESPACE::DescriptorPoolCreateFlags flags
+) const noexcept -> RefHolder<VULKAN_HPP_NAMESPACE::DescriptorPoolCreateInfo, std::vector<VULKAN_HPP_NAMESPACE::DescriptorPoolSize>> {
     return RefHolder {
-        [=, this](std::span<const vk::DescriptorPoolSize> poolSizes) {
-            return vk::DescriptorPoolCreateInfo {
+        [=, this](std::span<const VULKAN_HPP_NAMESPACE::DescriptorPoolSize> poolSizes) {
+            return VULKAN_HPP_NAMESPACE::DescriptorPoolCreateInfo {
                 flags,
                 setCount,
                 poolSizes,
@@ -91,7 +93,7 @@ auto vku::PoolSizes::getDescriptorPoolCreateInfo(
         },
         typeCounts
             | std::views::transform([](const auto &keyValue) {
-                return vk::DescriptorPoolSize { keyValue.first, keyValue.second };
+                return VULKAN_HPP_NAMESPACE::DescriptorPoolSize { keyValue.first, keyValue.second };
             })
             | std::ranges::to<std::vector>(),
     };

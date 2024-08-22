@@ -9,6 +9,8 @@ module;
 #include <vector>
 #endif
 
+#include <vulkan/vulkan_hpp_macros.hpp>
+
 export module vku:rendering.AttachmentGroup;
 
 #ifdef VKU_USE_STD_MODULE
@@ -28,54 +30,54 @@ import :utils.RefHolder;
 export namespace vku {
     struct AttachmentGroup : AttachmentGroupBase {
         struct ColorAttachmentInfo {
-            vk::AttachmentLoadOp loadOp;
-            vk::AttachmentStoreOp storeOp;
-            vk::ClearColorValue clearValue;
+            VULKAN_HPP_NAMESPACE::AttachmentLoadOp loadOp;
+            VULKAN_HPP_NAMESPACE::AttachmentStoreOp storeOp;
+            VULKAN_HPP_NAMESPACE::ClearColorValue clearValue;
         };
 
         struct DepthStencilAttachmentInfo {
-            vk::AttachmentLoadOp loadOp;
-            vk::AttachmentStoreOp storeOp;
-            vk::ClearDepthStencilValue clearValue;
+            VULKAN_HPP_NAMESPACE::AttachmentLoadOp loadOp;
+            VULKAN_HPP_NAMESPACE::AttachmentStoreOp storeOp;
+            VULKAN_HPP_NAMESPACE::ClearDepthStencilValue clearValue;
         };
 
         std::vector<Attachment> colorAttachments;
         std::optional<Attachment> depthStencilAttachment;
 
-        explicit AttachmentGroup(const vk::Extent2D &extent);
+        explicit AttachmentGroup(const VULKAN_HPP_NAMESPACE::Extent2D &extent);
         AttachmentGroup(const AttachmentGroup&) = delete;
         AttachmentGroup(AttachmentGroup&&) noexcept = default;
         auto operator=(const AttachmentGroup&) -> AttachmentGroup& = delete;
         auto operator=(AttachmentGroup&&) noexcept -> AttachmentGroup& = default;
         ~AttachmentGroup() override = default;
 
-        auto addColorAttachment(const vk::raii::Device &device, const Image &image, vk::Format viewFormat = {}) -> const Attachment&;
-        auto addColorAttachment(const vk::raii::Device &device, const Image &image, const vk::ImageViewCreateInfo &viewCreateInfo) -> const Attachment&;
-        auto setDepthStencilAttachment(const vk::raii::Device &device, const Image &image, vk::Format viewFormat = {}) -> const Attachment&;
-        auto setDepthStencilAttachment(const vk::raii::Device &device, const Image &image, const vk::ImageViewCreateInfo &viewCreateInfo) -> const Attachment&;
+        auto addColorAttachment(const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device, const Image &image, VULKAN_HPP_NAMESPACE::Format viewFormat = {}) -> const Attachment&;
+        auto addColorAttachment(const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device, const Image &image, const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &viewCreateInfo) -> const Attachment&;
+        auto setDepthStencilAttachment(const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device, const Image &image, VULKAN_HPP_NAMESPACE::Format viewFormat = {}) -> const Attachment&;
+        auto setDepthStencilAttachment(const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device, const Image &image, const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &viewCreateInfo) -> const Attachment&;
 
         [[nodiscard]] auto createColorImage(
             VMA_HPP_NAMESPACE::Allocator allocator,
-            vk::Format format,
-            vk::ImageUsageFlags usage = vk::ImageUsageFlagBits::eColorAttachment,
+            VULKAN_HPP_NAMESPACE::Format format,
+            VULKAN_HPP_NAMESPACE::ImageUsageFlags usage = VULKAN_HPP_NAMESPACE::ImageUsageFlagBits::eColorAttachment,
             const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo = { {}, VMA_HPP_NAMESPACE::MemoryUsage::eAutoPreferDevice }
         ) const -> AllocatedImage;
 
         [[nodiscard]] auto createDepthStencilImage(
             VMA_HPP_NAMESPACE::Allocator allocator,
-            vk::Format format,
-            vk::ImageUsageFlags usage = vk::ImageUsageFlagBits::eDepthStencilAttachment | vk::ImageUsageFlagBits::eTransientAttachment,
-            const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo = { {}, VMA_HPP_NAMESPACE::MemoryUsage::eAutoPreferDevice, {}, vk::MemoryPropertyFlagBits::eLazilyAllocated }
+            VULKAN_HPP_NAMESPACE::Format format,
+            VULKAN_HPP_NAMESPACE::ImageUsageFlags usage = VULKAN_HPP_NAMESPACE::ImageUsageFlagBits::eDepthStencilAttachment | VULKAN_HPP_NAMESPACE::ImageUsageFlagBits::eTransientAttachment,
+            const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo = { {}, VMA_HPP_NAMESPACE::MemoryUsage::eAutoPreferDevice, {}, VULKAN_HPP_NAMESPACE::MemoryPropertyFlagBits::eLazilyAllocated }
         ) const -> AllocatedImage;
 
         [[nodiscard]] auto getRenderingInfo(
             std::span<const ColorAttachmentInfo> colorAttachmentInfos
-        ) const -> RefHolder<vk::RenderingInfo, std::vector<vk::RenderingAttachmentInfo>>;
+        ) const -> RefHolder<VULKAN_HPP_NAMESPACE::RenderingInfo, std::vector<VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo>>;
 
         [[nodiscard]] auto getRenderingInfo(
             std::span<const ColorAttachmentInfo> colorAttachmentInfos,
             const DepthStencilAttachmentInfo &depthStencilAttachmentInfo
-        ) const -> RefHolder<vk::RenderingInfo, std::vector<vk::RenderingAttachmentInfo>, vk::RenderingAttachmentInfo>;
+        ) const -> RefHolder<VULKAN_HPP_NAMESPACE::RenderingInfo, std::vector<VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo>, VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo>;
 
         /**
          * Get <tt>vk::FramebufferCreateInfo</tt> for the attachment group. The order of the image views are:
@@ -87,10 +89,10 @@ export namespace vku {
          * @return RefHolder of <tt>vk::FramebufferCreateInfo</tt> and a vector of image views.
          */
         [[nodiscard]] auto getFramebufferCreateInfo(
-            vk::RenderPass renderPass,
-            vk::ArrayProxy<const vk::ImageView> inputAttachmentViews = {}
-        ) const -> RefHolder<vk::FramebufferCreateInfo, std::vector<vk::ImageView>> {
-            std::vector<vk::ImageView> imageViews;
+            VULKAN_HPP_NAMESPACE::RenderPass renderPass,
+            VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ImageView> inputAttachmentViews = {}
+        ) const -> RefHolder<VULKAN_HPP_NAMESPACE::FramebufferCreateInfo, std::vector<VULKAN_HPP_NAMESPACE::ImageView>> {
+            std::vector<VULKAN_HPP_NAMESPACE::ImageView> imageViews;
             imageViews.reserve(inputAttachmentViews.size() + colorAttachments.size() + depthStencilAttachment.has_value());
 
             std::ranges::copy(inputAttachmentViews, back_inserter(imageViews));
@@ -100,8 +102,8 @@ export namespace vku {
             }
 
             return {
-                [&](std::span<const vk::ImageView> imageViews) {
-                    return vk::FramebufferCreateInfo {
+                [&](std::span<const VULKAN_HPP_NAMESPACE::ImageView> imageViews) {
+                    return VULKAN_HPP_NAMESPACE::FramebufferCreateInfo {
                         {},
                         renderPass,
                         imageViews,
@@ -121,59 +123,59 @@ export namespace vku {
 // --------------------
 
 vku::AttachmentGroup::AttachmentGroup(
-    const vk::Extent2D &extent
+    const VULKAN_HPP_NAMESPACE::Extent2D &extent
 ) : AttachmentGroupBase { extent } { }
 
 auto vku::AttachmentGroup::addColorAttachment(
-    const vk::raii::Device &device,
+    const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
     const Image &image,
-    vk::Format viewFormat
+    VULKAN_HPP_NAMESPACE::Format viewFormat
 ) -> const Attachment & {
-    return addColorAttachment(device, image, vk::ImageViewCreateInfo {
+    return addColorAttachment(device, image, VULKAN_HPP_NAMESPACE::ImageViewCreateInfo {
         {},
         image,
-        vk::ImageViewType::e2D,
-        viewFormat == vk::Format::eUndefined ? image.format : viewFormat,
+        VULKAN_HPP_NAMESPACE::ImageViewType::e2D,
+        viewFormat == VULKAN_HPP_NAMESPACE::Format::eUndefined ? image.format : viewFormat,
         {},
-        { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 },
+        { VULKAN_HPP_NAMESPACE::ImageAspectFlagBits::eColor, 0, 1, 0, 1 },
     });
 }
 
 auto vku::AttachmentGroup::addColorAttachment(
-    const vk::raii::Device &device,
+    const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
     const Image &image,
-    const vk::ImageViewCreateInfo &viewCreateInfo
+    const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &viewCreateInfo
 ) -> const Attachment & {
-    return colorAttachments.emplace_back(image, vk::raii::ImageView { device, viewCreateInfo });
+    return colorAttachments.emplace_back(image, VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView { device, viewCreateInfo });
 }
 
 auto vku::AttachmentGroup::createColorImage(
     VMA_HPP_NAMESPACE::Allocator allocator,
-    vk::Format format,
-    vk::ImageUsageFlags usage,
+    VULKAN_HPP_NAMESPACE::Format format,
+    VULKAN_HPP_NAMESPACE::ImageUsageFlags usage,
     const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo
 ) const -> AllocatedImage {
     return createAttachmentImage(
         allocator,
         format,
-        vk::SampleCountFlagBits::e1,
+        VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1,
         usage,
         allocationCreateInfo);
 }
 
 auto vku::AttachmentGroup::setDepthStencilAttachment(
-    const vk::raii::Device &device,
+    const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
     const Image &image,
-    vk::Format viewFormat
+    VULKAN_HPP_NAMESPACE::Format viewFormat
 ) -> const Attachment & {
-    if (viewFormat == vk::Format::eUndefined) {
+    if (viewFormat == VULKAN_HPP_NAMESPACE::Format::eUndefined) {
         viewFormat = image.format;
     }
 
-    return setDepthStencilAttachment(device, image, vk::ImageViewCreateInfo {
+    return setDepthStencilAttachment(device, image, VULKAN_HPP_NAMESPACE::ImageViewCreateInfo {
         {},
         image,
-        vk::ImageViewType::e2D,
+        VULKAN_HPP_NAMESPACE::ImageViewType::e2D,
         viewFormat,
         {},
         { Image::inferAspectFlags(viewFormat), 0, 1, 0, 1 },
@@ -181,36 +183,36 @@ auto vku::AttachmentGroup::setDepthStencilAttachment(
 }
 
 auto vku::AttachmentGroup::setDepthStencilAttachment(
-    const vk::raii::Device &device,
+    const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
     const Image &image,
-    const vk::ImageViewCreateInfo &viewCreateInfo
+    const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &viewCreateInfo
 ) -> const Attachment & {
-    return depthStencilAttachment.emplace(image, vk::raii::ImageView { device, viewCreateInfo });
+    return depthStencilAttachment.emplace(image, VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView { device, viewCreateInfo });
 }
 
 auto vku::AttachmentGroup::createDepthStencilImage(
     VMA_HPP_NAMESPACE::Allocator allocator,
-    vk::Format format,
-    vk::ImageUsageFlags usage,
+    VULKAN_HPP_NAMESPACE::Format format,
+    VULKAN_HPP_NAMESPACE::ImageUsageFlags usage,
     const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo
 ) const -> AllocatedImage {
     return createAttachmentImage(
         allocator,
         format,
-        vk::SampleCountFlagBits::e1,
+        VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1,
         usage,
         allocationCreateInfo);
 }
 
 auto vku::AttachmentGroup::getRenderingInfo(
     std::span<const ColorAttachmentInfo> colorAttachmentInfos
-) const -> RefHolder<vk::RenderingInfo, std::vector<vk::RenderingAttachmentInfo>> {
+) const -> RefHolder<VULKAN_HPP_NAMESPACE::RenderingInfo, std::vector<VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo>> {
     assert(colorAttachments.size() == colorAttachmentInfos.size() && "Color attachment info count mismatch");
     assert(!depthStencilAttachment.has_value() && "Depth-stencil attachment info mismatch");
 
     return {
-        [this](std::span<const vk::RenderingAttachmentInfo> colorAttachmentInfos) {
-            return vk::RenderingInfo {
+        [this](std::span<const VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo> colorAttachmentInfos) {
+            return VULKAN_HPP_NAMESPACE::RenderingInfo {
                 {},
                 { { 0, 0 }, extent },
                 1,
@@ -219,8 +221,8 @@ auto vku::AttachmentGroup::getRenderingInfo(
             };
         },
         ranges::views::zip_transform([](const Attachment &attachment, const ColorAttachmentInfo &info) {
-            return vk::RenderingAttachmentInfo {
-                *attachment.view, vk::ImageLayout::eColorAttachmentOptimal,
+            return VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo {
+                *attachment.view, VULKAN_HPP_NAMESPACE::ImageLayout::eColorAttachmentOptimal,
                 {}, {}, {},
                 info.loadOp, info.storeOp, info.clearValue,
             };
@@ -231,12 +233,12 @@ auto vku::AttachmentGroup::getRenderingInfo(
 auto vku::AttachmentGroup::getRenderingInfo(
     std::span<const ColorAttachmentInfo> colorAttachmentInfos,
     const DepthStencilAttachmentInfo &depthStencilAttachmentInfo
-) const -> RefHolder<vk::RenderingInfo, std::vector<vk::RenderingAttachmentInfo>, vk::RenderingAttachmentInfo> {
+) const -> RefHolder<VULKAN_HPP_NAMESPACE::RenderingInfo, std::vector<VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo>, VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo> {
     assert(colorAttachments.size() == colorAttachmentInfos.size() && "Color attachment info count mismatch");
     assert(depthStencilAttachment.has_value() && "Depth-stencil attachment info mismatch");
     return {
-        [this](std::span<const vk::RenderingAttachmentInfo> colorAttachmentInfos, const vk::RenderingAttachmentInfo &depthStencilAttachmentInfo) {
-            return vk::RenderingInfo {
+        [this](std::span<const VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo> colorAttachmentInfos, const VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo &depthStencilAttachmentInfo) {
+            return VULKAN_HPP_NAMESPACE::RenderingInfo {
                 {},
                 { { 0, 0 }, extent },
                 1,
@@ -246,14 +248,14 @@ auto vku::AttachmentGroup::getRenderingInfo(
             };
         },
         ranges::views::zip_transform([](const Attachment &attachment, const ColorAttachmentInfo &info) {
-            return vk::RenderingAttachmentInfo {
-                *attachment.view, vk::ImageLayout::eColorAttachmentOptimal,
+            return VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo {
+                *attachment.view, VULKAN_HPP_NAMESPACE::ImageLayout::eColorAttachmentOptimal,
                 {}, {}, {},
                 info.loadOp, info.storeOp, info.clearValue,
             };
         }, colorAttachments, colorAttachmentInfos) | std::ranges::to<std::vector>(),
-        vk::RenderingAttachmentInfo {
-            *depthStencilAttachment->view, vk::ImageLayout::eDepthStencilAttachmentOptimal,
+        VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo {
+            *depthStencilAttachment->view, VULKAN_HPP_NAMESPACE::ImageLayout::eDepthStencilAttachmentOptimal,
             {}, {}, {},
             depthStencilAttachmentInfo.loadOp, depthStencilAttachmentInfo.storeOp, depthStencilAttachmentInfo.clearValue,
         },

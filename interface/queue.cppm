@@ -28,10 +28,10 @@ namespace vku {
      */
     export
     [[nodiscard]] auto getComputeQueueFamily(
-        std::span<const vk::QueueFamilyProperties> queueFamilyProperties
+        std::span<const VULKAN_HPP_NAMESPACE::QueueFamilyProperties> queueFamilyProperties
     ) noexcept -> std::optional<std::uint32_t> {
-        for (std::uint32_t i = 0; const vk::QueueFamilyProperties &properties : queueFamilyProperties) {
-            if (properties.queueFlags & vk::QueueFlagBits::eCompute) {
+        for (std::uint32_t i = 0; const VULKAN_HPP_NAMESPACE::QueueFamilyProperties &properties : queueFamilyProperties) {
+            if (properties.queueFlags & VULKAN_HPP_NAMESPACE::QueueFlagBits::eCompute) {
                 return i;
             }
             ++i;
@@ -46,10 +46,10 @@ namespace vku {
      */
     export
     [[nodiscard]] auto getComputeSpecializedQueueFamily(
-        std::span<const vk::QueueFamilyProperties> queueFamilyProperties
+        std::span<const VULKAN_HPP_NAMESPACE::QueueFamilyProperties> queueFamilyProperties
     ) noexcept -> std::optional<std::uint32_t> {
-        for (std::uint32_t i = 0; const vk::QueueFamilyProperties &properties : queueFamilyProperties) {
-            if (properties.queueFlags & vk::QueueFlagBits::eCompute && !(properties.queueFlags & vk::QueueFlagBits::eGraphics)) {
+        for (std::uint32_t i = 0; const VULKAN_HPP_NAMESPACE::QueueFamilyProperties &properties : queueFamilyProperties) {
+            if (properties.queueFlags & VULKAN_HPP_NAMESPACE::QueueFlagBits::eCompute && !(properties.queueFlags & VULKAN_HPP_NAMESPACE::QueueFlagBits::eGraphics)) {
                 return i;
             }
             ++i;
@@ -64,10 +64,10 @@ namespace vku {
      */
     export
     [[nodiscard]] auto getGraphicsQueueFamily(
-        std::span<const vk::QueueFamilyProperties> queueFamilyProperties
+        std::span<const VULKAN_HPP_NAMESPACE::QueueFamilyProperties> queueFamilyProperties
     ) noexcept -> std::optional<std::uint32_t> {
-        for (std::uint32_t i = 0; const vk::QueueFamilyProperties &properties : queueFamilyProperties) {
-            if (properties.queueFlags & vk::QueueFlagBits::eGraphics) {
+        for (std::uint32_t i = 0; const VULKAN_HPP_NAMESPACE::QueueFamilyProperties &properties : queueFamilyProperties) {
+            if (properties.queueFlags & VULKAN_HPP_NAMESPACE::QueueFlagBits::eGraphics) {
                 return i;
             }
             ++i;
@@ -82,10 +82,10 @@ namespace vku {
      */
     export
     [[nodiscard]] auto getTransferSpecializedQueueFamily(
-        std::span<const vk::QueueFamilyProperties> queueFamilyProperties
+        std::span<const VULKAN_HPP_NAMESPACE::QueueFamilyProperties> queueFamilyProperties
     ) noexcept -> std::optional<std::uint32_t> {
-        for (std::uint32_t i = 0; const vk::QueueFamilyProperties &properties : queueFamilyProperties) {
-            if (properties.queueFlags & vk::QueueFlagBits::eTransfer && !(properties.queueFlags & (vk::QueueFlagBits::eCompute | vk::QueueFlagBits::eGraphics))) {
+        for (std::uint32_t i = 0; const VULKAN_HPP_NAMESPACE::QueueFamilyProperties &properties : queueFamilyProperties) {
+            if (properties.queueFlags & VULKAN_HPP_NAMESPACE::QueueFlagBits::eTransfer && !(properties.queueFlags & (VULKAN_HPP_NAMESPACE::QueueFlagBits::eCompute | VULKAN_HPP_NAMESPACE::QueueFlagBits::eGraphics))) {
                 return i;
             }
             ++i;
@@ -102,8 +102,8 @@ namespace vku {
      */
     export
     [[nodiscard]] auto getPresentQueueFamily(
-        vk::PhysicalDevice physicalDevice,
-        vk::SurfaceKHR surface,
+        VULKAN_HPP_NAMESPACE::PhysicalDevice physicalDevice,
+        VULKAN_HPP_NAMESPACE::SurfaceKHR surface,
         std::uint32_t queueFamilyCount
     ) -> std::optional<std::uint32_t> {
         for (std::uint32_t i = 0; i < queueFamilyCount; ++i) {
@@ -126,12 +126,12 @@ namespace vku {
      */
     export
     [[nodiscard]] auto getGraphicsPresentQueueFamily(
-        vk::PhysicalDevice physicalDevice,
-        vk::SurfaceKHR surface,
-        std::span<const vk::QueueFamilyProperties> queueFamilyProperties
+        VULKAN_HPP_NAMESPACE::PhysicalDevice physicalDevice,
+        VULKAN_HPP_NAMESPACE::SurfaceKHR surface,
+        std::span<const VULKAN_HPP_NAMESPACE::QueueFamilyProperties> queueFamilyProperties
     ) -> std::optional<std::uint32_t> {
-        for (std::uint32_t i = 0; const vk::QueueFamilyProperties &properties : queueFamilyProperties) {
-            if (properties.queueFlags & vk::QueueFlagBits::eGraphics && physicalDevice.getSurfaceSupportKHR(i, surface)) {
+        for (std::uint32_t i = 0; const VULKAN_HPP_NAMESPACE::QueueFamilyProperties &properties : queueFamilyProperties) {
+            if (properties.queueFlags & VULKAN_HPP_NAMESPACE::QueueFlagBits::eGraphics && physicalDevice.getSurfaceSupportKHR(i, surface)) {
                 return i;
             }
             ++i;
@@ -151,12 +151,12 @@ namespace vku {
      */
     export
     [[nodiscard]] auto getComputePresentQueueFamily(
-        vk::PhysicalDevice physicalDevice,
-        vk::SurfaceKHR surface,
-        std::span<const vk::QueueFamilyProperties> queueFamilyProperties
+        VULKAN_HPP_NAMESPACE::PhysicalDevice physicalDevice,
+        VULKAN_HPP_NAMESPACE::SurfaceKHR surface,
+        std::span<const VULKAN_HPP_NAMESPACE::QueueFamilyProperties> queueFamilyProperties
     ) -> std::optional<std::uint32_t> {
-        for (std::uint32_t i = 0; const vk::QueueFamilyProperties &properties : queueFamilyProperties) {
-            if (properties.queueFlags & vk::QueueFlagBits::eCompute && physicalDevice.getSurfaceSupportKHR(i, surface)) {
+        for (std::uint32_t i = 0; const VULKAN_HPP_NAMESPACE::QueueFamilyProperties &properties : queueFamilyProperties) {
+            if (properties.queueFlags & VULKAN_HPP_NAMESPACE::QueueFlagBits::eCompute && physicalDevice.getSurfaceSupportKHR(i, surface)) {
                 return i;
             }
             ++i;
