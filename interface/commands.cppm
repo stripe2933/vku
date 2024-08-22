@@ -5,7 +5,12 @@ module;
 #include <cstdint>
 #include <algorithm>
 #include <concepts>
+#if !defined(__GLIBCXX__) && !defined(__GLIBCPP__)
+// Currently libstdc++ with Clang has linking issue with std::forward_list, therefore we'll use std::vector<std::unique_ptr<T>>
+// for the reference-preserving container instead. See the below timelineSemaphoreSubmitInfos variable declaration.
+// TODO: fix when the issue is resolved.
 #include <forward_list>
+#endif
 #include <functional>
 #include <map>
 #include <optional>
@@ -17,6 +22,9 @@ module;
 #include <unordered_map>
 #include <utility>
 #include <vector>
+#if defined(__GLIBCXX__) || defined(__GLIBCPP__)
+#include <memory>
+#endif
 #endif
 
 #include <vulkan/vulkan_hpp_macros.hpp>
@@ -156,7 +164,11 @@ namespace vku {
 
         std::unordered_map<VULKAN_HPP_NAMESPACE::Queue, std::vector<VULKAN_HPP_NAMESPACE::SubmitInfo>> submitInfosPerQueue;
         std::vector<TimelineSemaphoreWaitInfo> waitInfos;
+#if defined(__GLIBCXX__) || defined(__GLIBCPP__)
+        std::vector<std::unique_ptr<VULKAN_HPP_NAMESPACE::TimelineSemaphoreSubmitInfo>> timelineSemaphoreSubmitInfos;
+#else
         std::forward_list<VULKAN_HPP_NAMESPACE::TimelineSemaphoreSubmitInfo> timelineSemaphoreSubmitInfos;
+#endif
         // Total dstStageMasks does not exceed the total wait semaphore count (=timelineSemaphores.getValueStorage().size()).
         const std::vector waitDstStageMasks(timelineSemaphores.getValueStorage().size(), VULKAN_HPP_NAMESPACE::Flags { VULKAN_HPP_NAMESPACE::PipelineStageFlagBits::eTopOfPipe });
 
@@ -177,7 +189,12 @@ namespace vku {
                     unsafeProxy(std::span { waitDstStageMasks }.subspan(0, waitSemaphores.size())),
                     commandBuffers,
                     signalSemaphore,
+#if defined(__GLIBCXX__) || defined(__GLIBCPP__)
+                    timelineSemaphoreSubmitInfos.emplace_back(
+                        std::make_unique<VULKAN_HPP_NAMESPACE::TimelineSemaphoreSubmitInfo>(waitSemaphoreValues, *signalSemaphoreValue)).get());
+#else
                     &timelineSemaphoreSubmitInfos.emplace_front(waitSemaphoreValues, *signalSemaphoreValue));
+#endif
 
                 // Update the final signal semaphore value for current signal semaphore,
                 // i.e. update the value to current value if value < current value.
@@ -194,7 +211,12 @@ namespace vku {
                     unsafeProxy(std::span { waitDstStageMasks }.subspan(0, waitSemaphores.size())),
                     commandBuffers,
                     {},
+#if defined(__GLIBCXX__) || defined(__GLIBCPP__)
+                    timelineSemaphoreSubmitInfos.emplace_back(
+                        std::make_unique<VULKAN_HPP_NAMESPACE::TimelineSemaphoreSubmitInfo>(waitSemaphoreValues)).get(),
+#else
                     &timelineSemaphoreSubmitInfos.emplace_front(waitSemaphoreValues),
+#endif
                 });
             }
         }
