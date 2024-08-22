@@ -57,28 +57,28 @@ struct std::hash<VULKAN_HPP_NAMESPACE::Semaphore> {
 #endif
 
 namespace vku {
-    export template <std::invocable<vk::CommandBuffer> F>
+    export template <std::invocable<VULKAN_HPP_NAMESPACE::CommandBuffer> F>
     struct ExecutionInfo {
         F commandRecorder;
-        vk::CommandPool commandPool;
-        vk::Queue queue;
+        VULKAN_HPP_NAMESPACE::CommandPool commandPool;
+        VULKAN_HPP_NAMESPACE::Queue queue;
         std::optional<std::uint64_t> signalValue { 0ULL };
     };
 
-    export template <std::invocable<vk::CommandBuffer> F>
-    auto executeSingleCommand(vk::Device device, vk::CommandPool commandPool, vk::Queue queue, F &&f, vk::Fence fence = {}) -> void
-        requires std::is_void_v<std::invoke_result_t<F, vk::CommandBuffer>>;
+    export template <std::invocable<VULKAN_HPP_NAMESPACE::CommandBuffer> F>
+    auto executeSingleCommand(VULKAN_HPP_NAMESPACE::Device device, VULKAN_HPP_NAMESPACE::CommandPool commandPool, VULKAN_HPP_NAMESPACE::Queue queue, F &&f, VULKAN_HPP_NAMESPACE::Fence fence = {}) -> void
+        requires std::is_void_v<std::invoke_result_t<F, VULKAN_HPP_NAMESPACE::CommandBuffer>>;
 
-    export template <std::invocable<vk::CommandBuffer> F>
-    [[nodiscard]] auto executeSingleCommand(vk::Device device, vk::CommandPool commandPool, vk::Queue queue, F &&f, vk::Fence fence = {}) -> std::invoke_result_t<F, vk::CommandBuffer>;
+    export template <std::invocable<VULKAN_HPP_NAMESPACE::CommandBuffer> F>
+    [[nodiscard]] auto executeSingleCommand(VULKAN_HPP_NAMESPACE::Device device, VULKAN_HPP_NAMESPACE::CommandPool commandPool, VULKAN_HPP_NAMESPACE::Queue queue, F &&f, VULKAN_HPP_NAMESPACE::Fence fence = {}) -> std::invoke_result_t<F, VULKAN_HPP_NAMESPACE::CommandBuffer>;
 
     export template <typename... ExecutionInfoTuples>
     [[nodiscard]] auto executeHierarchicalCommands(
-        const vk::raii::Device &device,
+        const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
         ExecutionInfoTuples &&...executionInfoTuples
-    ) -> std::pair<std::vector<vk::raii::Semaphore>, std::vector<std::uint64_t>> {
+    ) -> std::pair<std::vector<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Semaphore>, std::vector<std::uint64_t>> {
         // Count the total required command buffers for each command pool.
-        std::unordered_map<vk::CommandPool, std::uint32_t> commandBufferCounts;
+        std::unordered_map<VULKAN_HPP_NAMESPACE::CommandPool, std::uint32_t> commandBufferCounts;
         ([&]() {
             apply([&](const auto &...executionInfo) {
                 (++commandBufferCounts[executionInfo.commandPool], ...);
@@ -86,28 +86,28 @@ namespace vku {
         }(), ...);
 
         // Make FIFO command buffer queue for each command pools. When all command buffers are submitted, they must be empty.
-        std::unordered_map<vk::CommandPool, std::vector<vk::CommandBuffer>> commandBuffersPerPool;
+        std::unordered_map<VULKAN_HPP_NAMESPACE::CommandPool, std::vector<VULKAN_HPP_NAMESPACE::CommandBuffer>> commandBuffersPerPool;
         for (auto [commandPool, commandBufferCount] : commandBufferCounts) {
             commandBuffersPerPool.emplace(commandPool, (*device).allocateCommandBuffers({
                 commandPool,
-                vk::CommandBufferLevel::ePrimary,
+                VULKAN_HPP_NAMESPACE::CommandBufferLevel::ePrimary,
                 commandBufferCount,
             }));
         }
 
         container::OnDemandCounterStorage timelineSemaphores
-            = container::makeOnDemandCounterStorage<std::uint64_t>([&]() -> vk::raii::Semaphore {
-                return { device, vk::StructureChain {
-                    vk::SemaphoreCreateInfo{},
-                    vk::SemaphoreTypeCreateInfo { vk::SemaphoreType::eTimeline, 0 },
+            = container::makeOnDemandCounterStorage<std::uint64_t>([&]() -> VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Semaphore {
+                return { device, VULKAN_HPP_NAMESPACE::StructureChain {
+                    VULKAN_HPP_NAMESPACE::SemaphoreCreateInfo{},
+                    VULKAN_HPP_NAMESPACE::SemaphoreTypeCreateInfo { VULKAN_HPP_NAMESPACE::SemaphoreType::eTimeline, 0 },
                 }.get() };
             });
-        std::unordered_map<vk::Semaphore, std::uint64_t> finalSignalSemaphoreValues;
+        std::unordered_map<VULKAN_HPP_NAMESPACE::Semaphore, std::uint64_t> finalSignalSemaphoreValues;
 
         // Collect the submission command buffers and the signal semaphore by
         // 1) destination queue, 2) wait semaphore value, 3) signal semaphore value (if exist).
-        std::map<std::tuple<vk::Queue, std::uint64_t, std::optional<std::uint64_t>>, std::pair<std::vector<vk::CommandBuffer>, vk::Semaphore>> submitInfos;
-        std::unordered_multimap<std::uint64_t, vk::Semaphore> waitSemaphoresPerSignalValues;
+        std::map<std::tuple<VULKAN_HPP_NAMESPACE::Queue, std::uint64_t, std::optional<std::uint64_t>>, std::pair<std::vector<VULKAN_HPP_NAMESPACE::CommandBuffer>, VULKAN_HPP_NAMESPACE::Semaphore>> submitInfos;
+        std::unordered_multimap<std::uint64_t, VULKAN_HPP_NAMESPACE::Semaphore> waitSemaphoresPerSignalValues;
 
         apply_with_index([&]<std::size_t Is>(std::integral_constant<std::size_t, Is>, auto &&executionInfos){
             static constexpr std::uint64_t waitSemaphoreValue = Is;
@@ -115,11 +115,11 @@ namespace vku {
             apply_by_value([&](auto &&executionInfo) {
                 // Get command buffer from FIFO queue and pop it.
                 auto &poolCommandBuffers = commandBuffersPerPool[executionInfo.commandPool];
-                vk::CommandBuffer commandBuffer = poolCommandBuffers.back();
+                VULKAN_HPP_NAMESPACE::CommandBuffer commandBuffer = poolCommandBuffers.back();
                 poolCommandBuffers.pop_back();
 
                 // Record commands into the commandBuffer by executing executionInfo.commandRecorder.
-                commandBuffer.begin({ vk::CommandBufferUsageFlagBits::eOneTimeSubmit });
+                commandBuffer.begin({ VULKAN_HPP_NAMESPACE::CommandBufferUsageFlagBits::eOneTimeSubmit });
                 std::invoke(FWD(executionInfo.commandRecorder), commandBuffer);
                 commandBuffer.end();
 
@@ -131,14 +131,14 @@ namespace vku {
                 };
                 auto it = submitInfos.find(key);
                 if (it == submitInfos.end()) {
-                    vk::Semaphore signalSemaphore = nullptr;
+                    VULKAN_HPP_NAMESPACE::Semaphore signalSemaphore = nullptr;
                     if (get<2>(key) /* modified signal value */) {
                         // Register the semaphore for a submission whose waitSemaphoreValue is current's signalSemaphoreValue.
                         signalSemaphore = *timelineSemaphores.at(*get<2>(key));
                         waitSemaphoresPerSignalValues.emplace(signalSemaphoreValue, signalSemaphore);
                     }
 
-                    it = submitInfos.emplace_hint(it, key, std::pair { std::vector<vk::CommandBuffer>{}, signalSemaphore });
+                    it = submitInfos.emplace_hint(it, key, std::pair { std::vector<VULKAN_HPP_NAMESPACE::CommandBuffer>{}, signalSemaphore });
                 }
                 it->second.first/*commandBuffers*/.push_back(commandBuffer);
 
@@ -146,19 +146,19 @@ namespace vku {
         }, std::forward_as_tuple(FWD(executionInfoTuples)...));
 
         struct TimelineSemaphoreWaitInfo {
-            std::vector<vk::Semaphore> waitSemaphores;
+            std::vector<VULKAN_HPP_NAMESPACE::Semaphore> waitSemaphores;
             std::vector<std::uint64_t> waitSemaphoreValues;
 
-            TimelineSemaphoreWaitInfo(std::vector<vk::Semaphore> _waitSemaphores, std::uint64_t waitValue)
+            TimelineSemaphoreWaitInfo(std::vector<VULKAN_HPP_NAMESPACE::Semaphore> _waitSemaphores, std::uint64_t waitValue)
                 : waitSemaphores { std::move(_waitSemaphores) }
                 , waitSemaphoreValues { std::vector(waitSemaphores.size(), waitValue) } { }
         };
 
-        std::unordered_map<vk::Queue, std::vector<vk::SubmitInfo>> submitInfosPerQueue;
+        std::unordered_map<VULKAN_HPP_NAMESPACE::Queue, std::vector<VULKAN_HPP_NAMESPACE::SubmitInfo>> submitInfosPerQueue;
         std::vector<TimelineSemaphoreWaitInfo> waitInfos;
-        std::forward_list<vk::TimelineSemaphoreSubmitInfo> timelineSemaphoreSubmitInfos;
+        std::forward_list<VULKAN_HPP_NAMESPACE::TimelineSemaphoreSubmitInfo> timelineSemaphoreSubmitInfos;
         // Total dstStageMasks does not exceed the total wait semaphore count (=timelineSemaphores.getValueStorage().size()).
-        const std::vector waitDstStageMasks(timelineSemaphores.getValueStorage().size(), vk::Flags { vk::PipelineStageFlagBits::eTopOfPipe });
+        const std::vector waitDstStageMasks(timelineSemaphores.getValueStorage().size(), VULKAN_HPP_NAMESPACE::Flags { VULKAN_HPP_NAMESPACE::PipelineStageFlagBits::eTopOfPipe });
 
         for (const auto &[key, value] : submitInfos) {
             const auto &[queue, waitSemaphoreValue, signalSemaphoreValue] = key;
@@ -203,8 +203,8 @@ namespace vku {
             queue.submit(submitInfos);
         }
 
-        std::pair<std::vector<vk::raii::Semaphore>, std::vector<std::uint64_t>> result;
-        for (vk::raii::Semaphore &timelineSemaphore : timelineSemaphores.getValueStorage()) {
+        std::pair<std::vector<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Semaphore>, std::vector<std::uint64_t>> result;
+        for (VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Semaphore &timelineSemaphore : timelineSemaphores.getValueStorage()) {
             result.second.push_back(finalSignalSemaphoreValues[*timelineSemaphore]);
             result.first.push_back(std::move(timelineSemaphore));
         }
@@ -212,46 +212,46 @@ namespace vku {
     }
 }
 
-template <std::invocable<vk::CommandBuffer> F>
+template <std::invocable<VULKAN_HPP_NAMESPACE::CommandBuffer> F>
 auto vku::executeSingleCommand(
-    vk::Device device,
-    vk::CommandPool commandPool,
-    vk::Queue queue,
+    VULKAN_HPP_NAMESPACE::Device device,
+    VULKAN_HPP_NAMESPACE::CommandPool commandPool,
+    VULKAN_HPP_NAMESPACE::Queue queue,
     F &&f,
-    vk::Fence fence
-) -> void requires std::is_void_v<std::invoke_result_t<F, vk::CommandBuffer>>{
-    const vk::CommandBuffer commandBuffer = device.allocateCommandBuffers(vk::CommandBufferAllocateInfo {
+    VULKAN_HPP_NAMESPACE::Fence fence
+) -> void requires std::is_void_v<std::invoke_result_t<F, VULKAN_HPP_NAMESPACE::CommandBuffer>>{
+    const VULKAN_HPP_NAMESPACE::CommandBuffer commandBuffer = device.allocateCommandBuffers(VULKAN_HPP_NAMESPACE::CommandBufferAllocateInfo {
         commandPool,
-        vk::CommandBufferLevel::ePrimary,
+        VULKAN_HPP_NAMESPACE::CommandBufferLevel::ePrimary,
         1,
     })[0];
-    commandBuffer.begin({ vk::CommandBufferUsageFlagBits::eOneTimeSubmit });
+    commandBuffer.begin({ VULKAN_HPP_NAMESPACE::CommandBufferUsageFlagBits::eOneTimeSubmit });
     std::invoke(FWD(f), commandBuffer);
     commandBuffer.end();
-    queue.submit(vk::SubmitInfo {
+    queue.submit(VULKAN_HPP_NAMESPACE::SubmitInfo {
         {},
         {},
         commandBuffer,
     }, fence);
 }
 
-template <std::invocable<vk::CommandBuffer> F>
+template <std::invocable<VULKAN_HPP_NAMESPACE::CommandBuffer> F>
 [[nodiscard]] auto vku::executeSingleCommand(
-    vk::Device device,
-    vk::CommandPool commandPool,
-    vk::Queue queue,
+    VULKAN_HPP_NAMESPACE::Device device,
+    VULKAN_HPP_NAMESPACE::CommandPool commandPool,
+    VULKAN_HPP_NAMESPACE::Queue queue,
     F &&f,
-    vk::Fence fence
-) -> std::invoke_result_t<F, vk::CommandBuffer> {
-    const vk::CommandBuffer commandBuffer = device.allocateCommandBuffers(vk::CommandBufferAllocateInfo {
+    VULKAN_HPP_NAMESPACE::Fence fence
+) -> std::invoke_result_t<F, VULKAN_HPP_NAMESPACE::CommandBuffer> {
+    const VULKAN_HPP_NAMESPACE::CommandBuffer commandBuffer = device.allocateCommandBuffers(VULKAN_HPP_NAMESPACE::CommandBufferAllocateInfo {
         commandPool,
-        vk::CommandBufferLevel::ePrimary,
+        VULKAN_HPP_NAMESPACE::CommandBufferLevel::ePrimary,
         1,
     })[0];
-    commandBuffer.begin({ vk::CommandBufferUsageFlagBits::eOneTimeSubmit });
+    commandBuffer.begin({ VULKAN_HPP_NAMESPACE::CommandBufferUsageFlagBits::eOneTimeSubmit });
     auto result = std::invoke(FWD(f), commandBuffer);
     commandBuffer.end();
-    queue.submit(vk::SubmitInfo {
+    queue.submit(VULKAN_HPP_NAMESPACE::SubmitInfo {
         {},
         {},
         commandBuffer,

@@ -8,6 +8,8 @@ module;
 #endif
 #endif
 
+#include <vulkan/vulkan_hpp_macros.hpp>
+
 export module vku:buffers.AllocatedBuffer;
 
 #ifdef VKU_USE_STD_MODULE
@@ -16,15 +18,20 @@ import std;
 export import vk_mem_alloc_hpp;
 export import :buffers.Buffer;
 
+// #define VMA_HPP_NAMESPACE to vma, if not defined.
+#ifndef VMA_HPP_NAMESPACE
+#define VMA_HPP_NAMESPACE vma
+#endif
+
 namespace vku {
     export struct AllocatedBuffer : Buffer {
-        vma::Allocator allocator;
-        vma::Allocation allocation;
+        VMA_HPP_NAMESPACE::Allocator allocator;
+        VMA_HPP_NAMESPACE::Allocation allocation;
 
         AllocatedBuffer(
-            vma::Allocator allocator,
-            const vk::BufferCreateInfo &createInfo,
-            const vma::AllocationCreateInfo &allocationCreateInfo = { {}, vma::MemoryUsage::eAutoPreferDevice });
+            VMA_HPP_NAMESPACE::Allocator allocator,
+            const VULKAN_HPP_NAMESPACE::BufferCreateInfo &createInfo,
+            const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo = { {}, VMA_HPP_NAMESPACE::MemoryUsage::eAutoPreferDevice });
         AllocatedBuffer(const AllocatedBuffer&) = delete;
         AllocatedBuffer(AllocatedBuffer &&src) noexcept;
         auto operator=(const AllocatedBuffer&) -> AllocatedBuffer& = delete;
@@ -38,9 +45,9 @@ namespace vku {
 // --------------------
 
 vku::AllocatedBuffer::AllocatedBuffer(
-    vma::Allocator allocator,
-    const vk::BufferCreateInfo &createInfo,
-    const vma::AllocationCreateInfo &allocationCreateInfo
+    VMA_HPP_NAMESPACE::Allocator allocator,
+    const VULKAN_HPP_NAMESPACE::BufferCreateInfo &createInfo,
+    const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo
 ) : Buffer { nullptr, createInfo.size },
     allocator { allocator } {
     std::tie(buffer, allocation) = allocator.createBuffer(createInfo, allocationCreateInfo);

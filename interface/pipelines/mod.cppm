@@ -12,6 +12,8 @@ module;
 #include <utility>
 #endif
 
+#include <vulkan/vulkan_hpp_macros.hpp>
+
 export module vku:pipelines;
 export import :pipelines.Shader;
 
@@ -35,7 +37,7 @@ namespace vku {
      * vk::raii::PipelineLayout pipelineLayout { device, vk::PipelineLayoutCreateInfo { ... } };
      * vk::raii::Pipeline pipeline { device, nullptr, vk::ComputePipelineCreateInfo {
      *     {},
-     *     // vk::ComputePipelienCreateInfo accepts a single vk::PipelineShaderStageCreateInfo, therefore we call
+     *     // vk::ComputePipelineCreateInfo accepts a single vk::PipelineShaderStageCreateInfo, therefore we call
      *     // vku::RefHolder<...>::get() to explicitly get the array, and access the first element.
      *     vku::createPipelineStages(
      *         device,
@@ -56,16 +58,16 @@ namespace vku {
      * @endcode
      */
     export template <std::convertible_to<Shader>... Shaders>
-    [[nodiscard]] auto createPipelineStages(const vk::raii::Device &device, const Shaders &...shaders)
+    [[nodiscard]] auto createPipelineStages(const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device, const Shaders &...shaders)
 #ifdef _MSC_VER
-        -> RefHolder<std::array<vk::PipelineShaderStageCreateInfo, sizeof...(Shaders)>, std::array<vk::raii::ShaderModule, sizeof...(Shaders)>>
+        -> RefHolder<std::array<VULKAN_HPP_NAMESPACE::PipelineShaderStageCreateInfo, sizeof...(Shaders)>, std::array<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ShaderModule, sizeof...(Shaders)>>
 #endif
     {
         return RefHolder {
             [&](const auto &shaderModules) {
                 return std::apply([&](const auto &...shaderModule) {
                     return std::array {
-                        vk::PipelineShaderStageCreateInfo {
+                        VULKAN_HPP_NAMESPACE::PipelineShaderStageCreateInfo {
                             {},
                             shaders.stage,
                             *shaderModule,
@@ -75,7 +77,7 @@ namespace vku {
                 }, shaderModules);
             },
             std::array {
-                vk::raii::ShaderModule { device, vk::ShaderModuleCreateInfo {
+                VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ShaderModule { device, VULKAN_HPP_NAMESPACE::ShaderModuleCreateInfo {
                     {},
                     shaders.code,
                 } }...
@@ -89,7 +91,7 @@ namespace vku {
      * it conveniently.
      * @param layout Pipeline layout that is used for the pipeline.
      * @param colorAttachmentCount Number of color attachments (default=<tt>0</tt>). This must be less than or equal to 8.
-     * @param hasDepthStencilAttachemnt Boolean value that indicates whether the pipeline has depth-stencil attachment (default=<tt>false</tt>).
+     * @param hasDepthStencilAttachment Boolean value that indicates whether the pipeline has depth-stencil attachment (default=<tt>false</tt>).
      * @param multisample MSAA sample count (default=<tt>vk::SampleCountFlagBits::e1</tt>).
      * @return <tt>vk::GraphicsPipelineCreateInfo</tt> struct. You may have to set <tt>renderPass</tt> and
      * <tt>subpass</tt> for conventional render-pass based pipeline creation, or set <tt>pNexts</tt> with
@@ -99,7 +101,7 @@ namespace vku {
      * - Vertex input state: no vertex buffer binding.
      * - Input assembly state: triangle list topology, no primitive restart.
      * - Viewport state: single viewport and scissor in dynamic state.
-     * - Rasteriation state: fill mode=fill, back face culling with counter-clockwise winding order, no depth clamp/bias,
+     * - Rasterization state: fill mode=fill, back face culling with counter-clockwise winding order, no depth clamp/bias,
      *   line width=1.
      * - Multisample state: rasterization samples=\p multisample, no sample shading and alpha to coverage/one.
      * - Depth-stencil state: <tt>nullptr</tt> if \p hasDepthStencilAttachment = <tt>false</tt>, disabled depth
@@ -134,15 +136,16 @@ namespace vku {
      *         vk::Format::eD32Sfloat,
      *     },
      * }.get() };
+     * @endcode
      */
     export
     [[nodiscard]] auto getDefaultGraphicsPipelineCreateInfo(
-        vk::ArrayProxyNoTemporaries<const vk::PipelineShaderStageCreateInfo> stages,
-        vk::PipelineLayout layout,
+        VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const VULKAN_HPP_NAMESPACE::PipelineShaderStageCreateInfo> stages,
+        VULKAN_HPP_NAMESPACE::PipelineLayout layout,
         std::uint32_t colorAttachmentCount = 0,
-        bool hasDepthStencilAttachemnt = false,
-        vk::SampleCountFlagBits multisample = vk::SampleCountFlagBits::e1
-    ) -> vk::GraphicsPipelineCreateInfo;
+        bool hasDepthStencilAttachment = false,
+        VULKAN_HPP_NAMESPACE::SampleCountFlagBits multisample = VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1
+    ) -> VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo;
 }
 
 // --------------------
@@ -153,61 +156,61 @@ namespace vku {
 #define ARRAY_OF(N, ...) INDEX_SEQ(Is, N, { return std::array { ((void)Is, __VA_ARGS__)... }; })
 
 auto vku::getDefaultGraphicsPipelineCreateInfo(
-    vk::ArrayProxyNoTemporaries<const vk::PipelineShaderStageCreateInfo> stages,
-    vk::PipelineLayout layout,
+    VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const VULKAN_HPP_NAMESPACE::PipelineShaderStageCreateInfo> stages,
+    VULKAN_HPP_NAMESPACE::PipelineLayout layout,
     std::uint32_t colorAttachmentCount,
-    bool hasDepthStencilAttachemnt,
-    vk::SampleCountFlagBits multisample
-) -> vk::GraphicsPipelineCreateInfo {
-    static constexpr vk::PipelineVertexInputStateCreateInfo vertexInputState{};
+    bool hasDepthStencilAttachment,
+    VULKAN_HPP_NAMESPACE::SampleCountFlagBits multisample
+) -> VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo {
+    static constexpr VULKAN_HPP_NAMESPACE::PipelineVertexInputStateCreateInfo vertexInputState{};
 
-    static constexpr vk::PipelineInputAssemblyStateCreateInfo inputAssemblyState {
+    static constexpr VULKAN_HPP_NAMESPACE::PipelineInputAssemblyStateCreateInfo inputAssemblyState {
         {},
-        vk::PrimitiveTopology::eTriangleList,
+        VULKAN_HPP_NAMESPACE::PrimitiveTopology::eTriangleList,
     };
 
-    static constexpr vk::PipelineViewportStateCreateInfo viewportState {
+    static constexpr VULKAN_HPP_NAMESPACE::PipelineViewportStateCreateInfo viewportState {
         {},
         1, {},
         1, {},
     };
 
-    static constexpr vk::PipelineRasterizationStateCreateInfo rasterizationState {
+    static constexpr VULKAN_HPP_NAMESPACE::PipelineRasterizationStateCreateInfo rasterizationState {
         {},
         {}, {},
-        vk::PolygonMode::eFill,
-        vk::CullModeFlagBits::eBack, {},
+        VULKAN_HPP_NAMESPACE::PolygonMode::eFill,
+        VULKAN_HPP_NAMESPACE::CullModeFlagBits::eBack, {},
         {}, {}, {}, {},
         1.f,
     };
 
     static constexpr std::array multisampleStates {
-        vk::PipelineMultisampleStateCreateInfo { {}, vk::SampleCountFlagBits::e1 },
-        vk::PipelineMultisampleStateCreateInfo { {}, vk::SampleCountFlagBits::e2 },
-        vk::PipelineMultisampleStateCreateInfo { {}, vk::SampleCountFlagBits::e4 },
-        vk::PipelineMultisampleStateCreateInfo { {}, vk::SampleCountFlagBits::e8 },
-        vk::PipelineMultisampleStateCreateInfo { {}, vk::SampleCountFlagBits::e16 },
-        vk::PipelineMultisampleStateCreateInfo { {}, vk::SampleCountFlagBits::e32 },
-        vk::PipelineMultisampleStateCreateInfo { {}, vk::SampleCountFlagBits::e64 },
+        VULKAN_HPP_NAMESPACE::PipelineMultisampleStateCreateInfo { {}, VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1 },
+        VULKAN_HPP_NAMESPACE::PipelineMultisampleStateCreateInfo { {}, VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e2 },
+        VULKAN_HPP_NAMESPACE::PipelineMultisampleStateCreateInfo { {}, VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e4 },
+        VULKAN_HPP_NAMESPACE::PipelineMultisampleStateCreateInfo { {}, VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e8 },
+        VULKAN_HPP_NAMESPACE::PipelineMultisampleStateCreateInfo { {}, VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e16 },
+        VULKAN_HPP_NAMESPACE::PipelineMultisampleStateCreateInfo { {}, VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e32 },
+        VULKAN_HPP_NAMESPACE::PipelineMultisampleStateCreateInfo { {}, VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e64 },
     };
 
-    static constexpr vk::PipelineDepthStencilStateCreateInfo depthStencilState{};
+    static constexpr VULKAN_HPP_NAMESPACE::PipelineDepthStencilStateCreateInfo depthStencilState{};
 
     constexpr std::uint32_t MAX_COLOR_ATTACHMENT_COUNT = 8;
     if (colorAttachmentCount > MAX_COLOR_ATTACHMENT_COUNT) {
         throw std::runtime_error { "Color attachment count exceeds maximum" };
     }
     static constexpr std::array colorBlendAttachments
-        = ARRAY_OF(MAX_COLOR_ATTACHMENT_COUNT + 1, vk::PipelineColorBlendAttachmentState {
+        = ARRAY_OF(MAX_COLOR_ATTACHMENT_COUNT + 1, VULKAN_HPP_NAMESPACE::PipelineColorBlendAttachmentState {
             {},
             {}, {}, {},
             {}, {}, {},
-            vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG | vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA,
+            VULKAN_HPP_NAMESPACE::ColorComponentFlagBits::eR | VULKAN_HPP_NAMESPACE::ColorComponentFlagBits::eG | VULKAN_HPP_NAMESPACE::ColorComponentFlagBits::eB | VULKAN_HPP_NAMESPACE::ColorComponentFlagBits::eA,
         });
     static constexpr std::array colorBlendStates
         = INDEX_SEQ(Is, MAX_COLOR_ATTACHMENT_COUNT + 1, {
             return std::array {
-                vk::PipelineColorBlendStateCreateInfo {
+                VULKAN_HPP_NAMESPACE::PipelineColorBlendStateCreateInfo {
                     {},
                     {}, {},
                     Is, colorBlendAttachments.data(),
@@ -216,10 +219,10 @@ auto vku::getDefaultGraphicsPipelineCreateInfo(
         });
 
     static constexpr std::array dynamicStates {
-        vk::DynamicState::eViewport,
-        vk::DynamicState::eScissor,
+        VULKAN_HPP_NAMESPACE::DynamicState::eViewport,
+        VULKAN_HPP_NAMESPACE::DynamicState::eScissor,
     };
-    static constexpr vk::PipelineDynamicStateCreateInfo dynamicState {
+    static constexpr VULKAN_HPP_NAMESPACE::PipelineDynamicStateCreateInfo dynamicState {
         {},
         dynamicStates.size(), dynamicStates.data(),
     };
@@ -232,8 +235,8 @@ auto vku::getDefaultGraphicsPipelineCreateInfo(
         {},
         &viewportState,
         &rasterizationState,
-        &multisampleStates[std::countr_zero(static_cast<std::underlying_type_t<vk::SampleCountFlagBits>>(multisample))],
-        hasDepthStencilAttachemnt ? &depthStencilState : nullptr,
+        &multisampleStates[std::countr_zero(static_cast<std::underlying_type_t<VULKAN_HPP_NAMESPACE::SampleCountFlagBits>>(multisample))],
+        hasDepthStencilAttachment ? &depthStencilState : nullptr,
         &colorBlendStates[colorAttachmentCount],
         &dynamicState,
         layout,

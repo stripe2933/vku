@@ -8,6 +8,8 @@ module;
 #include <vector>
 #endif
 
+#include <vulkan/vulkan_hpp_macros.hpp>
+
 export module vku:rendering.AttachmentGroupBase;
 
 #ifdef VKU_USE_STD_MODULE
@@ -18,15 +20,20 @@ export import vulkan_hpp;
 export import :images.AllocatedImage;
 export import :utils;
 
+// #define VMA_HPP_NAMESPACE to vma, if not defined.
+#ifndef VMA_HPP_NAMESPACE
+#define VMA_HPP_NAMESPACE vma
+#endif
+
 #define FWD(...) static_cast<decltype(__VA_ARGS__)&&>(__VA_ARGS__)
 
 namespace vku {
     export class AttachmentGroupBase {
     public:
-        vk::Extent2D extent;
+        VULKAN_HPP_NAMESPACE::Extent2D extent;
 
         explicit AttachmentGroupBase(
-            const vk::Extent2D &extent
+            const VULKAN_HPP_NAMESPACE::Extent2D &extent
         );
 
         AttachmentGroupBase(const AttachmentGroupBase&) = delete;
@@ -46,13 +53,13 @@ namespace vku {
         [[deprecated("Use vku::toViewport instead.")]]
         auto getViewport(
             bool negativeHeight = false
-        ) const noexcept -> vk::Viewport {
+        ) const noexcept -> VULKAN_HPP_NAMESPACE::Viewport {
             return toViewport(extent, negativeHeight);
         }
 
         [[nodiscard]]
         [[deprecated("Use vk::Rect2D instead.")]]
-        auto getScissor() const noexcept -> vk::Rect2D {
+        auto getScissor() const noexcept -> VULKAN_HPP_NAMESPACE::Rect2D {
             return { { 0, 0 }, extent };
         }
 
@@ -60,11 +67,11 @@ namespace vku {
         std::vector<std::unique_ptr<AllocatedImage>> storedImage;
 
         [[nodiscard]] auto createAttachmentImage(
-            vma::Allocator allocator,
-            vk::Format format,
-            vk::SampleCountFlagBits sampleCount,
-            vk::ImageUsageFlags usage,
-            const vma::AllocationCreateInfo &allocationCreateInfo
+            VMA_HPP_NAMESPACE::Allocator allocator,
+            VULKAN_HPP_NAMESPACE::Format format,
+            VULKAN_HPP_NAMESPACE::SampleCountFlagBits sampleCount,
+            VULKAN_HPP_NAMESPACE::ImageUsageFlags usage,
+            const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo
         ) const -> AllocatedImage;
     };
 }
@@ -74,7 +81,7 @@ namespace vku {
 // --------------------
 
 vku::AttachmentGroupBase::AttachmentGroupBase(
-    const vk::Extent2D &extent
+    const VULKAN_HPP_NAMESPACE::Extent2D &extent
 ) : extent { extent } { }
 
 auto vku::AttachmentGroupBase::storeImage(
@@ -84,20 +91,20 @@ auto vku::AttachmentGroupBase::storeImage(
 }
 
 auto vku::AttachmentGroupBase::createAttachmentImage(
-    vma::Allocator allocator,
-    vk::Format format,
-    vk::SampleCountFlagBits sampleCount,
-    vk::ImageUsageFlags usage,
-    const vma::AllocationCreateInfo &allocationCreateInfo
+    VMA_HPP_NAMESPACE::Allocator allocator,
+    VULKAN_HPP_NAMESPACE::Format format,
+    VULKAN_HPP_NAMESPACE::SampleCountFlagBits sampleCount,
+    VULKAN_HPP_NAMESPACE::ImageUsageFlags usage,
+    const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo
 ) const -> AllocatedImage {
-    return { allocator, vk::ImageCreateInfo {
+    return { allocator, VULKAN_HPP_NAMESPACE::ImageCreateInfo {
         {},
-        vk::ImageType::e2D,
+        VULKAN_HPP_NAMESPACE::ImageType::e2D,
         format,
-        vk::Extent3D { extent, 1 },
+        VULKAN_HPP_NAMESPACE::Extent3D { extent, 1 },
         1, 1,
         sampleCount,
-        vk::ImageTiling::eOptimal,
+        VULKAN_HPP_NAMESPACE::ImageTiling::eOptimal,
         usage,
     }, allocationCreateInfo };
 }

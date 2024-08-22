@@ -13,6 +13,8 @@ module;
 #include <vector>
 #endif
 
+#include <vulkan/vulkan_hpp_macros.hpp>
+
 export module vku:utils;
 export import :utils.RefHolder;
 
@@ -70,13 +72,13 @@ namespace vku {
      * vk::raii::Device device { physicalDevice, vk::DeviceCreateInfo {
      *     {},
      *     // { vk::DeviceQueueCreateInfo { ... } }, // ERROR! calling deleted constructor of vk::ArrayProxyNoTemporaries<const vk::DeviceQueueCreateInfo>.
-     *     vku::unsafeProxy(vk::DeviceQueueCreateInfo { ... }), // OK. Just make ensure that vk::DeviceQueueCreateInfo alives until the end of the device creation.
+     *     vku::unsafeProxy(vk::DeviceQueueCreateInfo { ... }), // OK. Just make ensure that vk::DeviceQueueCreateInfo make alive until the end of the device creation.
      *     ...
      * };
      * @endcode
      */
     export template <typename T>
-    [[nodiscard]] auto unsafeProxy(const T &value [[clang::lifetimebound]]) noexcept -> vk::ArrayProxyNoTemporaries<const T> {
+    [[nodiscard]] auto unsafeProxy(const T &value [[clang::lifetimebound]]) noexcept -> VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const T> {
         return value;
     }
 
@@ -88,7 +90,7 @@ namespace vku {
      * @note The intention of this function follows the same reason as <tt>unsafeAddress</tt> function.
      */
     export template <std::ranges::contiguous_range R>
-    [[nodiscard]] auto unsafeProxy(const R &range [[clang::lifetimebound]]) noexcept -> vk::ArrayProxyNoTemporaries<const std::ranges::range_value_t<R>> {
+    [[nodiscard]] auto unsafeProxy(const R &range [[clang::lifetimebound]]) noexcept -> VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const std::ranges::range_value_t<R>> {
         return range;
     }
 
@@ -100,7 +102,7 @@ namespace vku {
      * @note The intention of this function follows the same reason as <tt>unsafeAddress</tt> function.
      * @example
      * @code
-     * vk::raii::DescritorSetLayout device { device, vk::DescriptorSetLayoutCreateInfo {
+     * vk::raii::DescriptorSetLayout device { device, vk::DescriptorSetLayoutCreateInfo {
      *     {},
      *     // { vk::DescriptorSetLayoutBinding { ... }, ... }, // ERROR! calling deleted constructor of vk::ArrayProxyNoTemporaries<const vk::DescriptorSetLayoutBinding>.
      *     vku::unsafeProxy({
@@ -112,7 +114,7 @@ namespace vku {
      * @endcode
      */
     export template <typename T>
-    [[nodiscard]] auto unsafeProxy(const std::initializer_list<T> &list [[clang::lifetimebound]]) noexcept -> vk::ArrayProxyNoTemporaries<const T> {
+    [[nodiscard]] auto unsafeProxy(const std::initializer_list<T> &list [[clang::lifetimebound]]) noexcept -> VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const T> {
         return list;
     }
 
@@ -124,7 +126,7 @@ namespace vku {
      * @see contains(vk::Flags<T>, vk::Flags<T>) -> bool
      */
     export template <typename T>
-    [[nodiscard]] constexpr auto contains(vk::Flags<T> flags, T flag) noexcept -> bool {
+    [[nodiscard]] constexpr auto contains(VULKAN_HPP_NAMESPACE::Flags<T> flags, T flag) noexcept -> bool {
         return (flags & flag) == flag;
     }
 
@@ -136,7 +138,7 @@ namespace vku {
      * @see contains(vk::Flags<T>, T) -> bool
      */
     export template <typename T>
-    [[nodiscard]] constexpr auto contains(vk::Flags<T> super, vk::Flags<T> sub) noexcept -> bool {
+    [[nodiscard]] constexpr auto contains(VULKAN_HPP_NAMESPACE::Flags<T> super, VULKAN_HPP_NAMESPACE::Flags<T> sub) noexcept -> bool {
         return (super & sub) == sub;
     }
 
@@ -146,7 +148,7 @@ namespace vku {
      * @return Converted extent.
      */
     export
-    [[nodiscard]] constexpr auto toExtent2D(const vk::Extent3D &extent) noexcept -> vk::Extent2D {
+    [[nodiscard]] constexpr auto toExtent2D(const VULKAN_HPP_NAMESPACE::Extent3D &extent) noexcept -> VULKAN_HPP_NAMESPACE::Extent2D {
         return { extent.width, extent.height };
     }
 
@@ -155,10 +157,10 @@ namespace vku {
      * integer congruent to the source integer.
      * @param offset Offset to convert.
      * @return Converted extent.
-     * @note Negative component will be casted to unsigned int, with C++ standard conversion rule.
+     * @note Negative component will be cast to unsigned int, with C++ standard conversion rule.
      */
     export
-    [[nodiscard]] constexpr auto toExtent2D(const vk::Offset2D &offset) noexcept -> vk::Extent2D {
+    [[nodiscard]] constexpr auto toExtent2D(const VULKAN_HPP_NAMESPACE::Offset2D &offset) noexcept -> VULKAN_HPP_NAMESPACE::Extent2D {
         return { static_cast<std::uint32_t>(offset.x), static_cast<std::uint32_t>(offset.y) };
     }
 
@@ -168,7 +170,7 @@ namespace vku {
      * @return Converted offset.
      */
     export
-    [[nodiscard]] constexpr auto toOffset2D(const vk::Offset3D &offset) noexcept -> vk::Offset2D {
+    [[nodiscard]] constexpr auto toOffset2D(const VULKAN_HPP_NAMESPACE::Offset3D &offset) noexcept -> VULKAN_HPP_NAMESPACE::Offset2D {
         return { offset.x, offset.y };
     }
 
@@ -181,7 +183,7 @@ namespace vku {
      * @note Signed integer overflow is UB in C++. Make sure that the width and height are less than 2^31 - 1.
      */
     export
-    [[nodiscard]] constexpr auto toOffset2D(const vk::Extent2D &extent) NOEXCEPT_IF_RELEASE -> vk::Offset2D {
+    [[nodiscard]] constexpr auto toOffset2D(const VULKAN_HPP_NAMESPACE::Extent2D &extent) NOEXCEPT_IF_RELEASE -> VULKAN_HPP_NAMESPACE::Offset2D {
         assert(std::in_range<std::int32_t>(extent.width) && "Overflowing width.");
         assert(std::in_range<std::int32_t>(extent.height) && "Overflowing height.");
         return { static_cast<std::int32_t>(extent.width), static_cast<std::int32_t>(extent.height) };
@@ -203,7 +205,7 @@ namespace vku {
      * @endcode
      */
     export
-    [[nodiscard]] constexpr auto toViewport(const vk::Extent2D &extent, bool negativeHeight = false) noexcept -> vk::Viewport {
+    [[nodiscard]] constexpr auto toViewport(const VULKAN_HPP_NAMESPACE::Extent2D &extent, bool negativeHeight = false) noexcept -> VULKAN_HPP_NAMESPACE::Viewport {
         if (negativeHeight) {
             return { 0.f, static_cast<float>(extent.height), static_cast<float>(extent.width), -static_cast<float>(extent.height), 0.f, 1.f };
         }
@@ -221,7 +223,7 @@ namespace vku {
      * - Assertion error if height is zero (zero division).
      */
     export template <std::floating_point T = float>
-    [[nodiscard]] constexpr auto aspect(const vk::Extent2D &extent) NOEXCEPT_IF_RELEASE -> T {
+    [[nodiscard]] constexpr auto aspect(const VULKAN_HPP_NAMESPACE::Extent2D &extent) NOEXCEPT_IF_RELEASE -> T {
         assert(extent.height != 0 && "Height must not be zero.");
         return static_cast<T>(extent.width) / static_cast<T>(extent.height);
     }
