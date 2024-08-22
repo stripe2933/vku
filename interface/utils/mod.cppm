@@ -72,7 +72,7 @@ namespace vku {
      * vk::raii::Device device { physicalDevice, vk::DeviceCreateInfo {
      *     {},
      *     // { vk::DeviceQueueCreateInfo { ... } }, // ERROR! calling deleted constructor of vk::ArrayProxyNoTemporaries<const vk::DeviceQueueCreateInfo>.
-     *     vku::unsafeProxy(vk::DeviceQueueCreateInfo { ... }), // OK. Just make ensure that vk::DeviceQueueCreateInfo alives until the end of the device creation.
+     *     vku::unsafeProxy(vk::DeviceQueueCreateInfo { ... }), // OK. Just make ensure that vk::DeviceQueueCreateInfo make alive until the end of the device creation.
      *     ...
      * };
      * @endcode
@@ -102,7 +102,7 @@ namespace vku {
      * @note The intention of this function follows the same reason as <tt>unsafeAddress</tt> function.
      * @example
      * @code
-     * vk::raii::DescritorSetLayout device { device, vk::DescriptorSetLayoutCreateInfo {
+     * vk::raii::DescriptorSetLayout device { device, vk::DescriptorSetLayoutCreateInfo {
      *     {},
      *     // { vk::DescriptorSetLayoutBinding { ... }, ... }, // ERROR! calling deleted constructor of vk::ArrayProxyNoTemporaries<const vk::DescriptorSetLayoutBinding>.
      *     vku::unsafeProxy({
@@ -157,7 +157,7 @@ namespace vku {
      * integer congruent to the source integer.
      * @param offset Offset to convert.
      * @return Converted extent.
-     * @note Negative component will be casted to unsigned int, with C++ standard conversion rule.
+     * @note Negative component will be cast to unsigned int, with C++ standard conversion rule.
      */
     export
     [[nodiscard]] constexpr auto toExtent2D(const VULKAN_HPP_NAMESPACE::Offset2D &offset) noexcept -> VULKAN_HPP_NAMESPACE::Extent2D {

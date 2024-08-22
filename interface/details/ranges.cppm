@@ -58,4 +58,4 @@ struct range_adaptor_closure {
         }
 #endif
     }
-};
+}

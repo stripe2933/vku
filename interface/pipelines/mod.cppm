@@ -37,7 +37,7 @@ namespace vku {
      * vk::raii::PipelineLayout pipelineLayout { device, vk::PipelineLayoutCreateInfo { ... } };
      * vk::raii::Pipeline pipeline { device, nullptr, vk::ComputePipelineCreateInfo {
      *     {},
-     *     // vk::ComputePipelienCreateInfo accepts a single vk::PipelineShaderStageCreateInfo, therefore we call
+     *     // vk::ComputePipelineCreateInfo accepts a single vk::PipelineShaderStageCreateInfo, therefore we call
      *     // vku::RefHolder<...>::get() to explicitly get the array, and access the first element.
      *     vku::createPipelineStages(
      *         device,
@@ -91,7 +91,7 @@ namespace vku {
      * it conveniently.
      * @param layout Pipeline layout that is used for the pipeline.
      * @param colorAttachmentCount Number of color attachments (default=<tt>0</tt>). This must be less than or equal to 8.
-     * @param hasDepthStencilAttachemnt Boolean value that indicates whether the pipeline has depth-stencil attachment (default=<tt>false</tt>).
+     * @param hasDepthStencilAttachment Boolean value that indicates whether the pipeline has depth-stencil attachment (default=<tt>false</tt>).
      * @param multisample MSAA sample count (default=<tt>vk::SampleCountFlagBits::e1</tt>).
      * @return <tt>vk::GraphicsPipelineCreateInfo</tt> struct. You may have to set <tt>renderPass</tt> and
      * <tt>subpass</tt> for conventional render-pass based pipeline creation, or set <tt>pNexts</tt> with
@@ -101,7 +101,7 @@ namespace vku {
      * - Vertex input state: no vertex buffer binding.
      * - Input assembly state: triangle list topology, no primitive restart.
      * - Viewport state: single viewport and scissor in dynamic state.
-     * - Rasteriation state: fill mode=fill, back face culling with counter-clockwise winding order, no depth clamp/bias,
+     * - Rasterization state: fill mode=fill, back face culling with counter-clockwise winding order, no depth clamp/bias,
      *   line width=1.
      * - Multisample state: rasterization samples=\p multisample, no sample shading and alpha to coverage/one.
      * - Depth-stencil state: <tt>nullptr</tt> if \p hasDepthStencilAttachment = <tt>false</tt>, disabled depth
@@ -136,13 +136,14 @@ namespace vku {
      *         vk::Format::eD32Sfloat,
      *     },
      * }.get() };
+     * @endcode
      */
     export
     [[nodiscard]] auto getDefaultGraphicsPipelineCreateInfo(
         VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const VULKAN_HPP_NAMESPACE::PipelineShaderStageCreateInfo> stages,
         VULKAN_HPP_NAMESPACE::PipelineLayout layout,
         std::uint32_t colorAttachmentCount = 0,
-        bool hasDepthStencilAttachemnt = false,
+        bool hasDepthStencilAttachment = false,
         VULKAN_HPP_NAMESPACE::SampleCountFlagBits multisample = VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1
     ) -> VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo;
 }
@@ -158,7 +159,7 @@ auto vku::getDefaultGraphicsPipelineCreateInfo(
     VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const VULKAN_HPP_NAMESPACE::PipelineShaderStageCreateInfo> stages,
     VULKAN_HPP_NAMESPACE::PipelineLayout layout,
     std::uint32_t colorAttachmentCount,
-    bool hasDepthStencilAttachemnt,
+    bool hasDepthStencilAttachment,
     VULKAN_HPP_NAMESPACE::SampleCountFlagBits multisample
 ) -> VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo {
     static constexpr VULKAN_HPP_NAMESPACE::PipelineVertexInputStateCreateInfo vertexInputState{};
@@ -235,7 +236,7 @@ auto vku::getDefaultGraphicsPipelineCreateInfo(
         &viewportState,
         &rasterizationState,
         &multisampleStates[std::countr_zero(static_cast<std::underlying_type_t<VULKAN_HPP_NAMESPACE::SampleCountFlagBits>>(multisample))],
-        hasDepthStencilAttachemnt ? &depthStencilState : nullptr,
+        hasDepthStencilAttachment ? &depthStencilState : nullptr,
         &colorBlendStates[colorAttachmentCount],
         &dynamicState,
         layout,

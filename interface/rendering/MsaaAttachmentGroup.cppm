@@ -68,7 +68,7 @@ namespace vku {
 
         [[nodiscard]] auto createResolveImage(
             VMA_HPP_NAMESPACE::Allocator allocator,
-            VULKAN_HPP_NAMESPACE::Format format,
+            VULKAN_HPP_NAMESPACE::Format viewFormat,
             VULKAN_HPP_NAMESPACE::ImageUsageFlags usage = VULKAN_HPP_NAMESPACE::ImageUsageFlagBits::eColorAttachment,
             const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo = { {}, VMA_HPP_NAMESPACE::MemoryUsage::eAutoPreferDevice }
         ) const -> AllocatedImage;
