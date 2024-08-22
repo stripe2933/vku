@@ -16,15 +16,20 @@ import std;
 export import vk_mem_alloc_hpp;
 export import :images.Image;
 
+// #define VMA_HPP_NAMESPACE to vma, if not defined.
+#ifndef VMA_HPP_NAMESPACE
+#define VMA_HPP_NAMESPACE vma
+#endif
+
 namespace vku {
     export struct AllocatedImage : Image {
-        vma::Allocator allocator;
-        vma::Allocation allocation;
+        VMA_HPP_NAMESPACE::Allocator allocator;
+        VMA_HPP_NAMESPACE::Allocation allocation;
 
         AllocatedImage(
-            vma::Allocator allocator,
+            VMA_HPP_NAMESPACE::Allocator allocator,
             const vk::ImageCreateInfo &createInfo,
-            const vma::AllocationCreateInfo &allocationCreateInfo = { {}, vma::MemoryUsage::eAutoPreferDevice });
+            const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo = { {}, VMA_HPP_NAMESPACE::MemoryUsage::eAutoPreferDevice });
         AllocatedImage(const AllocatedImage&) = delete;
         AllocatedImage(AllocatedImage &&src) noexcept;
         auto operator=(const AllocatedImage&) -> AllocatedImage& = delete;
@@ -38,9 +43,9 @@ namespace vku {
 // --------------------
 
 vku::AllocatedImage::AllocatedImage(
-    vma::Allocator allocator,
+    VMA_HPP_NAMESPACE::Allocator allocator,
     const vk::ImageCreateInfo &createInfo,
-    const vma::AllocationCreateInfo &allocationCreateInfo
+    const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo
 ) : Image { nullptr, createInfo.extent, createInfo.format, createInfo.mipLevels, createInfo.arrayLayers },
    allocator { allocator } {
     std::tie(image, allocation) = allocator.createImage(createInfo, allocationCreateInfo);

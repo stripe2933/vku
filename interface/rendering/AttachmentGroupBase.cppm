@@ -18,6 +18,11 @@ export import vulkan_hpp;
 export import :images.AllocatedImage;
 export import :utils;
 
+// #define VMA_HPP_NAMESPACE to vma, if not defined.
+#ifndef VMA_HPP_NAMESPACE
+#define VMA_HPP_NAMESPACE vma
+#endif
+
 #define FWD(...) static_cast<decltype(__VA_ARGS__)&&>(__VA_ARGS__)
 
 namespace vku {
@@ -60,11 +65,11 @@ namespace vku {
         std::vector<std::unique_ptr<AllocatedImage>> storedImage;
 
         [[nodiscard]] auto createAttachmentImage(
-            vma::Allocator allocator,
+            VMA_HPP_NAMESPACE::Allocator allocator,
             vk::Format format,
             vk::SampleCountFlagBits sampleCount,
             vk::ImageUsageFlags usage,
-            const vma::AllocationCreateInfo &allocationCreateInfo
+            const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo
         ) const -> AllocatedImage;
     };
 }
@@ -84,11 +89,11 @@ auto vku::AttachmentGroupBase::storeImage(
 }
 
 auto vku::AttachmentGroupBase::createAttachmentImage(
-    vma::Allocator allocator,
+    VMA_HPP_NAMESPACE::Allocator allocator,
     vk::Format format,
     vk::SampleCountFlagBits sampleCount,
     vk::ImageUsageFlags usage,
-    const vma::AllocationCreateInfo &allocationCreateInfo
+    const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo
 ) const -> AllocatedImage {
     return { allocator, vk::ImageCreateInfo {
         {},

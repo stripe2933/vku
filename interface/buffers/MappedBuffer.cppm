@@ -12,6 +12,8 @@ module;
 #include <utility>
 #endif
 
+#include <vulkan/vulkan_hpp_macros.hpp>
+
 export module vku:buffers.MappedBuffer;
 
 #ifdef VKU_USE_STD_MODULE
@@ -26,54 +28,59 @@ export import :buffers.AllocatedBuffer;
 #define NOEXCEPT_IF_RELEASE
 #endif
 
+// #define VMA_HPP_NAMESPACE to vma, if not defined.
+#ifndef VMA_HPP_NAMESPACE
+#define VMA_HPP_NAMESPACE vma
+#endif
+
 namespace vku {
     export struct MappedBuffer : AllocatedBuffer {
         void *data;
 
         MappedBuffer(
-            vma::Allocator allocator,
-            const vk::BufferCreateInfo &createInfo,
-            const vma::AllocationCreateInfo &allocationCreateInfo = {
-                vma::AllocationCreateFlagBits::eHostAccessSequentialWrite | vma::AllocationCreateFlagBits::eMapped,
-                vma::MemoryUsage::eAuto,
+            VMA_HPP_NAMESPACE::Allocator allocator,
+            const VULKAN_HPP_NAMESPACE::BufferCreateInfo &createInfo,
+            const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo = {
+                VMA_HPP_NAMESPACE::AllocationCreateFlagBits::eHostAccessSequentialWrite | VMA_HPP_NAMESPACE::AllocationCreateFlagBits::eMapped,
+                VMA_HPP_NAMESPACE::MemoryUsage::eAuto,
             });
         template <typename T> requires (!std::same_as<T, std::from_range_t> && std::is_standard_layout_v<T>)
         MappedBuffer(
-            vma::Allocator allocator,
+            VMA_HPP_NAMESPACE::Allocator allocator,
             const T &value,
-            vk::BufferUsageFlags usage,
-            const vma::AllocationCreateInfo &allocationCreateInfo = {
-                vma::AllocationCreateFlagBits::eHostAccessSequentialWrite | vma::AllocationCreateFlagBits::eMapped,
-                vma::MemoryUsage::eAuto,
+            VULKAN_HPP_NAMESPACE::BufferUsageFlags usage,
+            const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo = {
+                VMA_HPP_NAMESPACE::AllocationCreateFlagBits::eHostAccessSequentialWrite | VMA_HPP_NAMESPACE::AllocationCreateFlagBits::eMapped,
+                VMA_HPP_NAMESPACE::MemoryUsage::eAuto,
             });
         template <typename T> requires (!std::same_as<T, std::from_range_t> && std::is_standard_layout_v<T>)
         MappedBuffer(
-            vma::Allocator allocator,
+            VMA_HPP_NAMESPACE::Allocator allocator,
             const T &value,
-            vk::BufferUsageFlags usage,
-            vk::ArrayProxy<const std::uint32_t> queueFamilyIndices,
-            const vma::AllocationCreateInfo &allocationCreateInfo = {
-                vma::AllocationCreateFlagBits::eHostAccessSequentialWrite | vma::AllocationCreateFlagBits::eMapped,
-                vma::MemoryUsage::eAuto,
+            VULKAN_HPP_NAMESPACE::BufferUsageFlags usage,
+            VULKAN_HPP_NAMESPACE::ArrayProxy<const std::uint32_t> queueFamilyIndices,
+            const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo = {
+                VMA_HPP_NAMESPACE::AllocationCreateFlagBits::eHostAccessSequentialWrite | VMA_HPP_NAMESPACE::AllocationCreateFlagBits::eMapped,
+                VMA_HPP_NAMESPACE::MemoryUsage::eAuto,
             });
         template <std::ranges::input_range R> requires (std::ranges::sized_range<R> && std::is_standard_layout_v<std::ranges::range_value_t<R>>)
         MappedBuffer(
-            vma::Allocator allocator,
+            VMA_HPP_NAMESPACE::Allocator allocator,
             std::from_range_t, R &&r,
-            vk::BufferUsageFlags usage,
-            const vma::AllocationCreateInfo &allocationCreateInfo = {
-                vma::AllocationCreateFlagBits::eHostAccessSequentialWrite | vma::AllocationCreateFlagBits::eMapped,
-                vma::MemoryUsage::eAuto,
+            VULKAN_HPP_NAMESPACE::BufferUsageFlags usage,
+            const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo = {
+                VMA_HPP_NAMESPACE::AllocationCreateFlagBits::eHostAccessSequentialWrite | VMA_HPP_NAMESPACE::AllocationCreateFlagBits::eMapped,
+                VMA_HPP_NAMESPACE::MemoryUsage::eAuto,
             });
         template <std::ranges::input_range R> requires (std::ranges::sized_range<R> && std::is_standard_layout_v<std::ranges::range_value_t<R>>)
         MappedBuffer(
-            vma::Allocator allocator,
+            VMA_HPP_NAMESPACE::Allocator allocator,
             std::from_range_t, R &&r,
-            vk::BufferUsageFlags usage,
-            vk::ArrayProxy<const std::uint32_t> queueFamilyIndices,
-            const vma::AllocationCreateInfo &allocationCreateInfo = {
-                vma::AllocationCreateFlagBits::eHostAccessSequentialWrite | vma::AllocationCreateFlagBits::eMapped,
-                vma::MemoryUsage::eAuto,
+            VULKAN_HPP_NAMESPACE::BufferUsageFlags usage,
+            VULKAN_HPP_NAMESPACE::ArrayProxy<const std::uint32_t> queueFamilyIndices,
+            const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo = {
+                VMA_HPP_NAMESPACE::AllocationCreateFlagBits::eHostAccessSequentialWrite | VMA_HPP_NAMESPACE::AllocationCreateFlagBits::eMapped,
+                VMA_HPP_NAMESPACE::MemoryUsage::eAuto,
             });
         MappedBuffer(const MappedBuffer&) = delete;
         MappedBuffer(MappedBuffer &&src) noexcept = default;
@@ -95,7 +102,7 @@ namespace vku {
          * defined) environment.
          */
         template <typename T>
-        [[nodiscard]] auto asRange(vk::DeviceSize byteOffset = 0) const NOEXCEPT_IF_RELEASE -> std::span<const T>;
+        [[nodiscard]] auto asRange(VULKAN_HPP_NAMESPACE::DeviceSize byteOffset = 0) const NOEXCEPT_IF_RELEASE -> std::span<const T>;
 
         /**
          * Get <tt>std::span<T></tt> from the mapped memory range.
@@ -107,7 +114,7 @@ namespace vku {
          * defined) environment.
          */
         template <typename T>
-        [[nodiscard]] auto asRange(vk::DeviceSize byteOffset = 0) NOEXCEPT_IF_RELEASE -> std::span<T>;
+        [[nodiscard]] auto asRange(VULKAN_HPP_NAMESPACE::DeviceSize byteOffset = 0) NOEXCEPT_IF_RELEASE -> std::span<T>;
 
         /**
          * Get const reference of <tt>T</tt> from the mapped memory.
@@ -145,18 +152,18 @@ namespace vku {
 // --------------------
 
 vku::MappedBuffer::MappedBuffer(
-    vma::Allocator allocator,
+    VMA_HPP_NAMESPACE::Allocator allocator,
     const vk::BufferCreateInfo &createInfo,
-    const vma::AllocationCreateInfo &allocationCreateInfo
+    const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo
 ) : AllocatedBuffer { allocator, createInfo, allocationCreateInfo },
     data { allocator.mapMemory(allocation) } { }
 
 template <typename T> requires (!std::same_as<T, std::from_range_t> && std::is_standard_layout_v<T>)
 vku::MappedBuffer::MappedBuffer(
-    vma::Allocator allocator,
+    VMA_HPP_NAMESPACE::Allocator allocator,
     const T &value,
     vk::BufferUsageFlags usage,
-    const vma::AllocationCreateInfo &allocationCreateInfo
+    const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo
 ) : MappedBuffer { allocator, vk::BufferCreateInfo {
         {},
         sizeof(T),
@@ -167,11 +174,11 @@ vku::MappedBuffer::MappedBuffer(
 
 template <typename T> requires (!std::same_as<T, std::from_range_t> && std::is_standard_layout_v<T>)
 vku::MappedBuffer::MappedBuffer(
-    vma::Allocator allocator,
+    VMA_HPP_NAMESPACE::Allocator allocator,
     const T &value,
     vk::BufferUsageFlags usage,
     vk::ArrayProxy<const std::uint32_t> queueFamilyIndices,
-    const vma::AllocationCreateInfo &allocationCreateInfo
+    const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo
 ) : MappedBuffer { allocator, vk::BufferCreateInfo {
         {},
         sizeof(T),
@@ -183,11 +190,11 @@ vku::MappedBuffer::MappedBuffer(
 
 template <std::ranges::input_range R> requires (std::ranges::sized_range<R> && std::is_standard_layout_v<std::ranges::range_value_t<R>>)
 vku::MappedBuffer::MappedBuffer(
-    vma::Allocator allocator,
+    VMA_HPP_NAMESPACE::Allocator allocator,
     std::from_range_t,
     R &&r,
     vk::BufferUsageFlags usage,
-    const vma::AllocationCreateInfo &allocationCreateInfo
+    const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo
 ) : MappedBuffer { allocator, vk::BufferCreateInfo {
         {},
         r.size() * sizeof(std::ranges::range_value_t<R>),

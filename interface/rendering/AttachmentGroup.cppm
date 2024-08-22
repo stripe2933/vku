@@ -20,6 +20,11 @@ export import :rendering.Attachment;
 import :rendering.AttachmentGroupBase;
 import :utils.RefHolder;
 
+// #define VMA_HPP_NAMESPACE to vma, if not defined.
+#ifndef VMA_HPP_NAMESPACE
+#define VMA_HPP_NAMESPACE vma
+#endif
+
 export namespace vku {
     struct AttachmentGroup : AttachmentGroupBase {
         struct ColorAttachmentInfo {
@@ -50,17 +55,17 @@ export namespace vku {
         auto setDepthStencilAttachment(const vk::raii::Device &device, const Image &image, const vk::ImageViewCreateInfo &viewCreateInfo) -> const Attachment&;
 
         [[nodiscard]] auto createColorImage(
-            vma::Allocator allocator,
+            VMA_HPP_NAMESPACE::Allocator allocator,
             vk::Format format,
             vk::ImageUsageFlags usage = vk::ImageUsageFlagBits::eColorAttachment,
-            const vma::AllocationCreateInfo &allocationCreateInfo = { {}, vma::MemoryUsage::eAutoPreferDevice }
+            const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo = { {}, VMA_HPP_NAMESPACE::MemoryUsage::eAutoPreferDevice }
         ) const -> AllocatedImage;
 
         [[nodiscard]] auto createDepthStencilImage(
-            vma::Allocator allocator,
+            VMA_HPP_NAMESPACE::Allocator allocator,
             vk::Format format,
             vk::ImageUsageFlags usage = vk::ImageUsageFlagBits::eDepthStencilAttachment | vk::ImageUsageFlagBits::eTransientAttachment,
-            const vma::AllocationCreateInfo &allocationCreateInfo = { {}, vma::MemoryUsage::eAutoPreferDevice, {}, vk::MemoryPropertyFlagBits::eLazilyAllocated }
+            const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo = { {}, VMA_HPP_NAMESPACE::MemoryUsage::eAutoPreferDevice, {}, vk::MemoryPropertyFlagBits::eLazilyAllocated }
         ) const -> AllocatedImage;
 
         [[nodiscard]] auto getRenderingInfo(
@@ -143,10 +148,10 @@ auto vku::AttachmentGroup::addColorAttachment(
 }
 
 auto vku::AttachmentGroup::createColorImage(
-    vma::Allocator allocator,
+    VMA_HPP_NAMESPACE::Allocator allocator,
     vk::Format format,
     vk::ImageUsageFlags usage,
-    const vma::AllocationCreateInfo &allocationCreateInfo
+    const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo
 ) const -> AllocatedImage {
     return createAttachmentImage(
         allocator,
@@ -184,10 +189,10 @@ auto vku::AttachmentGroup::setDepthStencilAttachment(
 }
 
 auto vku::AttachmentGroup::createDepthStencilImage(
-    vma::Allocator allocator,
+    VMA_HPP_NAMESPACE::Allocator allocator,
     vk::Format format,
     vk::ImageUsageFlags usage,
-    const vma::AllocationCreateInfo &allocationCreateInfo
+    const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo
 ) const -> AllocatedImage {
     return createAttachmentImage(
         allocator,

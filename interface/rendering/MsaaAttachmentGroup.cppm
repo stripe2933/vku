@@ -21,6 +21,11 @@ import :rendering.AttachmentGroupBase;
 export import :rendering.MsaaAttachment;
 import :utils.RefHolder;
 
+// #define VMA_HPP_NAMESPACE to vma, if not defined.
+#ifndef VMA_HPP_NAMESPACE
+#define VMA_HPP_NAMESPACE vma
+#endif
+
 namespace vku {
     export struct MsaaAttachmentGroup : AttachmentGroupBase {
         struct ColorAttachmentInfo {
@@ -53,24 +58,24 @@ namespace vku {
         auto setDepthStencilAttachment(const vk::raii::Device &device, const Image &image, const vk::ImageViewCreateInfo &viewCreateInfo) -> const Attachment&;
 
         [[nodiscard]] auto createColorImage(
-            vma::Allocator allocator,
+            VMA_HPP_NAMESPACE::Allocator allocator,
             vk::Format format,
             vk::ImageUsageFlags usage = vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransientAttachment,
-            const vma::AllocationCreateInfo &allocationCreateInfo = { {}, vma::MemoryUsage::eAutoPreferDevice, {}, vk::MemoryPropertyFlagBits::eLazilyAllocated }
+            const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo = { {}, VMA_HPP_NAMESPACE::MemoryUsage::eAutoPreferDevice, {}, vk::MemoryPropertyFlagBits::eLazilyAllocated }
         ) const -> AllocatedImage;
 
         [[nodiscard]] auto createResolveImage(
-            vma::Allocator allocator,
+            VMA_HPP_NAMESPACE::Allocator allocator,
             vk::Format format,
             vk::ImageUsageFlags usage = vk::ImageUsageFlagBits::eColorAttachment,
-            const vma::AllocationCreateInfo &allocationCreateInfo = { {}, vma::MemoryUsage::eAutoPreferDevice }
+            const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo = { {}, VMA_HPP_NAMESPACE::MemoryUsage::eAutoPreferDevice }
         ) const -> AllocatedImage;
 
         [[nodiscard]] auto createDepthStencilImage(
-            vma::Allocator allocator,
+            VMA_HPP_NAMESPACE::Allocator allocator,
             vk::Format format,
             vk::ImageUsageFlags usage = vk::ImageUsageFlagBits::eDepthStencilAttachment | vk::ImageUsageFlagBits::eTransientAttachment,
-            const vma::AllocationCreateInfo &allocationCreateInfo = { {}, vma::MemoryUsage::eAutoPreferDevice, {}, vk::MemoryPropertyFlagBits::eLazilyAllocated }
+            const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo = { {}, VMA_HPP_NAMESPACE::MemoryUsage::eAutoPreferDevice, {}, vk::MemoryPropertyFlagBits::eLazilyAllocated }
         ) const -> AllocatedImage;
 
         [[nodiscard]] auto getRenderingInfo(
@@ -203,28 +208,28 @@ auto vku::MsaaAttachmentGroup::setDepthStencilAttachment(
 }
 
 auto vku::MsaaAttachmentGroup::createColorImage(
-    vma::Allocator allocator,
+    VMA_HPP_NAMESPACE::Allocator allocator,
     vk::Format format,
     vk::ImageUsageFlags usage,
-    const vma::AllocationCreateInfo &allocationCreateInfo
+    const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo
 ) const -> AllocatedImage {
     return createAttachmentImage(allocator, format, sampleCount, usage, allocationCreateInfo);
 }
 
 auto vku::MsaaAttachmentGroup::createResolveImage(
-    vma::Allocator allocator,
+    VMA_HPP_NAMESPACE::Allocator allocator,
     vk::Format viewFormat,
     vk::ImageUsageFlags usage,
-    const vma::AllocationCreateInfo &allocationCreateInfo
+    const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo
 ) const -> AllocatedImage {
     return createAttachmentImage(allocator, viewFormat, vk::SampleCountFlagBits::e1, usage, allocationCreateInfo);
 }
 
 auto vku::MsaaAttachmentGroup::createDepthStencilImage(
-    vma::Allocator allocator,
+    VMA_HPP_NAMESPACE::Allocator allocator,
     vk::Format format,
     vk::ImageUsageFlags usage,
-    const vma::AllocationCreateInfo &allocationCreateInfo
+    const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo
 ) const -> AllocatedImage {
     return createAttachmentImage(
         allocator,

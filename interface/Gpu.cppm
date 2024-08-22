@@ -32,27 +32,32 @@ export import vulkan_hpp;
 import :details;
 import :utils;
 
+// #define VMA_HPP_NAMESPACE to vma, if not defined.
+#ifndef VMA_HPP_NAMESPACE
+#define VMA_HPP_NAMESPACE vma
+#endif
+
 #define CHECK_FEATURE(feature) if (pPhysicalDeviceFeatures->feature && !availableFeatures.feature) { unavailableFeatures.push_back(#feature); }
 
 namespace vku {
-    export template <typename QueueFamilies, std::constructible_from<vk::Device, const QueueFamilies&> Queues> requires
-        requires(vk::PhysicalDevice physicalDevice, const QueueFamilies &queueFamilies) {
-            { Queues::getCreateInfos(physicalDevice, queueFamilies).get() } -> ranges::contiguous_range_of<vk::DeviceQueueCreateInfo>;
+    export template <typename QueueFamilies, std::constructible_from<VULKAN_HPP_NAMESPACE::Device, const QueueFamilies&> Queues> requires
+        requires(VULKAN_HPP_NAMESPACE::PhysicalDevice physicalDevice, const QueueFamilies &queueFamilies) {
+            { Queues::getCreateInfos(physicalDevice, queueFamilies).get() } -> ranges::contiguous_range_of<VULKAN_HPP_NAMESPACE::DeviceQueueCreateInfo>;
         }
     class Gpu {
-        [[nodiscard]] static auto getQueueFamilies(vk::PhysicalDevice physicalDevice) noexcept -> QueueFamilies {
+        [[nodiscard]] static auto getQueueFamilies(VULKAN_HPP_NAMESPACE::PhysicalDevice physicalDevice) noexcept -> QueueFamilies {
             return QueueFamilies { physicalDevice };
         }
 
     public:
         struct DefaultPhysicalDeviceRater {
             bool verbose;
-            std::function<QueueFamilies(vk::PhysicalDevice)> queueFamilyGetter;
+            std::function<QueueFamilies(VULKAN_HPP_NAMESPACE::PhysicalDevice)> queueFamilyGetter;
             std::span<const char* const> deviceExtensions;
-            const vk::PhysicalDeviceFeatures *pPhysicalDeviceFeatures = nullptr;
+            const VULKAN_HPP_NAMESPACE::PhysicalDeviceFeatures *pPhysicalDeviceFeatures = nullptr;
 
-            [[nodiscard]] auto operator()(vk::PhysicalDevice physicalDevice) const -> std::uint32_t {
-                const vk::PhysicalDeviceProperties properties = physicalDevice.getProperties();
+            [[nodiscard]] auto operator()(VULKAN_HPP_NAMESPACE::PhysicalDevice physicalDevice) const -> std::uint32_t {
+                const VULKAN_HPP_NAMESPACE::PhysicalDeviceProperties properties = physicalDevice.getProperties();
                 const std::string_view deviceName { properties.deviceName.data() };
 
                 // Check queue family availability.
@@ -72,7 +77,7 @@ namespace vku {
                 constexpr auto toStringView = [](const auto &str) { return std::string_view { str }; };
                 std::vector availableExtensionNames
                     = availableExtensions
-                    | std::views::transform(&vk::ExtensionProperties::extensionName)
+                    | std::views::transform(&VULKAN_HPP_NAMESPACE::ExtensionProperties::extensionName)
                     | std::views::transform(toStringView)
                     | std::ranges::to<std::vector>();
                 std::ranges::sort(availableExtensionNames);
@@ -105,7 +110,7 @@ namespace vku {
                 }
 
                 // Check physical device feature availability.
-                const vk::PhysicalDeviceFeatures availableFeatures = physicalDevice.getFeatures();
+                const VULKAN_HPP_NAMESPACE::PhysicalDeviceFeatures availableFeatures = physicalDevice.getFeatures();
                 if (pPhysicalDeviceFeatures) {
                     // I hope vk::PhysicalDeviceFeatures struct does not change in the future...
                     std::vector<const char*> unavailableFeatures;
@@ -186,7 +191,7 @@ namespace vku {
                 }
 
                 std::uint32_t score = 0;
-                if (properties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu) {
+                if (properties.deviceType == VULKAN_HPP_NAMESPACE::PhysicalDeviceType::eDiscreteGpu) {
                     score += 1000;
                 }
 
@@ -201,25 +206,25 @@ namespace vku {
 
         template <typename... DevicePNexts>
         struct Config {
-            static constexpr bool hasPhysicalDeviceFeatures = !concepts::one_of<vk::PhysicalDeviceFeatures2, DevicePNexts...>;
+            static constexpr bool hasPhysicalDeviceFeatures = !concepts::one_of<VULKAN_HPP_NAMESPACE::PhysicalDeviceFeatures2, DevicePNexts...>;
 
             bool verbose = false;
             std::vector<const char*> deviceExtensions = {};
             [[no_unique_address]]
-            std::conditional_t<hasPhysicalDeviceFeatures, vk::PhysicalDeviceFeatures, std::monostate> physicalDeviceFeatures = {};
-            std::function<QueueFamilies(vk::PhysicalDevice)> queueFamilyGetter = &getQueueFamilies;
-            std::function<std::uint32_t(vk::PhysicalDevice)> physicalDeviceRater
+            std::conditional_t<hasPhysicalDeviceFeatures, VULKAN_HPP_NAMESPACE::PhysicalDeviceFeatures, std::monostate> physicalDeviceFeatures = {};
+            std::function<QueueFamilies(VULKAN_HPP_NAMESPACE::PhysicalDevice)> queueFamilyGetter = &getQueueFamilies;
+            std::function<std::uint32_t(VULKAN_HPP_NAMESPACE::PhysicalDevice)> physicalDeviceRater
                 = DefaultPhysicalDeviceRater { verbose, queueFamilyGetter, deviceExtensions, hasPhysicalDeviceFeatures ? &physicalDeviceFeatures : nullptr };
             std::tuple<DevicePNexts...> devicePNexts = {};
-            vma::AllocatorCreateFlags allocatorCreateFlags = {};
-            std::uint32_t apiVersion = vk::makeApiVersion(0, 1, 0, 0);
+            VMA_HPP_NAMESPACE::AllocatorCreateFlags allocatorCreateFlags = {};
+            std::uint32_t apiVersion = VULKAN_HPP_NAMESPACE::makeApiVersion(0, 1, 0, 0);
         };
 
-        vk::raii::PhysicalDevice physicalDevice;
+        VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PhysicalDevice physicalDevice;
         QueueFamilies queueFamilies;
         vk::raii::Device device;
         Queues queues { *device, queueFamilies };
-        vma::Allocator allocator;
+        VMA_HPP_NAMESPACE::Allocator allocator;
 
         template <typename... DevicePNexts>
         explicit Gpu(
@@ -289,13 +294,13 @@ namespace vku {
         [[nodiscard]] auto createAllocator(
             const vk::raii::Instance &instance,
             const Config<DevicePNexts...> &config
-        ) const -> vma::Allocator {
-            return vma::createAllocator(vma::AllocatorCreateInfo {
+        ) const -> VMA_HPP_NAMESPACE::Allocator {
+            return VMA_HPP_NAMESPACE::createAllocator(VMA_HPP_NAMESPACE::AllocatorCreateInfo {
                 config.allocatorCreateFlags,
                 *physicalDevice, *device,
                 {}, {}, {}, {},
 #if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
-                unsafeAddress(vma::VulkanFunctions{
+                unsafeAddress(VMA_HPP_NAMESPACE::VulkanFunctions{
                     instance.getDispatcher()->vkGetInstanceProcAddr,
                     device.getDispatcher()->vkGetDeviceProcAddr,
                 }),
