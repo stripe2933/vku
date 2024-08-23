@@ -90,7 +90,7 @@ target_link_libraries(vku PUBLIC
     $<$<BOOL:${VKU_USE_SHADERC}>:Vulkan::shaderc_combined>
 )
 target_compile_definitions(vku PUBLIC
-    $<$<BOOL:${VKU_USE_STD_MODULE}>:VKU_USE_STD_MODULE>
+    $<$<BOOL:${VKU_USE_STD_MODULE}>:VKU_USE_STD_MODULE VULKAN_HPP_ENABLE_STD_MODULE>
     $<$<BOOL:${VKU_USE_SHADERC}>:VKU_USE_SHADERC>
     $<$<BOOL:${MSVC}>:VULKAN_HPP_NO_SMART_HANDLE VK_NO_PROTOTYPES> # See https://github.com/KhronosGroup/Vulkan-Hpp/blob/main/README.md#c20-named-module for the details.
     $<$<PLATFORM_ID:Darwin>:VK_ENABLE_BETA_EXTENSIONS> # For VK_KHR_portability_subset availability.
