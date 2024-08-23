@@ -8,6 +8,9 @@
 #include <span>
 #include <tuple>
 #include <vector>
+#ifdef _MSC_VER
+#include <format>
+#endif
 #endif
 
 #include <vulkan/vulkan_hpp_macros.hpp>
