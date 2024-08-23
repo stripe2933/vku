@@ -3,13 +3,15 @@
 #include <cstdint>
 #include <algorithm>
 #include <array>
-#include <format>
 #include <iterator>
 #include <ranges>
 #include <span>
 #include <stdexcept>
 #include <tuple>
 #include <vector>
+#ifdef _MSC_VER
+#include <format>
+#endif
 #endif
 
 #include <vulkan/vulkan_hpp_macros.hpp>

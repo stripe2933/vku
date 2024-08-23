@@ -1,0 +1,38 @@
+/* Check if all texels in the texture's given mip level are same as Push Constant's color.
+ * If all texels are same, success[mipLevel] will be set to 1.
+ * If any texel is different, success[mipLevel] will be set to 0. */
+
+#version 460
+#extension GL_EXT_samplerless_texture_functions : require
+#extension GL_KHR_shader_subgroup_vote : require
+#extension GL_EXT_nonuniform_qualifier : require
+
+layout (set = 0, binding = 0) uniform texture2D textures[];
+layout (set = 0, binding = 1) writeonly buffer OutputBuffer {
+    uint success[]; // success[i] represents whether i-th mipmap's all texel are same with pc.color or not.
+};
+
+layout (push_constant) uniform PushConstant {
+    vec4 color;
+    int mipLevel;
+} pc;
+
+layout (local_size_x = 16, local_size_y = 16) in;
+
+void main(){
+    uvec2 mipmapSize = textureSize(textures[pc.mipLevel], 0);
+
+    vec4 texel;
+    if (gl_GlobalInvocationID.x < mipmapSize.x && gl_GlobalInvocationID.y < mipmapSize.y) {
+        texel = texelFetch(textures[pc.mipLevel], ivec2(gl_GlobalInvocationID.xy), 0);
+    }
+    else {
+        texel = pc.color;
+    }
+
+    if (subgroupAny(texel != pc.color)) {
+        if (subgroupElect()){
+            atomicAnd(success[pc.mipLevel], 0U);
+        }
+    }
+}

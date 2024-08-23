@@ -3,8 +3,10 @@ module;
 #include <cassert>
 #ifndef VKU_USE_STD_MODULE
 #include <cstdint>
-#include <bit>
 #include <algorithm>
+#include <bit>
+#include <ranges>
+#include <vector>
 #endif
 
 #include <vulkan/vulkan_hpp_macros.hpp>
@@ -69,6 +71,30 @@ namespace vku {
          * automatically inferred aspect flags from the format.
          */
         [[nodiscard]] auto getViewCreateInfo(const VULKAN_HPP_NAMESPACE::ImageSubresourceRange &subresourceRange, VULKAN_HPP_NAMESPACE::ImageViewType type = VULKAN_HPP_NAMESPACE::ImageViewType::e2D) const noexcept -> VULKAN_HPP_NAMESPACE::ImageViewCreateInfo;
+
+        /**
+         * Get <tt>vk::ImageViewCreateInfo</tt> structs for all mip levels with the specified \p type. Aspect flags are
+         * inferred from the image format.
+         * @param type Image view type (default=<tt>vk::ImageViewType::e2D<tt>).
+         * @return Vector of <tt>vk::ImageViewCreateInfo</tt> structs for all mip levels.
+         * @note
+         * See <tt>inferAspectFlags(vk::Format)</tt> for aspect flags inference rule.<br>
+         * It internally calls <tt>inferAspectFlags(vk::Format)</tt> and <tt>getViewCreateInfo(const vk::ImageSubresourceRange&, vk::ImageViewType)</tt>.
+         */
+        [[nodiscard]] auto getMipViewCreateInfos(VULKAN_HPP_NAMESPACE::ImageViewType type = VULKAN_HPP_NAMESPACE::ImageViewType::e2D) const NOEXCEPT_IF_RELEASE -> std::vector<VULKAN_HPP_NAMESPACE::ImageViewCreateInfo> {
+            return std::views::iota(0U, mipLevels)
+                | std::views::transform([&, aspectFlags = inferAspectFlags(format)](std::uint32_t level) {
+                    return VULKAN_HPP_NAMESPACE::ImageViewCreateInfo {
+                        {},
+                        image,
+                        type,
+                        format,
+                        {},
+                        { aspectFlags, level, 1, 0, VULKAN_HPP_NAMESPACE::RemainingArrayLayers }
+                    };
+                })
+                | std::ranges::to<std::vector>();
+        }
 
         /**
          * Get the extent of the specified mip level.
