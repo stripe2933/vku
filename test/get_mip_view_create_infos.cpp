@@ -10,6 +10,8 @@
 #include <vector>
 #endif
 
+#include <vulkan/vulkan_hpp_macros.hpp>
+
 #ifdef VKU_USE_STD_MODULE
 import std;
 #endif
