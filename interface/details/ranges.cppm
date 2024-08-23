@@ -29,8 +29,8 @@ namespace vku::ranges {
 #if !defined(_LIBCPP_VERSION) && __cpp_lib_ranges >= 202202L // https://github.com/llvm/llvm-project/issues/70557#issuecomment-1851936055
         using range_adaptor_closure = std::ranges::range_adaptor_closure<Derived>;
 #else
-    requires std::is_object_v<Derived>&& std::same_as<Derived, std::remove_cv_t<Derived>>
-struct range_adaptor_closure {
+        requires std::is_object_v<Derived>&& std::same_as<Derived, std::remove_cv_t<Derived>>
+    struct range_adaptor_closure {
         template <std::ranges::range R>
         [[nodiscard]] friend constexpr auto operator|(R&& r, const Derived& derived) noexcept(std::is_nothrow_invocable_v<const Derived&, R>) {
             return derived(FWD(r));
