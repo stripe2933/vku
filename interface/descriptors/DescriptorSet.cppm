@@ -59,6 +59,27 @@ namespace vku {
             return attachInfo(VULKAN_HPP_NAMESPACE::WriteDescriptorSet { *this, Binding, 0, {}, get<Binding>(Layout::bindingTypes) }, descriptorInfos);
         }
 
+        /**
+         * Convenience method for calling <tt>getWrite<Binding></tt> with single lifetime-bounded descriptor info object.
+         * @tparam Binding Binding index to get the write descriptor.
+         * @param descriptorInfo Descriptor info to write. This is either <tt>vk::DescriptorBufferInfo</tt>,
+         * <tt>vk::DescriptorImageInfo</tt> or <tt>vk::BufferView</tt>, based on your descriptor type predefined by <tt>DescriptorSetLayout</tt>.
+         * @return <tt>vk::WriteDescriptorSet</tt> with given info.
+         * @example
+         * @code
+         * struct Layout : vku::DescriptorSetLayout<vk::DescriptorType::eStorageBuffer> { ... } layout;
+         *
+         * auto [descriptorSet] = vku::allocateDescriptorSets(*device, *descriptorPool, std::tie(layout));
+         * device.updateDescriptorSets({
+         *     descriptorSet.getWriteOne<0>({ buffer, 0, vk::WholeSize }), // argument type infered as vk::DescriptorBufferInfo at the compile time.
+         * }, {});
+         * @endcode
+         */
+        template <std::uint32_t Binding>
+        [[nodiscard]] auto getWriteOne(const WriteDescriptorInfo_t<get<Binding>(Layout::bindingTypes)> &descriptorInfo [[clang::lifetimebound]]) const noexcept -> VULKAN_HPP_NAMESPACE::WriteDescriptorSet {
+            return getWrite<Binding>(descriptorInfo);
+        }
+
         template <concepts::derived_from_value_specialization_of<DescriptorSetLayout>... Layouts>
         friend auto allocateDescriptorSets(VULKAN_HPP_NAMESPACE::Device, VULKAN_HPP_NAMESPACE::DescriptorPool, std::tuple<const Layouts&...>) -> std::tuple<DescriptorSet<Layouts>...>;
 
