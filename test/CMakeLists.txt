@@ -2,5 +2,12 @@ add_executable(execute_hierarchical_commands execute_hierarchical_commands.cpp)
 target_link_libraries(execute_hierarchical_commands PRIVATE vku::vku)
 add_test(NAME execute_hierarchical_commands COMMAND execute_hierarchical_commands)
 
+add_executable(get_mip_view_create_infos get_mip_view_create_infos.cpp)
+target_link_libraries(get_mip_view_create_infos PRIVATE vku::vku)
+target_compile_definitions(get_mip_view_create_infos PRIVATE
+    COMPILED_SHADER_DIR="${CMAKE_CURRENT_SOURCE_DIR}/shaders/get_mip_view_create_infos"
+)
+add_test(NAME get_mip_view_create_infos COMMAND get_mip_view_create_infos)
+
 add_subdirectory(triangle)
 add_subdirectory(msaa-triangle)
