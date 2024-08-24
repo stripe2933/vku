@@ -106,11 +106,11 @@ namespace vku {
 
             std::ranges::copy(inputAttachmentViews, back_inserter(imageViews));
             for (const MsaaAttachment &attachment : colorAttachments) {
-                imageViews.emplace_back(*attachment.view);
-                imageViews.emplace_back(*attachment.resolveView);
+                imageViews.push_back(*attachment.view);
+                imageViews.push_back(*attachment.resolveView);
             }
             if (depthStencilAttachment) {
-                imageViews.emplace_back(*depthStencilAttachment->view);
+                imageViews.push_back(*depthStencilAttachment->view);
             }
 
             return {

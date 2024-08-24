@@ -83,19 +83,20 @@ auto vku::PoolSizes::operator*=(std::uint32_t multiplier) noexcept -> PoolSizes 
 auto vku::PoolSizes::getDescriptorPoolCreateInfo(
     VULKAN_HPP_NAMESPACE::DescriptorPoolCreateFlags flags
 ) const noexcept -> RefHolder<VULKAN_HPP_NAMESPACE::DescriptorPoolCreateInfo, std::vector<VULKAN_HPP_NAMESPACE::DescriptorPoolSize>> {
+    std::vector<VULKAN_HPP_NAMESPACE::DescriptorPoolSize> poolSizes;
+    for (const auto &[type, count] : typeCounts) {
+        poolSizes.emplace_back(type, count);
+    }
+
     return RefHolder {
-        [=, this](std::span<const VULKAN_HPP_NAMESPACE::DescriptorPoolSize> poolSizes) {
+        [this, flags](std::span<const VULKAN_HPP_NAMESPACE::DescriptorPoolSize> poolSizes) {
             return VULKAN_HPP_NAMESPACE::DescriptorPoolCreateInfo {
                 flags,
                 setCount,
                 poolSizes,
             };
         },
-        typeCounts
-            | std::views::transform([](const auto &keyValue) {
-                return VULKAN_HPP_NAMESPACE::DescriptorPoolSize { keyValue.first, keyValue.second };
-            })
-            | std::ranges::to<std::vector>(),
+        std::move(poolSizes)
     };
 }
 

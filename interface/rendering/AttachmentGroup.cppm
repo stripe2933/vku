@@ -93,11 +93,10 @@ export namespace vku {
         ) const -> RefHolder<VULKAN_HPP_NAMESPACE::FramebufferCreateInfo, std::vector<VULKAN_HPP_NAMESPACE::ImageView>> {
             std::vector<VULKAN_HPP_NAMESPACE::ImageView> imageViews;
             imageViews.reserve(inputAttachmentViews.size() + colorAttachments.size() + depthStencilAttachment.has_value());
-
             std::ranges::copy(inputAttachmentViews, back_inserter(imageViews));
-            std::ranges::copy(colorAttachments | std::views::transform([](const Attachment &attachment) { return *attachment.view; }), back_inserter(imageViews));
+            std::ranges::transform(colorAttachments, back_inserter(imageViews), [](const Attachment &attachment) { return *attachment.view; });
             if (depthStencilAttachment) {
-                imageViews.emplace_back(*depthStencilAttachment->view);
+                imageViews.push_back(*depthStencilAttachment->view);
             }
 
             return {
