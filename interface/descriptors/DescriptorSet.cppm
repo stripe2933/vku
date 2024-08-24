@@ -46,13 +46,31 @@ namespace vku {
         [[nodiscard]] auto getWrite(const VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const WriteDescriptorInfo_t<get<Binding>(Layout::bindingTypes)>> &descriptorInfos) const noexcept -> VULKAN_HPP_NAMESPACE::WriteDescriptorSet {
             constexpr auto attachInfo = multilambda {
                 [](VULKAN_HPP_NAMESPACE::WriteDescriptorSet writeDescriptorSet, const VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const VULKAN_HPP_NAMESPACE::DescriptorImageInfo> &descriptorInfos) {
+#ifdef VULKAN_HPP_NO_SETTERS
+                    writeDescriptorSet.descriptorCount = static_cast<std::uint32_t>(descriptorInfos.size());
+                    writeDescriptorSet.pImageInfo = descriptorInfos.data();
+                    return writeDescriptorSet;
+#else
                     return writeDescriptorSet.setImageInfo(descriptorInfos);
+#endif
                 },
                 [](VULKAN_HPP_NAMESPACE::WriteDescriptorSet writeDescriptorSet, const VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const VULKAN_HPP_NAMESPACE::BufferView> &descriptorInfos) {
+#ifdef VULKAN_HPP_NO_SETTERS
+                    writeDescriptorSet.descriptorCount = static_cast<std::uint32_t>(descriptorInfos.size());
+                    writeDescriptorSet.pTexelBufferView = descriptorInfos.data();
+                    return writeDescriptorSet;
+#else
                     return writeDescriptorSet.setTexelBufferView(descriptorInfos);
+#endif
                 },
                 [](VULKAN_HPP_NAMESPACE::WriteDescriptorSet writeDescriptorSet, const VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const VULKAN_HPP_NAMESPACE::DescriptorBufferInfo> &descriptorInfos) {
+#ifdef VULKAN_HPP_NO_SETTERS
+                    writeDescriptorSet.descriptorCount = static_cast<std::uint32_t>(descriptorInfos.size());
+                    writeDescriptorSet.pBufferInfo = descriptorInfos.data();
+                    return writeDescriptorSet;
+#else
                     return writeDescriptorSet.setBufferInfo(descriptorInfos);
+#endif
                 },
             };
 
