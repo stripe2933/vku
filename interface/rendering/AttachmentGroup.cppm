@@ -16,7 +16,6 @@ export module vku:rendering.AttachmentGroup;
 #ifdef VKU_USE_STD_MODULE
 import std;
 #endif
-import :details;
 export import :images.AllocatedImage;
 export import :rendering.Attachment;
 import :rendering.AttachmentGroupBase;
@@ -210,6 +209,16 @@ auto vku::AttachmentGroup::getRenderingInfo(
     assert(colorAttachments.size() == colorAttachmentInfos.size() && "Color attachment info count mismatch");
     assert(!depthStencilAttachment.has_value() && "Depth-stencil attachment info mismatch");
 
+    std::vector<VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo> renderingAttachmentInfos;
+    renderingAttachmentInfos.reserve(colorAttachmentInfos.size());
+    for (const auto &[attachment, info] : std::views::zip(colorAttachments, colorAttachmentInfos)) {
+        renderingAttachmentInfos.push_back({
+            *attachment.view, VULKAN_HPP_NAMESPACE::ImageLayout::eColorAttachmentOptimal,
+            {}, {}, {},
+            info.loadOp, info.storeOp, info.clearValue,
+        });
+    }
+
     return {
         [this](std::span<const VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo> colorAttachmentInfos) {
             return VULKAN_HPP_NAMESPACE::RenderingInfo {
@@ -220,13 +229,7 @@ auto vku::AttachmentGroup::getRenderingInfo(
                 colorAttachmentInfos,
             };
         },
-        ranges::views::zip_transform([](const Attachment &attachment, const ColorAttachmentInfo &info) {
-            return VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo {
-                *attachment.view, VULKAN_HPP_NAMESPACE::ImageLayout::eColorAttachmentOptimal,
-                {}, {}, {},
-                info.loadOp, info.storeOp, info.clearValue,
-            };
-        }, colorAttachments, colorAttachmentInfos) | std::ranges::to<std::vector>(),
+        std::move(renderingAttachmentInfos),
     };
 }
 
