@@ -1,6 +1,10 @@
-add_executable(execute_hierarchical_commands execute_hierarchical_commands.cpp)
-target_link_libraries(execute_hierarchical_commands PRIVATE vku::vku)
-add_test(NAME execute_hierarchical_commands COMMAND execute_hierarchical_commands)
+# TODO: due to the current Clang C++20 module and libstdc++ compatibility, the test is disabled. Enable the test when
+#  it available.
+if (NOT LINUX)
+    add_executable(execute_hierarchical_commands execute_hierarchical_commands.cpp)
+    target_link_libraries(execute_hierarchical_commands PRIVATE vku::vku)
+    add_test(NAME execute_hierarchical_commands COMMAND execute_hierarchical_commands)
+endif()
 
 add_executable(get_mip_view_create_infos get_mip_view_create_infos.cpp)
 target_link_libraries(get_mip_view_create_infos PRIVATE vku::vku)
