@@ -86,46 +86,6 @@ namespace vku {
             std::span<const ColorAttachmentInfo> colorAttachmentInfos,
             const DepthStencilAttachmentInfo &depthStencilAttachmentInfo
         ) const -> RefHolder<VULKAN_HPP_NAMESPACE::RenderingInfo, std::vector<VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo>>;
-
-        /**
-         * Get <tt>vk::FramebufferCreateInfo</tt> for the attachment group. The order of the image views are:
-         * - Input attachment views (given as \p inputAttachmentViews)
-         * - Color attachment views and their resolve views with interleaved order (color0 / resolve0 / color1 / resolve1 / ...)
-         * - Depth-stencil attachment view (if exists)
-         * @param renderPass Render pass to create the framebuffer for.
-         * @param inputAttachmentViews Optional input attachment views to be used in the framebuffer (default: empty).
-         * @return RefHolder of <tt>vk::FramebufferCreateInfo</tt> and a vector of image views.
-         */
-        [[nodiscard]] auto getFramebufferCreateInfo(
-            VULKAN_HPP_NAMESPACE::RenderPass renderPass,
-            VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ImageView> inputAttachmentViews = {}
-        ) const -> RefHolder<VULKAN_HPP_NAMESPACE::FramebufferCreateInfo, std::vector<VULKAN_HPP_NAMESPACE::ImageView>> {
-            std::vector<VULKAN_HPP_NAMESPACE::ImageView> imageViews;
-            imageViews.reserve(inputAttachmentViews.size() + 2 * colorAttachments.size() + depthStencilAttachment.has_value());
-
-            std::ranges::copy(inputAttachmentViews, back_inserter(imageViews));
-            for (const MsaaAttachment &attachment : colorAttachments) {
-                imageViews.push_back(*attachment.view);
-                imageViews.push_back(*attachment.resolveView);
-            }
-            if (depthStencilAttachment) {
-                imageViews.push_back(*depthStencilAttachment->view);
-            }
-
-            return {
-                [&](std::span<const VULKAN_HPP_NAMESPACE::ImageView> imageViews) {
-                    return VULKAN_HPP_NAMESPACE::FramebufferCreateInfo {
-                        {},
-                        renderPass,
-                        imageViews,
-                        extent.width,
-                        extent.height,
-                        1,
-                    };
-                },
-                std::move(imageViews),
-            };
-        }
     };
 }
 
