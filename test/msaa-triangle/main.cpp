@@ -143,7 +143,7 @@ int main(){
     vku::executeSingleCommand(*gpu.device, *graphicsCommandPool, gpu.queues.graphics, [&](vk::CommandBuffer cb) {
         // .begin() and .end are called automatically.
 
-        // Change attachment layout to ColorAttachmentOptimal.
+        // Change attachment layouts for rendering.
         cb.pipelineBarrier2KHR({
             {}, {}, {},
             vku::unsafeProxy({
