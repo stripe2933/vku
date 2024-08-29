@@ -74,7 +74,6 @@ struct Gpu : vku::Gpu<QueueFamilies, Queues> {
                 vk::KHRCreateRenderpass2ExtensionName,
                 vk::KHRDepthStencilResolveExtensionName,
                 vk::KHRDynamicRenderingExtensionName,
-                vk::KHRSynchronization2ExtensionName,
 #if __APPLE__
                 vk::KHRPortabilitySubsetExtensionName,
 #endif
@@ -85,7 +84,6 @@ struct Gpu : vku::Gpu<QueueFamilies, Queues> {
             },
             .devicePNexts = std::tuple {
                 vk::PhysicalDeviceDynamicRenderingFeatures { true },
-                vk::PhysicalDeviceSynchronization2Features { true },
             },
             .apiVersion = vk::makeApiVersion(0, 1, 0, 0),
         } } { }
@@ -178,19 +176,31 @@ int main(){
     // Change all swapchain image layouts to PresentSrcKHR to avoid Undefined format for srcImageLayout of future
     // pipeline barriers.
     vku::executeSingleCommand(*gpu.device, *graphicsCommandPool, gpu.queues.graphicsPresent, [&](vk::CommandBuffer cb) {
+        std::vector imageMemoryBarriers {
+            vk::ImageMemoryBarrier {
+                {}, {},
+                {}, vk::ImageLayout::eColorAttachmentOptimal,
+                vk::QueueFamilyIgnored, vk::QueueFamilyIgnored,
+                get<vku::SwapchainMsaaAttachment>(attachmentGroup.colorAttachments[0]).image, vku::fullSubresourceRange(),
+            },
+            vk::ImageMemoryBarrier {
+                {}, {},
+                {}, vk::ImageLayout::eDepthStencilAttachmentOptimal,
+                vk::QueueFamilyIgnored, vk::QueueFamilyIgnored,
+                attachmentGroup.depthStencilAttachment->image, vku::fullSubresourceRange(vk::ImageAspectFlagBits::eDepth),
+            },
+        };
+        for (vk::Image swapchainImage : swapchainImages) {
+            imageMemoryBarriers.push_back({
+                {}, {},
+                {}, vk::ImageLayout::ePresentSrcKHR,
+                vk::QueueFamilyIgnored, vk::QueueFamilyIgnored,
+                swapchainImage, vku::fullSubresourceRange(),
+            });
+        }
          cb.pipelineBarrier(
              vk::PipelineStageFlagBits::eTopOfPipe, vk::PipelineStageFlagBits::eBottomOfPipe,
-             {}, {}, {},
-             swapchainImages
-                | std::views::transform([](vk::Image swapchainImage) {
-                    return vk::ImageMemoryBarrier {
-                        {}, {},
-                        {}, vk::ImageLayout::ePresentSrcKHR,
-                        vk::QueueFamilyIgnored, vk::QueueFamilyIgnored,
-                        swapchainImage, vku::fullSubresourceRange(),
-                    };
-                })
-                | std::ranges::to<std::vector>());
+             {}, {}, {}, imageMemoryBarriers);
     });
     gpu.queues.graphicsPresent.waitIdle();
 
@@ -215,32 +225,15 @@ int main(){
         commandBuffer.begin({ vk::CommandBufferUsageFlagBits::eOneTimeSubmit });
 
         // Change attachment layouts for rendering.
-        commandBuffer.pipelineBarrier2KHR({
+        commandBuffer.pipelineBarrier(
+            vk::PipelineStageFlagBits::eColorAttachmentOutput, vk::PipelineStageFlagBits::eColorAttachmentOutput,
             {}, {}, {},
-            vku::unsafeProxy({
-                vk::ImageMemoryBarrier2 {
-                    {}, {},
-                    vk::PipelineStageFlagBits2::eColorAttachmentOutput, vk::AccessFlagBits2::eColorAttachmentRead | vk::AccessFlagBits2::eColorAttachmentWrite,
-                    {}, vk::ImageLayout::eAttachmentOptimal,
-                    vk::QueueFamilyIgnored, vk::QueueFamilyIgnored,
-                    get<vku::SwapchainMsaaAttachment>(attachmentGroup.colorAttachments[0]).image, vku::fullSubresourceRange(),
-                },
-                vk::ImageMemoryBarrier2 {
-                    vk::PipelineStageFlagBits2::eColorAttachmentOutput, {},
-                    vk::PipelineStageFlagBits2::eColorAttachmentOutput, vk::AccessFlagBits2::eColorAttachmentRead | vk::AccessFlagBits2::eColorAttachmentWrite,
-                    vk::ImageLayout::ePresentSrcKHR, vk::ImageLayout::eAttachmentOptimal,
-                    vk::QueueFamilyIgnored, vk::QueueFamilyIgnored,
-                    swapchainImages[swapchainImageIndex], vku::fullSubresourceRange(),
-                },
-                vk::ImageMemoryBarrier2 {
-                    {}, {},
-                    vk::PipelineStageFlagBits2::eEarlyFragmentTests, vk::AccessFlagBits2::eDepthStencilAttachmentRead | vk::AccessFlagBits2::eDepthStencilAttachmentWrite,
-                    {}, vk::ImageLayout::eAttachmentOptimal,
-                    vk::QueueFamilyIgnored, vk::QueueFamilyIgnored,
-                    attachmentGroup.depthStencilAttachment->image, vku::fullSubresourceRange(vk::ImageAspectFlagBits::eDepth),
-                },
-            }),
-        } DEVICE_DISPATCHER_PARAM_OPT(gpu.device));
+            vk::ImageMemoryBarrier {
+                {}, vk::AccessFlagBits::eColorAttachmentRead | vk::AccessFlagBits::eColorAttachmentWrite,
+                vk::ImageLayout::ePresentSrcKHR, vk::ImageLayout::eColorAttachmentOptimal,
+                vk::QueueFamilyIgnored, vk::QueueFamilyIgnored,
+                swapchainImages[swapchainImageIndex], vku::fullSubresourceRange(),
+            });
 
         // Begin dynamic rendering with clearing the color attachment by (0, 0, 0, 0) (transparent).
         commandBuffer.beginRenderingKHR(attachmentGroup.getRenderingInfo(
