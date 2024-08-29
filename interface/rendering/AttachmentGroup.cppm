@@ -65,8 +65,7 @@ export namespace vku {
         auto addSwapchainAttachment(
             const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
             std::span<const VULKAN_HPP_NAMESPACE::Image> swapchainImages,
-            VULKAN_HPP_NAMESPACE::Format swapchainImageFormat,
-            VULKAN_HPP_NAMESPACE::Format viewFormat = {}
+            VULKAN_HPP_NAMESPACE::Format viewFormat
         ) -> const SwapchainAttachment&;
         auto setDepthStencilAttachment(
             const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
@@ -152,18 +151,17 @@ auto vku::AttachmentGroup::addColorAttachment(
 auto vku::AttachmentGroup::addSwapchainAttachment(
     const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
     std::span<const VULKAN_HPP_NAMESPACE::Image> swapchainImages,
-    VULKAN_HPP_NAMESPACE::Format swapchainImageFormat,
     VULKAN_HPP_NAMESPACE::Format viewFormat
 ) -> const SwapchainAttachment& {
     return *get_if<SwapchainAttachment>(&colorAttachments.emplace_back(
         std::in_place_type<SwapchainAttachment>,
         swapchainImages
-            | std::views::transform([&, format = (viewFormat == VULKAN_HPP_NAMESPACE::Format::eUndefined) ? swapchainImageFormat : viewFormat](VULKAN_HPP_NAMESPACE::Image swapchainImage) {
+            | std::views::transform([&](VULKAN_HPP_NAMESPACE::Image swapchainImage) {
                 return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView { device, VULKAN_HPP_NAMESPACE::ImageViewCreateInfo {
                     {},
                     swapchainImage,
                     VULKAN_HPP_NAMESPACE::ImageViewType::e2D,
-                    format,
+                    viewFormat,
                     {},
                     { VULKAN_HPP_NAMESPACE::ImageAspectFlagBits::eColor, 0, 1, 0, 1 },
                 } };
