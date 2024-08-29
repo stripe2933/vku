@@ -80,12 +80,12 @@ struct Gpu : vku::Gpu<QueueFamilies, Queues> {
 #endif
                 vk::KHRSwapchainExtensionName,
             },
+            .queueFamilyGetter = [=](vk::PhysicalDevice physicalDevice) {
+                return QueueFamilies { physicalDevice, surface };
+            },
             .devicePNexts = std::tuple {
                 vk::PhysicalDeviceDynamicRenderingFeatures { true },
                 vk::PhysicalDeviceSynchronization2Features { true },
-            },
-            .queueFamilyGetter = [=](vk::PhysicalDevice physicalDevice) {
-                return QueueFamilies { physicalDevice, surface };
             },
             .apiVersion = vk::makeApiVersion(0, 1, 0, 0),
         } } { }

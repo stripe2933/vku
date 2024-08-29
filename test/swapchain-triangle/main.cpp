@@ -79,11 +79,11 @@ struct Gpu : vku::Gpu<QueueFamilies, Queues> {
 #endif
                 vk::KHRSwapchainExtensionName,
             },
-            .devicePNexts = std::tuple {
-                vk::PhysicalDeviceDynamicRenderingFeatures { true },
-            },
             .queueFamilyGetter = [=](vk::PhysicalDevice physicalDevice) {
                 return QueueFamilies { physicalDevice, surface };
+            },
+            .devicePNexts = std::tuple {
+                vk::PhysicalDeviceDynamicRenderingFeatures { true },
             },
             .apiVersion = vk::makeApiVersion(0, 1, 0, 0),
         } } { }
