@@ -16,7 +16,6 @@ export module vku:rendering.MsaaAttachmentGroup;
 #ifdef VKU_USE_STD_MODULE
 import std;
 #endif
-export import :images.AllocatedImage;
 export import :rendering.Attachment;
 import :rendering.AttachmentGroupBase;
 export import :rendering.MsaaAttachment;

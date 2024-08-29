@@ -13,8 +13,6 @@ export module vku:rendering.AttachmentGroupBase;
 #ifdef VKU_USE_STD_MODULE
 import std;
 #endif
-export import vk_mem_alloc_hpp;
-export import vulkan_hpp;
 export import :images.AllocatedImage;
 export import :utils;
 

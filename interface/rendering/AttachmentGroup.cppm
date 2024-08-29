@@ -16,7 +16,6 @@ export module vku:rendering.AttachmentGroup;
 #ifdef VKU_USE_STD_MODULE
 import std;
 #endif
-export import :images.AllocatedImage;
 export import :rendering.Attachment;
 import :rendering.AttachmentGroupBase;
 import :utils.RefHolder;
