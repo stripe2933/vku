@@ -78,7 +78,6 @@ struct Gpu : vku::Gpu<QueueFamilies, Queues> {
                 vk::PhysicalDeviceDynamicRenderingFeatures { true },
                 vk::PhysicalDeviceSynchronization2Features { true },
             },
-            .apiVersion = vk::makeApiVersion(0, 1, 0, 0),
         } } { }
 };
 

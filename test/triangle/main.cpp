@@ -76,7 +76,6 @@ struct Gpu : vku::Gpu<QueueFamilies, Queues> {
             .devicePNexts = std::tuple {
                 vk::PhysicalDeviceDynamicRenderingFeatures { true },
             },
-            .apiVersion = vk::makeApiVersion(0, 1, 0, 0),
         } } { }
 };
 
