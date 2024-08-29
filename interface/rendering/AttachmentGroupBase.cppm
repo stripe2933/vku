@@ -2,10 +2,8 @@ module;
 
 #ifndef VKU_USE_STD_MODULE
 #include <concepts>
-#include <memory>
-#include <type_traits>
+#include <forward_list>
 #include <utility>
-#include <vector>
 #endif
 
 #include <vulkan/vulkan_hpp_macros.hpp>
@@ -42,12 +40,7 @@ namespace vku {
         auto operator=(AttachmentGroupBase&&) noexcept -> AttachmentGroupBase& = default;
         virtual ~AttachmentGroupBase() = default;
 
-        [[nodiscard]] auto storeImage(std::unique_ptr<AllocatedImage> image) -> const AllocatedImage&;
-        [[nodiscard]] auto storeImage(
-            std::derived_from<AllocatedImage> auto &&image
-        ) -> const AllocatedImage& {
-            return *storedImage.emplace_back(std::make_unique<std::remove_cvref_t<decltype(image)>>(FWD(image)));
-        }
+        [[nodiscard]] auto storeImage(AllocatedImage &&image) -> const AllocatedImage&;
 
         [[nodiscard]]
         [[deprecated("Use vku::toViewport instead.")]]
@@ -64,7 +57,7 @@ namespace vku {
         }
 
     protected:
-        std::vector<std::unique_ptr<AllocatedImage>> storedImage;
+        std::forward_list<AllocatedImage> storedImage;
 
         [[nodiscard]] auto createAttachmentImage(
             VMA_HPP_NAMESPACE::Allocator allocator,
@@ -85,9 +78,9 @@ vku::AttachmentGroupBase::AttachmentGroupBase(
 ) : extent { extent } { }
 
 auto vku::AttachmentGroupBase::storeImage(
-    std::unique_ptr<AllocatedImage> image
+    AllocatedImage &&image
 ) -> const AllocatedImage& {
-    return *storedImage.emplace_back(std::move(image));
+    return storedImage.emplace_front(std::move(image));
 }
 
 auto vku::AttachmentGroupBase::createAttachmentImage(
