@@ -1,7 +1,10 @@
 module;
 
 #ifndef VKU_USE_STD_MODULE
+#include <vector>
+#ifdef _MSC_VER
 #include <compare>
+#endif
 #endif
 
 #include <vulkan/vulkan_hpp_macros.hpp>

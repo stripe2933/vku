@@ -1,6 +1,6 @@
 module;
 
-#ifndef VKU_USE_STD_MODULE
+#if !defined(VKU_USE_STD_MODULE) && defined(_MSC_VER)
 #include <compare>
 #endif
 
