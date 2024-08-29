@@ -42,20 +42,6 @@ namespace vku {
 
         [[nodiscard]] auto storeImage(AllocatedImage &&image) -> const AllocatedImage&;
 
-        [[nodiscard]]
-        [[deprecated("Use vku::toViewport instead.")]]
-        auto getViewport(
-            bool negativeHeight = false
-        ) const noexcept -> VULKAN_HPP_NAMESPACE::Viewport {
-            return toViewport(extent, negativeHeight);
-        }
-
-        [[nodiscard]]
-        [[deprecated("Use vk::Rect2D instead.")]]
-        auto getScissor() const noexcept -> VULKAN_HPP_NAMESPACE::Rect2D {
-            return { { 0, 0 }, extent };
-        }
-
     protected:
         std::forward_list<AllocatedImage> storedImage;
 
