@@ -2,9 +2,13 @@
 #include <cstdint>
 #include <algorithm>
 #include <array>
+#include <format>
+#include <ranges>
 #include <span>
+#include <stdexcept>
 #include <tuple>
 #include <variant>
+#include <vector>
 #ifdef _MSC_VER
 #include <string_view>
 #endif
@@ -62,7 +66,7 @@ struct Queues {
 
 struct Gpu : vku::Gpu<QueueFamilies, Queues> {
     explicit Gpu(const vk::raii::Instance &instance [[clang::lifetimebound]], vk::SurfaceKHR surface)
-        : vku::Gpu<QueueFamilies, Queues> { instance, vku::Gpu<QueueFamilies, Queues>::Config {
+        : vku::Gpu<QueueFamilies, Queues> { instance, vku::Gpu<QueueFamilies, Queues>::Config<vk::PhysicalDeviceDynamicRenderingFeatures> {
             .verbose = true,
             .deviceExtensions = {
                 vk::KHRMultiviewExtensionName,
