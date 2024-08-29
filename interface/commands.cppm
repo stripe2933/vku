@@ -66,11 +66,53 @@ namespace vku {
     };
 
     export template <std::invocable<VULKAN_HPP_NAMESPACE::CommandBuffer> F>
-    auto executeSingleCommand(VULKAN_HPP_NAMESPACE::Device device, VULKAN_HPP_NAMESPACE::CommandPool commandPool, VULKAN_HPP_NAMESPACE::Queue queue, F &&f, VULKAN_HPP_NAMESPACE::Fence fence = {}) -> void
-        requires std::is_void_v<std::invoke_result_t<F, VULKAN_HPP_NAMESPACE::CommandBuffer>>;
+    auto executeSingleCommand(
+        VULKAN_HPP_NAMESPACE::Device device,
+        VULKAN_HPP_NAMESPACE::CommandPool commandPool,
+        VULKAN_HPP_NAMESPACE::Queue queue,
+        F &&f,
+        VULKAN_HPP_NAMESPACE::Fence fence = {}
+    ) -> void
+        requires std::is_void_v<std::invoke_result_t<F, VULKAN_HPP_NAMESPACE::CommandBuffer>>
+    {
+        const VULKAN_HPP_NAMESPACE::CommandBuffer commandBuffer = device.allocateCommandBuffers(VULKAN_HPP_NAMESPACE::CommandBufferAllocateInfo {
+            commandPool,
+            VULKAN_HPP_NAMESPACE::CommandBufferLevel::ePrimary,
+            1,
+        })[0];
+        commandBuffer.begin({ VULKAN_HPP_NAMESPACE::CommandBufferUsageFlagBits::eOneTimeSubmit });
+        std::invoke(FWD(f), commandBuffer);
+        commandBuffer.end();
+        queue.submit(VULKAN_HPP_NAMESPACE::SubmitInfo {
+            {},
+            {},
+            commandBuffer,
+        }, fence);
+    }
 
     export template <std::invocable<VULKAN_HPP_NAMESPACE::CommandBuffer> F>
-    [[nodiscard]] auto executeSingleCommand(VULKAN_HPP_NAMESPACE::Device device, VULKAN_HPP_NAMESPACE::CommandPool commandPool, VULKAN_HPP_NAMESPACE::Queue queue, F &&f, VULKAN_HPP_NAMESPACE::Fence fence = {}) -> std::invoke_result_t<F, VULKAN_HPP_NAMESPACE::CommandBuffer>;
+    [[nodiscard]] auto executeSingleCommand(
+        VULKAN_HPP_NAMESPACE::Device device,
+        VULKAN_HPP_NAMESPACE::CommandPool commandPool,
+        VULKAN_HPP_NAMESPACE::Queue queue,
+        F &&f,
+        VULKAN_HPP_NAMESPACE::Fence fence = {}
+    ) -> std::invoke_result_t<F, VULKAN_HPP_NAMESPACE::CommandBuffer> {
+        const VULKAN_HPP_NAMESPACE::CommandBuffer commandBuffer = device.allocateCommandBuffers(VULKAN_HPP_NAMESPACE::CommandBufferAllocateInfo {
+            commandPool,
+            VULKAN_HPP_NAMESPACE::CommandBufferLevel::ePrimary,
+            1,
+        })[0];
+        commandBuffer.begin({ VULKAN_HPP_NAMESPACE::CommandBufferUsageFlagBits::eOneTimeSubmit });
+        auto result = std::invoke(FWD(f), commandBuffer);
+        commandBuffer.end();
+        queue.submit(VULKAN_HPP_NAMESPACE::SubmitInfo {
+            {},
+            {},
+            commandBuffer,
+        }, fence);
+        return result;
+    }
 
     export template <typename... ExecutionInfoTuples>
     [[nodiscard]] auto executeHierarchicalCommands(
@@ -210,51 +252,4 @@ namespace vku {
         }
         return result;
     }
-}
-
-template <std::invocable<VULKAN_HPP_NAMESPACE::CommandBuffer> F>
-auto vku::executeSingleCommand(
-    VULKAN_HPP_NAMESPACE::Device device,
-    VULKAN_HPP_NAMESPACE::CommandPool commandPool,
-    VULKAN_HPP_NAMESPACE::Queue queue,
-    F &&f,
-    VULKAN_HPP_NAMESPACE::Fence fence
-) -> void requires std::is_void_v<std::invoke_result_t<F, VULKAN_HPP_NAMESPACE::CommandBuffer>>{
-    const VULKAN_HPP_NAMESPACE::CommandBuffer commandBuffer = device.allocateCommandBuffers(VULKAN_HPP_NAMESPACE::CommandBufferAllocateInfo {
-        commandPool,
-        VULKAN_HPP_NAMESPACE::CommandBufferLevel::ePrimary,
-        1,
-    })[0];
-    commandBuffer.begin({ VULKAN_HPP_NAMESPACE::CommandBufferUsageFlagBits::eOneTimeSubmit });
-    std::invoke(FWD(f), commandBuffer);
-    commandBuffer.end();
-    queue.submit(VULKAN_HPP_NAMESPACE::SubmitInfo {
-        {},
-        {},
-        commandBuffer,
-    }, fence);
-}
-
-template <std::invocable<VULKAN_HPP_NAMESPACE::CommandBuffer> F>
-[[nodiscard]] auto vku::executeSingleCommand(
-    VULKAN_HPP_NAMESPACE::Device device,
-    VULKAN_HPP_NAMESPACE::CommandPool commandPool,
-    VULKAN_HPP_NAMESPACE::Queue queue,
-    F &&f,
-    VULKAN_HPP_NAMESPACE::Fence fence
-) -> std::invoke_result_t<F, VULKAN_HPP_NAMESPACE::CommandBuffer> {
-    const VULKAN_HPP_NAMESPACE::CommandBuffer commandBuffer = device.allocateCommandBuffers(VULKAN_HPP_NAMESPACE::CommandBufferAllocateInfo {
-        commandPool,
-        VULKAN_HPP_NAMESPACE::CommandBufferLevel::ePrimary,
-        1,
-    })[0];
-    commandBuffer.begin({ VULKAN_HPP_NAMESPACE::CommandBufferUsageFlagBits::eOneTimeSubmit });
-    auto result = std::invoke(FWD(f), commandBuffer);
-    commandBuffer.end();
-    queue.submit(VULKAN_HPP_NAMESPACE::SubmitInfo {
-        {},
-        {},
-        commandBuffer,
-    }, fence);
-    return result;
 }
