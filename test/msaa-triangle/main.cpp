@@ -3,6 +3,7 @@
 #include <array>
 #include <span>
 #include <tuple>
+#include <variant>
 #ifdef _MSC_VER
 #include <string_view>
 #endif
@@ -128,8 +129,8 @@ int main(){
         // Specify the attachment formats for dynamic rendering.
         vk::PipelineRenderingCreateInfo {
             {},
-            vku::unsafeProxy(vk::Format::eR8G8B8A8Unorm /*= attachmentGroup.colorAttachments[0].image.format*/),
-            vk::Format::eD32Sfloat /*= attachmentGroup.depthStencilAttachment->image.format*/,
+            vku::unsafeProxy(vk::Format::eR8G8B8A8Unorm),
+            vk::Format::eD32Sfloat,
         },
     }.get() };
 
@@ -151,14 +152,14 @@ int main(){
                     vk::PipelineStageFlagBits2::eColorAttachmentOutput, vk::AccessFlagBits2::eColorAttachmentRead | vk::AccessFlagBits2::eColorAttachmentWrite,
                     {}, vk::ImageLayout::eAttachmentOptimal,
                     vk::QueueFamilyIgnored, vk::QueueFamilyIgnored,
-                    attachmentGroup.colorAttachments[0].image, vku::fullSubresourceRange(),
+                    get<vku::MsaaAttachment>(attachmentGroup.colorAttachments[0]).image, vku::fullSubresourceRange(),
                 },
                 vk::ImageMemoryBarrier2 {
                     {}, {},
                     vk::PipelineStageFlagBits2::eColorAttachmentOutput, vk::AccessFlagBits2::eColorAttachmentRead | vk::AccessFlagBits2::eColorAttachmentWrite,
                     {}, vk::ImageLayout::eAttachmentOptimal,
                     vk::QueueFamilyIgnored, vk::QueueFamilyIgnored,
-                    attachmentGroup.colorAttachments[0].resolveImage, vku::fullSubresourceRange(),
+                    get<vku::MsaaAttachment>(attachmentGroup.colorAttachments[0]).resolveImage, vku::fullSubresourceRange(),
                 },
                 vk::ImageMemoryBarrier2 {
                     {}, {},

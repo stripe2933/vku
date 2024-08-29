@@ -11,7 +11,7 @@ module;
 
 export module vku:rendering.Attachment;
 
-#if defined(VKU_USE_STD_MODULE) && defined(_MSC_VER)
+#ifdef VKU_USE_STD_MODULE
 import std;
 #endif
 export import :images.Image;
@@ -20,5 +20,9 @@ namespace vku {
     export struct Attachment {
         Image image;
         VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView view;
+    };
+
+    export struct SwapchainAttachment {
+        std::vector<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView> views;
     };
 }

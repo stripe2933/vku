@@ -9,5 +9,7 @@ target_compile_definitions(get_mip_view_create_infos PRIVATE
 )
 add_test(NAME get_mip_view_create_infos COMMAND get_mip_view_create_infos)
 
-add_subdirectory(triangle)
 add_subdirectory(msaa-triangle)
+add_subdirectory(triangle)
+add_subdirectory(swapchain-msaa-triangle)
+add_subdirectory(swapchain-triangle)

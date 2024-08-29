@@ -3,6 +3,7 @@
 #include <array>
 #include <span>
 #include <tuple>
+#include <variant>
 #ifdef _MSC_VER
 #include <string_view>
 #endif
@@ -122,7 +123,7 @@ int main(){
         // Specify the attachment formats for dynamic rendering.
         vk::PipelineRenderingCreateInfo {
             {},
-            vku::unsafeProxy(vk::Format::eR8G8B8A8Unorm /*= attachmentGroup.colorAttachments[0].image.format*/),
+            vku::unsafeProxy(vk::Format::eR8G8B8A8Unorm),
         },
     }.get() };
 
@@ -143,7 +144,7 @@ int main(){
                 {}, vk::AccessFlagBits::eColorAttachmentWrite,
                 {}, vk::ImageLayout::eColorAttachmentOptimal,
                 vk::QueueFamilyIgnored, vk::QueueFamilyIgnored,
-                attachmentGroup.colorAttachments[0].image, vku::fullSubresourceRange(),
+                get<vku::Attachment>(attachmentGroup.colorAttachments[0]).image, vku::fullSubresourceRange(),
             });
 
         // Begin dynamic rendering with clearing the color attachment by (0, 0, 0, 0) (transparent).
