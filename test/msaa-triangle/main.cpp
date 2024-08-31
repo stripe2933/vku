@@ -117,8 +117,8 @@ int main(){
         gpu.device,
         attachmentGroup.storeImage(attachmentGroup.createDepthStencilImage(gpu.allocator, vk::Format::eD32Sfloat)));
 
-    vk::raii::PipelineLayout pipelineLayout { gpu.device, vk::PipelineLayoutCreateInfo{} };
-    vk::raii::Pipeline pipeline { gpu.device, nullptr, vk::StructureChain {
+    const vk::raii::PipelineLayout pipelineLayout { gpu.device, vk::PipelineLayoutCreateInfo{} };
+    const vk::raii::Pipeline pipeline { gpu.device, nullptr, vk::StructureChain {
         vku::getDefaultGraphicsPipelineCreateInfo(
             createPipelineStages(
                 gpu.device,

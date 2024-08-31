@@ -111,8 +111,8 @@ int main(){
         gpu.device,
         attachmentGroup.storeImage(attachmentGroup.createColorImage(gpu.allocator, vk::Format::eR8G8B8A8Unorm)));
 
-    vk::raii::PipelineLayout pipelineLayout { gpu.device, vk::PipelineLayoutCreateInfo{} };
-    vk::raii::Pipeline pipeline { gpu.device, nullptr, vk::StructureChain {
+    const vk::raii::PipelineLayout pipelineLayout { gpu.device, vk::PipelineLayoutCreateInfo{} };
+    const vk::raii::Pipeline pipeline { gpu.device, nullptr, vk::StructureChain {
         vku::getDefaultGraphicsPipelineCreateInfo(
             createPipelineStages(
                 gpu.device,

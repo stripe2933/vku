@@ -142,8 +142,8 @@ int main(){
         swapchainImages,
         vk::Format::eB8G8R8A8Srgb);
 
-    vk::raii::PipelineLayout pipelineLayout { gpu.device, vk::PipelineLayoutCreateInfo{} };
-    vk::raii::Pipeline pipeline { gpu.device, nullptr, vk::StructureChain {
+    const vk::raii::PipelineLayout pipelineLayout { gpu.device, vk::PipelineLayoutCreateInfo{} };
+    const vk::raii::Pipeline pipeline { gpu.device, nullptr, vk::StructureChain {
         vku::getDefaultGraphicsPipelineCreateInfo(
             createPipelineStages(
                 gpu.device,
