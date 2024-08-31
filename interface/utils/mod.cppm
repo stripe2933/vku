@@ -180,8 +180,7 @@ namespace vku {
      * Convert <tt>vk::Extent2D</tt> to <tt>vk::Offset2D</tt>.
      * @param extent Extent to convert.
      * @return Converted offset.
-     * @throw
-     * - Assertion error if width or height is overflowing (> 2^31 - 1).
+     * @note It internally asserts if width or height is overflowing (> 2^31 - 1).
      * @note Signed integer overflow is UB in C++. Make sure that the width and height are less than 2^31 - 1.
      */
     export
@@ -196,8 +195,8 @@ namespace vku {
      * @param extent Extent to convert.
      * @param negativeHeight Whether the height is negative. Default is <tt>false</tt>.
      * @return Converted viewport.
-     * @note
-     * - For about negative viewport height, see https://www.saschawillems.de/blog/2019/03/29/flipping-the-vulkan-viewport/ for detail.
+     * @note For about negative viewport height, see https://www.saschawillems.de/blog/2019/03/29/flipping-the-vulkan-viewport/
+     * for detail.
      * @example
      * Setting viewport and scissor as full region of the swapchain for pipeline dynamic state:
      * @code

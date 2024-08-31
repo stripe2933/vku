@@ -120,9 +120,8 @@ namespace vku {
      * @param surface Surface to test for presentation support.
      * @param queueFamilyProperties Queue family properties, which is identical to <tt>physicalDevice.getQueueFamilyProperties()</tt>.
      * @return The index of the both graphics and present capable queue family, or <tt>std::nullopt</tt> if not found.
-     * @note
-     * This is useful for the common case of rendering to a window, because it doesn't requires the explicit queue family
-     * ownership transfer between graphics and present queues.
+     * @note This is useful for the common case of rendering to a window, because it doesn't require the explicit queue
+     * family ownership transfer between graphics and present queues.
      */
     export
     [[nodiscard]] auto getGraphicsPresentQueueFamily(
@@ -145,9 +144,8 @@ namespace vku {
      * @param surface Surface to test for presentation support.
      * @param queueFamilyProperties Queue family properties, which is identical to <tt>physicalDevice.getQueueFamilyProperties()</tt>.
      * @return The index of the both compute and present capable queue family, or <tt>std::nullopt</tt> if not found.
-     * @note
-     * This is useful for compute based window rendering, because it doesn't requires the explicit queue family ownership
-     * transfer between compute and present queues.
+     * @note This is useful for compute based window rendering, because it doesn't require the explicit queue family
+     * ownership transfer between compute and present queues.
      */
     export
     [[nodiscard]] auto getComputePresentQueueFamily(

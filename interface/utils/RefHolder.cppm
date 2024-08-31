@@ -21,9 +21,9 @@ namespace vku{
      * which has references for the types <tt>Ts...</tt>.
      * @tparam T A type that represents the value of <tt>RefHolder</tt>.
      * @tparam Ts Types that are used as references for the value of <tt>RefHolder</tt>.
-     * @note
-     * This class is intended to be used in a situation for returning the value that has references to the various types,
-     * but they doesn't have to be emphasized (function users don't have to know about them, they only care about the value).
+     * @note This class is intended to be used in a situation for returning the value that has references to the various
+     * types, but they doesn't have to be emphasized (function users don't have to know about them, they only care about
+     * the value).
      *
      * TODO: add more description and examples.
      */

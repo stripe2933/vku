@@ -12,6 +12,7 @@ module;
 #include <utility>
 #endif
 
+#include <span>
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 export module vku:buffers.MappedBuffer;
@@ -95,11 +96,10 @@ namespace vku {
         /**
          * Get <tt>std::span<const T></tt> from the mapped memory range.
          * @tparam T Type of the elements in the span.
-         * @param byteOffset Begin offset in bytes.
+         * @param byteOffset Beginning offset in bytes.
          * @return <tt>std::span<const T></tt>, whose address starts from (mapped address) + \p byteOffset.
-         * @note
-         * It internally asserts \p byteOffset is less than or equal to the buffer size for debug (NDEBUG is not
-         * defined) environment.
+         * @note It internally asserts \p byteOffset is less than or equal to the buffer size for debug (<tt>NDEBUG</tt>
+         * is not defined) environment.
          */
         template <typename T>
         [[nodiscard]] auto asRange(VULKAN_HPP_NAMESPACE::DeviceSize byteOffset = 0) const NOEXCEPT_IF_RELEASE -> std::span<const T>;
@@ -107,10 +107,9 @@ namespace vku {
         /**
          * Get <tt>std::span<T></tt> from the mapped memory range.
          * @tparam T Type of the elements in the span.
-         * @param byteOffset Begin offset in bytes.
+         * @param byteOffset Beginning offset in bytes.
          * @return <tt>std::span<T></tt>, whose address starts from (mapped address) + \p byteOffset.
-         * @note
-         * It internally asserts \p byteOffset is less than or equal to the buffer size for debug (NDEBUG is not
+         * @note It internally asserts \p byteOffset is less than or equal to the buffer size for debug (NDEBUG is not
          * defined) environment.
          */
         template <typename T>
@@ -119,10 +118,9 @@ namespace vku {
         /**
          * Get const reference of <tt>T</tt> from the mapped memory.
          * @tparam T Type of the reference.
-         * @param byteOffset Begin offset in bytes.
+         * @param byteOffset Beginning offset in bytes.
          * @return Const reference of <tt>T</tt>, whose address starts from (mapped address) + \p byteOffset.
-         * @note
-         * It internally asserts <tt>byteOffset + sizeof(T)</tt> is less than or equal to the buffer size for debug
+         * @note It internally asserts <tt>byteOffset + sizeof(T)</tt> is less than or equal to the buffer size for debug
          * (NDEBUG is not defined) environment.
          */
         template <typename T>
@@ -131,10 +129,9 @@ namespace vku {
         /**
          * Get const reference of <tt>T</tt> from the mapped memory.
          * @tparam T Type of the reference.
-         * @param byteOffset Begin offset in bytes.
+         * @param byteOffset Beginning offset in bytes.
          * @return Reference of <tt>T</tt>, whose address starts from (mapped address) + \p byteOffset.
-         * @note
-         * It internally asserts <tt>byteOffset + sizeof(T)</tt> is less than or equal to the buffer size for debug
+         * @note It internally asserts <tt>byteOffset + sizeof(T)</tt> is less than or equal to the buffer size for debug
          * (NDEBUG is not defined) environment.
          */
         template <typename T>
