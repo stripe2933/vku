@@ -24,7 +24,7 @@ struct Queues {
 
     [[nodiscard]] static auto getCreateInfos(vk::PhysicalDevice, const QueueFamilies &queueFamilies) noexcept
 #ifdef _MSC_VER
-        -> vku::RefHolder<std::array<vk::DeviceQueueCreateInfo, 0>, std::array<float, 1>>
+        -> vku::RefHolder<std::array<vk::DeviceQueueCreateInfo, 1>, std::array<float, 1>>
 #endif
     {
         return vku::RefHolder {
