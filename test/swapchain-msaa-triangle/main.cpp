@@ -180,7 +180,7 @@ int main(){
                 {}, {},
                 {}, vk::ImageLayout::eColorAttachmentOptimal,
                 vk::QueueFamilyIgnored, vk::QueueFamilyIgnored,
-                get<vku::SwapchainMsaaAttachment>(attachmentGroup.colorAttachments[0]).image, vku::fullSubresourceRange(),
+                attachmentGroup.getSwapchainAttachment(0).image, vku::fullSubresourceRange(),
             },
             vk::ImageMemoryBarrier {
                 {}, {},

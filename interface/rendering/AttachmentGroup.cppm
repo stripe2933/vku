@@ -78,6 +78,32 @@ export namespace vku {
             const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &viewCreateInfo
         ) -> const Attachment&;
 
+        /**
+         * Get the const reference of color attachment at the specified index.
+         * @param index The index of the color attachment.
+         * @return The const reference of the color attachment.
+         * @note This function is designed to make it easier for users to access elements from <tt>attachmentGroup.colorAttachments[i]</tt>
+         * without needing to use the more cumbersome <tt>get<vku::Attachment>(...)</tt> call.
+         * @note This function is considered "unsafe" because if the element at the specified index isn't a <tt>vku::Attachment</tt>,
+         * it can lead to undefined behavior.
+         */
+        [[nodiscard]] auto getColorAttachment(std::size_t index) const noexcept -> const Attachment& {
+            return *get_if<Attachment>(&colorAttachments[index]);
+        }
+
+        /**
+         * Get the const reference of swapchain attachment at the specified index.
+         * @param index The index of the swapchain attachment.
+         * @return The const reference of the swapchain attachment.
+         * @note This function is designed to make it easier for users to access elements from <tt>attachmentGroup.colorAttachments[i]</tt>
+         * without needing to use the more cumbersome <tt>get<vku::SwapchainAttachment>(...)</tt> call.
+         * @note This function is considered "unsafe" because if the element at the specified index isn't a <tt>vku::SwapchainAttachment</tt>,
+         * it can lead to undefined behavior.
+         */
+        [[nodiscard]] auto getSwapchainAttachment(std::size_t index) const noexcept -> const SwapchainAttachment& {
+            return *get_if<SwapchainAttachment>(&colorAttachments[index]);
+        }
+
         [[nodiscard]] auto createColorImage(
             VMA_HPP_NAMESPACE::Allocator allocator,
             VULKAN_HPP_NAMESPACE::Format format,

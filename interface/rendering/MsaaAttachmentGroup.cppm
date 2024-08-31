@@ -89,7 +89,33 @@ namespace vku {
             const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
             const Image &image,
             const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &viewCreateInfo
-        ) -> const Attachment&;
+            ) -> const Attachment&;
+
+        /**
+         * Get the const reference of color attachment at the specified index.
+         * @param index The index of the color attachment.
+         * @return The const reference of the color attachment.
+         * @note This function is designed to make it easier for users to access elements from <tt>attachmentGroup.colorAttachments[i]</tt>
+         * without needing to use the more cumbersome <tt>get<vku::MsaaAttachment>(...)</tt> call.
+         * @note This function is considered "unsafe" because if the element at the specified index isn't a <tt>vku::MsaaAttachment</tt>,
+         * it can lead to undefined behavior.
+         */
+        [[nodiscard]] auto getColorAttachment(std::size_t index) const noexcept -> const MsaaAttachment& {
+            return *get_if<MsaaAttachment>(&colorAttachments[index]);
+        }
+
+        /**
+         * Get the const reference of swapchain attachment at the specified index.
+         * @param index The index of the swapchain attachment.
+         * @return The const reference of the swapchain attachment.
+         * @note This function is designed to make it easier for users to access elements from <tt>attachmentGroup.colorAttachments[i]</tt>
+         * without needing to use the more cumbersome <tt>get<vku::SwapchainMsaaAttachment>(...)</tt> call.
+         * @note This function is considered "unsafe" because if the element at the specified index isn't a <tt>vku::SwapchainMsaaAttachment</tt>,
+         * it can lead to undefined behavior.
+         */
+        [[nodiscard]] auto getSwapchainAttachment(std::size_t index) const noexcept -> const SwapchainMsaaAttachment& {
+            return *get_if<SwapchainMsaaAttachment>(&colorAttachments[index]);
+        }
 
         [[nodiscard]] auto createColorImage(
             VMA_HPP_NAMESPACE::Allocator allocator,

@@ -143,7 +143,7 @@ int main(){
                 {}, vk::AccessFlagBits::eColorAttachmentWrite,
                 {}, vk::ImageLayout::eColorAttachmentOptimal,
                 vk::QueueFamilyIgnored, vk::QueueFamilyIgnored,
-                get<vku::Attachment>(attachmentGroup.colorAttachments[0]).image, vku::fullSubresourceRange(),
+                attachmentGroup.getColorAttachment(0).image, vku::fullSubresourceRange(),
             });
 
         // Begin dynamic rendering with clearing the color attachment by (0, 0, 0, 0) (transparent).
