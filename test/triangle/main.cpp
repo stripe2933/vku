@@ -148,9 +148,7 @@ int main(){
 
         // Begin dynamic rendering with clearing the color attachment by (0, 0, 0, 0) (transparent).
         cb.beginRenderingKHR(attachmentGroup.getRenderingInfo(
-            std::array {
-                vku::AttachmentGroup::ColorAttachmentInfo { vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore, { 0.f, 0.f, 0.f, 0.f } },
-            }) DEVICE_DISPATCHER_PARAM_OPT(gpu.device));
+            vku::AttachmentGroup::ColorAttachmentInfo { vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore, { 0.f, 0.f, 0.f, 0.f } }) DEVICE_DISPATCHER_PARAM_OPT(gpu.device));
 
         cb.setViewport(0, vku::toViewport(attachmentGroup.extent));
         cb.setScissor(0, vk::Rect2D { { 0, 0 }, attachmentGroup.extent });

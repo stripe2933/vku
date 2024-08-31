@@ -119,21 +119,21 @@ export namespace vku {
         ) const -> AllocatedImage;
 
         [[nodiscard]] auto getRenderingInfo(
-            std::span<const ColorAttachmentInfo> colorAttachmentInfos
+            VULKAN_HPP_NAMESPACE::ArrayProxy<const ColorAttachmentInfo> colorAttachmentInfos
         ) const -> RefHolder<VULKAN_HPP_NAMESPACE::RenderingInfo, std::vector<VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo>>;
 
         [[nodiscard]] auto getRenderingInfo(
-            std::span<const ColorAttachmentInfo> colorAttachmentInfos,
+            VULKAN_HPP_NAMESPACE::ArrayProxy<const ColorAttachmentInfo> colorAttachmentInfos,
             std::uint32_t swapchainImageIndex
         ) const -> RefHolder<VULKAN_HPP_NAMESPACE::RenderingInfo, std::vector<VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo>>;
 
         [[nodiscard]] auto getRenderingInfo(
-            std::span<const ColorAttachmentInfo> colorAttachmentInfos,
+            VULKAN_HPP_NAMESPACE::ArrayProxy<const ColorAttachmentInfo> colorAttachmentInfos,
             const DepthStencilAttachmentInfo &depthStencilAttachmentInfo
         ) const -> RefHolder<VULKAN_HPP_NAMESPACE::RenderingInfo, std::vector<VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo>>;
 
         [[nodiscard]] auto getRenderingInfo(
-            std::span<const ColorAttachmentInfo> colorAttachmentInfos,
+            VULKAN_HPP_NAMESPACE::ArrayProxy<const ColorAttachmentInfo> colorAttachmentInfos,
             const DepthStencilAttachmentInfo &depthStencilAttachmentInfo,
             std::uint32_t swapchainImageIndex
         ) const -> RefHolder<VULKAN_HPP_NAMESPACE::RenderingInfo, std::vector<VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo>>;
@@ -253,7 +253,7 @@ auto vku::AttachmentGroup::createDepthStencilImage(
 }
 
 auto vku::AttachmentGroup::getRenderingInfo(
-    std::span<const ColorAttachmentInfo> colorAttachmentInfos
+    VULKAN_HPP_NAMESPACE::ArrayProxy<const ColorAttachmentInfo> colorAttachmentInfos
 ) const -> RefHolder<VULKAN_HPP_NAMESPACE::RenderingInfo, std::vector<VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo>> {
     assert(colorAttachments.size() == colorAttachmentInfos.size() && "Color attachment info count mismatch");
     assert(!depthStencilAttachment.has_value() && "Depth-stencil attachment info mismatch");
@@ -285,7 +285,7 @@ auto vku::AttachmentGroup::getRenderingInfo(
 }
 
 auto vku::AttachmentGroup::getRenderingInfo(
-    std::span<const ColorAttachmentInfo> colorAttachmentInfos,
+    VULKAN_HPP_NAMESPACE::ArrayProxy<const ColorAttachmentInfo> colorAttachmentInfos,
     std::uint32_t swapchainImageIndex
 ) const -> RefHolder<VULKAN_HPP_NAMESPACE::RenderingInfo, std::vector<VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo>> {
     assert(colorAttachments.size() == colorAttachmentInfos.size() && "Color attachment info count mismatch");
@@ -339,7 +339,7 @@ auto vku::AttachmentGroup::getRenderingInfo(
 }
 
 auto vku::AttachmentGroup::getRenderingInfo(
-    std::span<const ColorAttachmentInfo> colorAttachmentInfos,
+    VULKAN_HPP_NAMESPACE::ArrayProxy<const ColorAttachmentInfo> colorAttachmentInfos,
     const DepthStencilAttachmentInfo &depthStencilAttachmentInfo
 ) const -> RefHolder<VULKAN_HPP_NAMESPACE::RenderingInfo, std::vector<VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo>> {
     assert(colorAttachments.size() == colorAttachmentInfos.size() && "Color attachment info count mismatch");
@@ -378,7 +378,7 @@ auto vku::AttachmentGroup::getRenderingInfo(
 }
 
 auto vku::AttachmentGroup::getRenderingInfo(
-    std::span<const ColorAttachmentInfo> colorAttachmentInfos,
+    VULKAN_HPP_NAMESPACE::ArrayProxy<const ColorAttachmentInfo> colorAttachmentInfos,
     const DepthStencilAttachmentInfo &depthStencilAttachmentInfo,
     std::uint32_t swapchainImageIndex
 ) const -> RefHolder<VULKAN_HPP_NAMESPACE::RenderingInfo, std::vector<VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo>> {

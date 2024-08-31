@@ -236,9 +236,7 @@ int main(){
 
         // Begin dynamic rendering with clearing the color attachment by (0, 0, 0, 0) (transparent).
         commandBuffer.beginRenderingKHR(attachmentGroup.getRenderingInfo(
-            std::array {
-                vku::MsaaAttachmentGroup::ColorAttachmentInfo { vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore, { 0.f, 0.f, 0.f, 0.f } },
-            },
+            vku::MsaaAttachmentGroup::ColorAttachmentInfo { vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore, { 0.f, 0.f, 0.f, 0.f } },
             vku::MsaaAttachmentGroup::DepthStencilAttachmentInfo { vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore, { 1.f, 0U } },
             swapchainImageIndex) DEVICE_DISPATCHER_PARAM_OPT(gpu.device));
 
