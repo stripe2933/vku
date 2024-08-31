@@ -3,6 +3,7 @@ module;
 #ifndef VKU_USE_STD_MODULE
 #include <cstdint>
 #include <tuple>
+#include <type_traits>
 #include <utility>
 #ifdef _MSC_VER
 #include <compare>
@@ -101,7 +102,7 @@ namespace vku {
         }
 
         template <concepts::derived_from_value_specialization_of<DescriptorSetLayout>... Layouts>
-        friend auto allocateDescriptorSets(VULKAN_HPP_NAMESPACE::Device, VULKAN_HPP_NAMESPACE::DescriptorPool, std::tuple<const Layouts&...>) -> std::tuple<DescriptorSet<Layouts>...>;
+        friend auto allocateDescriptorSets(VULKAN_HPP_NAMESPACE::Device, VULKAN_HPP_NAMESPACE::DescriptorPool, const std::tuple<Layouts...> &layouts) -> std::tuple<DescriptorSet<std::remove_cvref_t<Layouts>>...>;
 
     private:
         explicit DescriptorSet(VULKAN_HPP_NAMESPACE::DescriptorSet descriptorSet) noexcept : VULKAN_HPP_NAMESPACE::DescriptorSet { descriptorSet } {}
@@ -111,11 +112,11 @@ namespace vku {
     [[nodiscard]] auto allocateDescriptorSets(
         VULKAN_HPP_NAMESPACE::Device device,
         VULKAN_HPP_NAMESPACE::DescriptorPool pool,
-        std::tuple<const Layouts&...> layouts
-    ) -> std::tuple<DescriptorSet<Layouts>...> {
+        const std::tuple<Layouts...> &layouts
+    ) -> std::tuple<DescriptorSet<std::remove_cvref_t<Layouts>>...> {
         return std::apply([&](const auto &...layout) {
             return std::apply([&](auto... rawSet) {
-                return std::tuple { DescriptorSet<Layouts> { rawSet }... };
+                return std::tuple { DescriptorSet<std::remove_cvref_t<Layouts>> { rawSet }... };
             }, device.allocateDescriptorSets({ pool, unsafeProxy({ *layout... }) }) | ranges::to_array<sizeof...(Layouts)>());
         }, layouts);
     }
