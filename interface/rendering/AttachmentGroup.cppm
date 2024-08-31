@@ -153,20 +153,22 @@ auto vku::AttachmentGroup::addSwapchainAttachment(
     std::span<const VULKAN_HPP_NAMESPACE::Image> swapchainImages,
     VULKAN_HPP_NAMESPACE::Format viewFormat
 ) -> const SwapchainAttachment& {
+    std::vector<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView> views;
+    views.reserve(swapchainImages.size());
+    for (VULKAN_HPP_NAMESPACE::Image swapchainImage : swapchainImages) {
+        views.emplace_back(device, VULKAN_HPP_NAMESPACE::ImageViewCreateInfo {
+            {},
+            swapchainImage,
+            VULKAN_HPP_NAMESPACE::ImageViewType::e2D,
+            viewFormat,
+            {},
+            { VULKAN_HPP_NAMESPACE::ImageAspectFlagBits::eColor, 0, 1, 0, 1 },
+        });
+    }
+
     return *get_if<SwapchainAttachment>(&colorAttachments.emplace_back(
         std::in_place_type<SwapchainAttachment>,
-        swapchainImages
-            | std::views::transform([&](VULKAN_HPP_NAMESPACE::Image swapchainImage) {
-                return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView { device, VULKAN_HPP_NAMESPACE::ImageViewCreateInfo {
-                    {},
-                    swapchainImage,
-                    VULKAN_HPP_NAMESPACE::ImageViewType::e2D,
-                    viewFormat,
-                    {},
-                    { VULKAN_HPP_NAMESPACE::ImageAspectFlagBits::eColor, 0, 1, 0, 1 },
-                } };
-            })
-            | std::ranges::to<std::vector>()));
+        std::move(views)));
 }
 
 auto vku::AttachmentGroup::createColorImage(

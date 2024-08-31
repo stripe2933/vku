@@ -213,24 +213,24 @@ auto vku::MsaaAttachmentGroup::addSwapchainAttachment(
     std::span<const VULKAN_HPP_NAMESPACE::Image> swapchainImages,
     const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &viewCreateInfo
 ) -> const SwapchainMsaaAttachment& {
+    std::vector<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView> resolveViews;
+    resolveViews.reserve(swapchainImages.size());
+    for (VULKAN_HPP_NAMESPACE::Image swapchainImage : swapchainImages) {
+        resolveViews.emplace_back(device, VULKAN_HPP_NAMESPACE::ImageViewCreateInfo {
+            {},
+            swapchainImage,
+            VULKAN_HPP_NAMESPACE::ImageViewType::e2D,
+            viewCreateInfo.format,
+            {},
+            { VULKAN_HPP_NAMESPACE::ImageAspectFlagBits::eColor, 0, 1, 0, 1 },
+        });
+    }
+
     return *get_if<SwapchainMsaaAttachment>(&colorAttachments.emplace_back(
         std::in_place_type<SwapchainMsaaAttachment>,
         image,
         VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView { device, viewCreateInfo },
-        swapchainImages
-            | std::views::transform([&](VULKAN_HPP_NAMESPACE::Image swapchainImage) {
-                return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView { device, VULKAN_HPP_NAMESPACE::ImageViewCreateInfo {
-                    {},
-                    swapchainImage,
-                    VULKAN_HPP_NAMESPACE::ImageViewType::e2D,
-                    // Image view and resolve image view format must be matched.
-                    // https://vulkan.lunarg.com/doc/view/1.3.283.0/mac/1.3-extensions/vkspec.html#VUID-VkRenderingAttachmentInfo-imageView-06865
-                    viewCreateInfo.format,
-                    {},
-                    { VULKAN_HPP_NAMESPACE::ImageAspectFlagBits::eColor, 0, 1, 0, 1 },
-                }};
-            })
-            | std::ranges::to<std::vector>()));
+        std::move(resolveViews)));
 }
 
 auto vku::MsaaAttachmentGroup::setDepthStencilAttachment(
