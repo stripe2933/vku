@@ -2,9 +2,11 @@ module;
 
 #ifndef VKU_USE_STD_MODULE
 #include <cstdint>
+#include <array>
 #include <tuple>
 #include <type_traits>
 #include <utility>
+#include <vector>
 #ifdef _MSC_VER
 #include <compare>
 #endif
@@ -18,8 +20,11 @@ export module vku:descriptors.DescriptorSet;
 import std;
 #endif
 export import :descriptors.DescriptorSetLayout;
-import :details;
+import :details.concepts;
+import :details.functional;
 import :utils;
+
+#define INDEX_SEQ(Is, N, ...) [&]<std::size_t ...Is>(std::index_sequence<Is...>) __VA_ARGS__ (std::make_index_sequence<N>{})
 
 template <VULKAN_HPP_NAMESPACE::DescriptorType> struct WriteDescriptorInfo;
 template <> struct WriteDescriptorInfo<VULKAN_HPP_NAMESPACE::DescriptorType::eSampler> { using type = VULKAN_HPP_NAMESPACE::DescriptorImageInfo; };
@@ -114,10 +119,12 @@ namespace vku {
         VULKAN_HPP_NAMESPACE::DescriptorPool pool,
         const std::tuple<Layouts...> &layouts
     ) -> std::tuple<DescriptorSet<std::remove_cvref_t<Layouts>>...> {
-        return std::apply([&](const auto &...layout) {
-            return std::apply([&](auto... rawSet) {
-                return std::tuple { DescriptorSet<std::remove_cvref_t<Layouts>> { rawSet }... };
-            }, device.allocateDescriptorSets({ pool, unsafeProxy({ *layout... }) }) | ranges::to_array<sizeof...(Layouts)>());
+        const std::array rawDescriptorSetLayouts = std::apply([&](const auto &...layout) {
+            return std::array { *layout... };
         }, layouts);
+        const std::vector rawDescriptorSets = device.allocateDescriptorSets({ pool, rawDescriptorSetLayouts });
+        return INDEX_SEQ(Is, sizeof...(Layouts), {
+            return std::tuple { DescriptorSet<std::remove_cvref_t<Layouts>> { rawDescriptorSets[Is] }... };
+        });
     }
 }
