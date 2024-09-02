@@ -216,6 +216,44 @@ namespace vku {
     }
 
     /**
+     * Cast the Vulkan object handle into its corresponding C handle.
+     * @tparam T Type of Vulkan handle.
+     * @param handle Vulkan object handle.
+     * @return The corresponding inner C handle of \p handle.
+     * @note RAII object must be explicitly converted to non-RAII handle before it passed as \p handle.
+     * @example
+     * @code
+     * vku::AllocatedImage image { device, vk::ImageCreateInfo { ... } };
+     * toCType<vk::Image>(image); // VkImage struct. Image is first implicitly converted to vk::Image, and passed as the parameter.
+     * vk::raii::ImageView imageView { device, image.getViewCreateInfo { ... } };
+     * toCType(*imageView); // VkImageView struct. Handle type is automatically inferred.
+     * @endcode
+     */
+    export template <typename T>
+    [[nodiscard]] auto toCType(T handle) noexcept -> typename T::CType {
+        return static_cast<typename T::CType>(handle);
+    }
+
+    /**
+     * Get the 64-bit GPU address of the Vulkan object.
+     * @tparam T Type of Vulkan handle.
+     * @param handle Vulkan object handle.
+     * @return The 64-bit GPU address.
+     * @note RAII object must be explicitly converted to non-RAII handle before it passed as \p handle.
+     * @example
+     * @code
+     * vku::AllocatedImage image { device, vk::ImageCreateInfo { ... } };
+     * toUint64<vk::Image>(image); // Image is first implicitly converted to vk::Image, and passed as the parameter.
+     * vk::raii::ImageView imageView { device, image.getViewCreateInfo { ... } };
+     * toUint64(*imageView); // Handle type is automatically inferred.
+     * @endcode
+     */
+    export template <typename T>
+    [[nodiscard]] auto toUint64(T handle) noexcept -> std::uint64_t {
+        return reinterpret_cast<std::uint64_t>(toCType(handle));
+    }
+
+    /**
      * Get aspect ratio (width / height) of the extent.
      * @tparam T Floating point type to calculate the aspect ratio. Default is <tt>float</tt>.
      * @param extent Extent to calculate the aspect ratio.
