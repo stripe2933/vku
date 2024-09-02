@@ -28,10 +28,7 @@ export module vku:pipelines.Shader;
 import std;
 #endif
 export import vulkan_hpp;
-
-[[nodiscard]] auto to_string(std::source_location srcLoc) noexcept -> std::string {
-    return std::format("{}:{}:{}", srcLoc.file_name(), srcLoc.line(), srcLoc.column());
-}
+import :details.to_string;
 
 namespace vku {
     export struct Shader {

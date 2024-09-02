@@ -56,6 +56,7 @@ target_sources(vku PUBLIC
         interface/buffers/MappedBuffer.cppm
         interface/commands.cppm
         interface/constants.cppm
+        interface/debugging.cppm
         interface/descriptors/mod.cppm
         interface/descriptors/DescriptorSetLayout.cppm
         interface/descriptors/DescriptorSet.cppm
@@ -65,6 +66,7 @@ target_sources(vku PUBLIC
         interface/details/container/OnDemandCounterStorage.cppm
         interface/details/functional.cppm
         interface/details/ranges.cppm
+        interface/details/to_string.cppm
         interface/details/tuple.cppm
         interface/Gpu.cppm
         interface/images/mod.cppm

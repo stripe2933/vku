@@ -7,6 +7,7 @@ module;
 export module vku;
 export import :buffers;
 export import :constants;
+export import :debugging;
 export import :descriptors;
 export import :Gpu;
 export import :commands;
