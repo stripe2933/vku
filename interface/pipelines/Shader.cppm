@@ -8,6 +8,7 @@ module;
 #include <format>
 #include <fstream>
 #include <ios>
+#include <ranges>
 #include <source_location>
 #include <stdexcept>
 #include <string>
