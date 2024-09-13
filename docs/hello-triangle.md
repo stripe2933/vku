@@ -918,12 +918,12 @@ If you launch your application now, it will emit these validation error:
 
 <details>
 <summary>Show errors</summary>
+
 > VUID-VkGraphicsPipelineCreateInfo-pNext-pNext(ERROR / SPEC): msgNum: 395890785 - Validation Error: [ VUID-VkGraphicsPipelineCreateInfo-pNext-pNext ] Object 0: handle = 0x121008200, type = VK_OBJECT_TYPE_INSTANCE; | MessageID = 0x1798d061 | vkCreateGraphicsPipelines(): pCreateInfos[0].pNext includes a pointer to a VkStructureType (VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO), but its parent extension VK_KHR_dynamic_rendering has not been enabled. The Vulkan spec states: Each pNext member of any structure (including this one) in the pNext chain must be either NULL or a pointer to a valid instance of VkAttachmentSampleCountInfoAMD, VkExternalFormatANDROID, VkGraphicsPipelineLibraryCreateInfoEXT, VkGraphicsPipelineShaderGroupsCreateInfoNV, VkMultiviewPerViewAttributesInfoNVX, VkPipelineCompilerControlCreateInfoAMD, VkPipelineCreateFlags2CreateInfoKHR, VkPipelineCreationFeedbackCreateInfo, VkPipelineDiscardRectangleStateCreateInfoEXT, VkPipelineFragmentShadingRateEnumStateCreateInfoNV, VkPipelineFragmentShadingRateStateCreateInfoKHR, VkPipelineLibraryCreateInfoKHR, VkPipelineRenderingCreateInfo, VkPipelineRepresentativeFragmentTestStateCreateInfoNV, VkPipelineRobustnessCreateInfoEXT, VkRenderingAttachmentLocationInfoKHR, or VkRenderingInputAttachmentIndexInfoKHR (https://vulkan.lunarg.com/doc/view/1.3.283.0/mac/1.3-extensions/vkspec.html#VUID-VkGraphicsPipelineCreateInfo-pNext-pNext)
 > Objects: 1
 > [0] 0x121008200, type: 1, name: NULL
 > VUID-VkGraphicsPipelineCreateInfo-dynamicRendering-06576(ERROR / SPEC): msgNum: 264898451 - Validation Error: [ VUID-VkGraphicsPipelineCreateInfo-dynamicRendering-06576 ] | MessageID = 0xfca0793 | vkCreateGraphicsPipelines(): pCreateInfos[0].renderPass is NULL, but the dynamicRendering feature was not enabled. The Vulkan spec states: If the dynamicRendering feature is not enabled and the pipeline requires pre-rasterization shader state, fragment shader state, or fragment output interface state, renderPass must not be VK_NULL_HANDLE (https://vulkan.lunarg.com/doc/view/1.3.283.0/mac/1.3-extensions/vkspec.html#VUID-VkGraphicsPipelineCreateInfo-dynamicRendering-06576)
 > Objects: 0
-> 
 > Process finished with exit code 134 (interrupted by signal 6:SIGABRT)
 </details>
 
