@@ -80,7 +80,7 @@ int main() {
 
 We created a Vulkan instance with application name `Hello Triangle`. I won't explain the further detail for Vulkan structure field's meaning, as it's already explained in the Vulkan specification. If you're not familiar with these, I suggest you to use raw Vulkan API first (this library assumes you're already familiar with Vulkan API).
 
-### `ErrorIncompatibleDriver` error on MoltenVK
+### 1.1. `ErrorIncompatibleDriver` error on MoltenVK
 
 If you're on macOS and running Vulkan with [MoltenVK](https://github.com/KhronosGroup/MoltenVK) environment, you will likely get an error like this:
 
@@ -183,7 +183,7 @@ const vk::raii::Instance instance { context, vk::InstanceCreateInfo {
 
 Which got cleaner, and you don't have to name some trivial structs.
 
-### Safeness of `vku::unsafeAddress` and `vku::unsafeProxy`
+### 1.3. Safeness of `vku::unsafeAddress` and `vku::unsafeProxy`
 
 You have responsibility for object lifetime management, that's the reason why they are prefixed with `unsafe`.
 
@@ -336,7 +336,7 @@ Here's the explanation of the code:
 
 5. Finally, it creates `vma::Allocator`, which is the main allocator of *vku*. Would be explained in later.
 
-> [!INFO]
+> [!NOTE]
 > Note that the returning container type of `Queues::getCreateInfos` doesn't have to be exactly `std::array`. `vku::Gpu` checks only if it's a contiguous range, therefore you can use `std::vector` or your own container type.
 
 > [!TIP]
@@ -478,12 +478,30 @@ int main() {
 
 `getViewCreateInfo` method has two overloads:
 
-- `getViewCreateInfo(vk::ImageViewType type = vk::ImageViewType::e2D) const noexcept -> vk::ImageViewCreateInfo`
+- `getViewCreateInfo(vk::ImageViewType type = vk::ImageViewType::e2D) -> vk::ImageViewCreateInfo`
   It creates the `vk::ImageViewCreateInfo` with given image view type (default is `vk::ImageViewType::e2D`), with full subresource range and inferred aspect flags.
-- `getViewCreateInfo(const vk::ImageSubresourceRange &subresourceRange, vk::ImageViewType type = vk::ImageViewType::e2D) const noexcept -> vk::ImageViewCreateInfo`
+- `getViewCreateInfo(const vk::ImageSubresourceRange &subresourceRange, vk::ImageViewType type = vk::ImageViewType::e2D) -> vk::ImageViewCreateInfo`
   It creates the `vk::ImageViewCreateInfo` with given image view type and subresource range. If you need the specific subresource range, you can use this overload.
 
-### Creating vertex/fragment shader modules
+## 4. Creating the Graphics Pipeline
+
+To create the graphics pipeline, we have to:
+1. Create the pipeline layout.
+2. Create the shader modules from loaded SPIR-V binaries.
+3. Create the graphics pipeline using the pipeline layout and the shader modules.
+
+Pipeline layout creation is simple: we don't have any descriptor set layout or push constant now.
+
+```c++
+int main() {
+    ...
+    const vk::raii::ImageView imageView { ... };
+    
+    const vk::raii::PipelineLayout pipelineLayout { gpu.device, vk::PipelineLayoutCreateInfo{} };
+}
+```
+
+### 4.1. Shader module creation
 
 For this step, we have to write the shader code. Here's the shader code:
 
@@ -511,7 +529,7 @@ void main(){
 }
 ```
 
-> [!INFO]
+> [!NOTE]
 > We used the GLSL's initializer list-based initialization feature, which is supported from GLSL 4.6. [Here's](https://www.khronos.org/opengl/wiki/Data_Type_(GLSL)#Initializer_lists) the basic explanation of the feature.
 
 `shaders/triangle.frag`
@@ -534,7 +552,8 @@ glslc triangle.vert -o triangle.vert.spv
 glslc triangle.frag -o triangle.frag.spv
 ```
 
-Since their extension is `vert` and `frag`, which is known as the vertex and fragment shader, `glslc` can automatically infer the shader stage from the extension.
+> [!TIP]
+> You don't have to specify the shader type, since their extension is `vert` and `frag`, which is known as the vertex and fragment shader. `glslc` can automatically infer the shader stage from an extension.
 
 Back to the C++ side, you have to load the SPIR-V binary and create `vk::raii::ShaderModule` for each stage. I'll first define the macro variable `COMPILED_SHADER_DIR` for the shader directory path to prevent some relative path issue.
 
@@ -580,7 +599,7 @@ int main() {
 }
 ```
 
-### Creating the Graphics Pipeline
+### 4.2. Creating the Graphics Pipeline
 
 Finally, the most cumbersome part of the Vulkan API, creating the graphics pipeline. Here's the code by using Vulkan-Hpp naively: 
 
@@ -844,7 +863,7 @@ What happened? Let's see the explanation:
 
    And since the result is `vku::RefHolder` of the `vk::PipelineShaderStageCreateInfo` array, you can finally get the lvalue reference of inner stage create infos by calling the `get()` method.
 
-    > [!INFO]
+    > [!NOTE]
     > `vku::Shader` is neither represents the `vk::ShaderModule`, nor constructs the shader module. It only holds the shader path/code/raw GLSL string and its info. The shader module is created by the `vku::createPipelineStages` function.
 
 3. Some *vku*'s utilility functions are used:
@@ -890,13 +909,15 @@ vku::getGraphicsPipelineCreateInfo(
    ... // Other pipeline settings
 ```
 
-> [!INFO]
+> [!NOTE]
 > Runtime GLSL compilation feature is not enabled by default. You have to manually set the CMake variable `VKU_USE_SHADERC` to `ON`, or specify the port feature `shaderc` if you're using vcpkg based dependency management.
 
-### 4.1. Enabling the Dynamic Rendering Feature
+### 4.3. Enabling the Dynamic Rendering Feature
 
 If you launch your application now, it will emit these validation error:
 
+<details>
+<summary>Show errors</summary>
 > VUID-VkGraphicsPipelineCreateInfo-pNext-pNext(ERROR / SPEC): msgNum: 395890785 - Validation Error: [ VUID-VkGraphicsPipelineCreateInfo-pNext-pNext ] Object 0: handle = 0x121008200, type = VK_OBJECT_TYPE_INSTANCE; | MessageID = 0x1798d061 | vkCreateGraphicsPipelines(): pCreateInfos[0].pNext includes a pointer to a VkStructureType (VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO), but its parent extension VK_KHR_dynamic_rendering has not been enabled. The Vulkan spec states: Each pNext member of any structure (including this one) in the pNext chain must be either NULL or a pointer to a valid instance of VkAttachmentSampleCountInfoAMD, VkExternalFormatANDROID, VkGraphicsPipelineLibraryCreateInfoEXT, VkGraphicsPipelineShaderGroupsCreateInfoNV, VkMultiviewPerViewAttributesInfoNVX, VkPipelineCompilerControlCreateInfoAMD, VkPipelineCreateFlags2CreateInfoKHR, VkPipelineCreationFeedbackCreateInfo, VkPipelineDiscardRectangleStateCreateInfoEXT, VkPipelineFragmentShadingRateEnumStateCreateInfoNV, VkPipelineFragmentShadingRateStateCreateInfoKHR, VkPipelineLibraryCreateInfoKHR, VkPipelineRenderingCreateInfo, VkPipelineRepresentativeFragmentTestStateCreateInfoNV, VkPipelineRobustnessCreateInfoEXT, VkRenderingAttachmentLocationInfoKHR, or VkRenderingInputAttachmentIndexInfoKHR (https://vulkan.lunarg.com/doc/view/1.3.283.0/mac/1.3-extensions/vkspec.html#VUID-VkGraphicsPipelineCreateInfo-pNext-pNext)
 > Objects: 1
 > [0] 0x121008200, type: 1, name: NULL
@@ -904,6 +925,7 @@ If you launch your application now, it will emit these validation error:
 > Objects: 0
 > 
 > Process finished with exit code 134 (interrupted by signal 6:SIGABRT)
+</details>
 
 Since `VK_KHR_dynamic_rendering` extension is not core until Vulkan 1.3, you have to specify it into the device creation by passing it by device extension. Also, you have to specify the `vk::PhysicalDeviceDynamicRenderingFeatures` struct into `vk::DeviceCreateInfo`'s `pNext` chain.
 
@@ -933,7 +955,7 @@ struct Gpu : vku::Gpu<QueueFamilies, Queues> {
 
 You can pass the tuple of Vulkan structures that are used for the `pNext` chain of the `vk::DeviceCreateInfo`. *vku* will concat this tuple to `vk::DeviceCreateInfo` with `vk::StructureChain`, so you can take the advantage of `vk::StructureChain`'s compile time pNext chain validation.
 
-> [!INFO]
+> [!NOTE]
 > `vku::Gpu<QueueFamilies, Queues>::Config` is templated class, whose template type parameters are tuple alternatives. Therefore, depending on your compiler's C++23 implementation status, automatic type deduction may not work (especially for MSVC). For this case, you have to manually specify the tuple alternative types, like: `vku::Gpu<QueueFamilies, Queues>::Config<vk::PhysicalDeviceDynamicRenderingFeatures>`.
 
 After enabling the dynamic rendering feature, running your application will not emit the validation error anymore.
@@ -1077,9 +1099,9 @@ Command buffer allocation code and submission code is gone. `vku::executeSingleC
 
 You can optionally pass the `vk::Fence` handle as the last parameter of `vku::executeSingleCommand`. In this case, the fence is signaled when the submitted command buffer execution finished. Otherwise, *vku* does not handle any synchronization, therefore we wait for the graphics queue to be idle manually.
 
-## 5.1. Check Your First Triangle with Debuggers
+### 5.1. Check Your First Triangle with Debuggers
 
-We reached the tutorials goal now! Your application will render the colored triangle into `image`. However, you can't see the result because there's no mechanism for image visualization or persisting it into the file. We'll implement it in the next section, but for the intermediate check, you can use the Vulkan debugger tools like RenderDoc, Nsight Graphics or Xcode Metal Debugger (if you're running it with MoltenVK).
+We reached the tutorial's goal now! Your application will render the colored triangle into `image`. However, you can't see the result because there's no mechanism for image visualization or persisting it into the file. We'll implement it in the next section, but for the intermediate check, you can use the Vulkan debugger tools like RenderDoc, Nsight Graphics or Xcode Metal Debugger (if you're running it with MoltenVK).
 
 Since I'm in the MoltenVK environment, I'll run the application with the following environment variables, explained in the [MoltenVK Runtime User Guide](https://github.com/KhronosGroup/MoltenVK/blob/main/Docs/MoltenVK_Runtime_UserGuide.md#debugging-your-moltenvk-application-using-metal-frame-capture).
 
@@ -1099,6 +1121,8 @@ If you can't use the GPU debugging tool, you have to de-stage the image data int
 2. Append the copy command to the previous rendering commands (and executing it).
 3. Map the de-staging buffer memory into CPU address and read it.
 4. Save the fetched data into file (uses a function like `stbi_write_png`).
+
+### 6.1. Creating Buffer for De-staging
 
 Alike `vku::AllocatedImage`, *vku* also offers you to use RAII wrapped buffer objects. But in this case, you have two options: `vku::AllocatedBuffer` and `vku::MappedBuffer`. Here's the class hierarchy:
 
@@ -1188,6 +1212,8 @@ vma::AllocationCreateInfo {
 > Which means omitting the last parameter for host reading may cause the **significant** performance degradation (especially on the mobile hardware).
 
 After the buffer creation, we added the command buffer recording code that changes the image layout for transfer source and copies the image data into the buffer. For this operation, don't forget to add your image usage flag with `vk::ImageUsageFlagBits::eTransferSrc`.
+
+### 6.2. Persisting the Image
 
 After the queue gets idle, the de-staged data would be visible at the host side. Now we can persist the linearly flattened image data by image file, using third party library like `stb-image`.
 
