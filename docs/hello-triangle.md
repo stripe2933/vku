@@ -336,10 +336,10 @@ Here's the explanation of the code:
 
 5. Finally, it creates `vma::Allocator`, which is the main allocator of *vku*. Would be explained in later.
 
-> [!NOTE]
+> [!TIP]
 > Note that the returning container type of `Queues::getCreateInfos` doesn't have to be exactly `std::array`. `vku::Gpu` checks only if it's a contiguous range, therefore you can use `std::vector` or your own container type.
 
-> [!TIP]
+> [!IMPORTANT]
 > You can use your own constructor for `QueueFamilies` and `Queues` structs. In further tutorials, I'll show you how to use the `vku::Gpu::Config` for more sophisticated physical device selection. The only requirement of these structs is that `QueueFamilies` must have `static auto getCreateInfos(vk::PhysicalDevice, const QueueFamilies&)` function.
 
 If you want the detailed physical device selection, you can simply pass the `verbose` boolean field as `true` to the `Gpu` constructor. With flag, it will print the list of the rejected physical devices with reasons, and will print the selected physical device with its score.
@@ -842,17 +842,11 @@ What happened? Let's see the explanation:
    - `hasDepthStencilAttachment`: Boolean flag for whether pipeline has depth stencil attachment. For now, we don't have depth stencil attachment, so it `false` (and omitted since it is defaulted by `false`).
    - `multisample`: The sample count of the rasterization. Since we're not using MSAA for now, it is `vk::SmapleCountFlagBits::e1` (and omitted since it is the default value).
    
-   Most of your use case would not heavily vary from this standard pipeline setting, but some of them would. For such cases, you can modify the returned `vk::GraphicsPipelineCreateInfo` manually by using the Vulkan-Hpp's builder pattern. In the above code, we modified the rasterization state, viewport state, and dynamic state by using the `setPRasterizationState`, `setPViewportState`, and `setPDynamicState` methods.
-
-    > [!WARNING]
-    > There are some pitfalls for `getDefaultGraphicsPipelineCreateInfo` usage:
-    > 1. The default cull mode is backface culling. If you want to disable the culling, you have to modify the returned `vk::GraphicsPipelineCreateInfo` manually.
-    > 2. Even if you're pass the `hasDepthStencilAttachment` parameter to `true`, depth testing/writing is not enabled. For this, you have to modify the returned `vk::GraphicsPipelineCreateInfo` manually.
-    > 3. *vku* stores these standard graphics pipeline properties into the static storage, therefore you don't have to worry about the returned `vk::GraphicsPipelineCreateInfo`'s lifetime validity. Due to this approach, the maximum number of color attachments is limited to `8`. I don't think this is a big issue, but you can modify the `MAX_COLOR_ATTACHMENT_COUNT` if you want to increase the limit.
+   Most of your use case would not heavily vary from this standard pipeline setting, but some of them would. For such cases, you can modify the returned `vk::GraphicsPipelineCreateInfo` manually by using the Vulkan-Hpp's builder pattern. In the above code, we modified the rasterization/viewport/dynamic state by using the `setPRasterizationState`, `setPViewportState`, and `setPDynamicState` methods.
 
 2. `vku::createPipelineStages` is the function that creates the `RefHolder` of `vk::PipelineShaderStageCreateInfo` array from the shader path/code/raw GLSL string (using shaderc). It accepts the Vulkan device and the arbitrary number of `vku::Shader`s that have the shader path and the shader stage flag. The function signature is
    ```c++
-   auto createPipelineStages(
+   createPipelineStages(
       const vk::raii::Device &device, 
       const Shaders &...shaders
    ) -> RefHolder<std::array<vk::PipelineShaderStageCreateInfo, sizeof...(Shaders)>, std::array<vk::raii::ShaderModule, sizeof...(Shaders)>>
@@ -863,51 +857,57 @@ What happened? Let's see the explanation:
 
    And since the result is `vku::RefHolder` of the `vk::PipelineShaderStageCreateInfo` array, you can finally get the lvalue reference of inner stage create infos by calling the `get()` method.
 
-    > [!NOTE]
-    > `vku::Shader` is neither represents the `vk::ShaderModule`, nor constructs the shader module. It only holds the shader path/code/raw GLSL string and its info. The shader module is created by the `vku::createPipelineStages` function.
+   Thanks to the shaderc, you may just embed the raw GLSL string into the C++ code, and compile it at runtime. Here's the example:
+   
+   `vcpkg.json`
+   ```json
+   {
+      "dependencies": [
+         {
+            "name": "vku",
+            "features": [
+               "shaderc"
+            ]
+         }
+      ]
+   }
+   ```
+   
+   `main.cpp`
+   ```c++
+   #include <shaderc/shaderc.hpp>
+   
+   constexpr std::string_view vertexShaderCode = R"glsl(
+       // Your shader code
+   )glsl";
+   constexpr std::string_view fragmentShaderCode = R"glsl(
+       // Your shader code
+   )glsl";
+   
+   const shaderc::Compiler compiler;
+   
+   vku::getGraphicsPipelineCreateInfo(
+       vku::createPipelineStages(
+           gpu.device,
+           vku::Shader { compiler, vertexShaderCode, vk::ShaderStageFlagBits::eVertex },
+           vku::Shader { fragmentShaderCode, vk::ShaderStageFlagBits::eFragment }
+       ).get(),
+       *pipelineLayout, 1)
+      ... // Other pipeline settings
+   ```
 
-3. Some *vku*'s utilility functions are used:
+3. Some *vku*'s utility functions are used:
    - `vku::toExtent2D(const vk::Extent3D &extent)`: drop the `depth` field of the `extent` and return it. Useful when you're working with 2D image (`depth`=`1`).
    - `vku::toViewport(const vk::Extent2D &extent)`: create `vk::Viewport` with bound `[0, 0]x[extent.width, extent.height]` and depth `[0, 1]`.
 
-Thanks to the shaderc, you may just embed the raw GLSL string into the C++ code, and compile it at runtime. Here's the example:
+> [!WARNING]
+> There are some pitfalls for `getDefaultGraphicsPipelineCreateInfo` usage:
+> 1. The default cull mode is backface culling. If you want to disable the culling, you have to modify the returned `vk::GraphicsPipelineCreateInfo` manually.
+> 2. Even if you're pass the `hasDepthStencilAttachment` parameter to `true`, depth testing/writing is not enabled. For this, you have to modify the returned `vk::GraphicsPipelineCreateInfo` manually.
+> 3. *vku* stores these standard graphics pipeline properties into the static storage, therefore you don't have to worry about the returned `vk::GraphicsPipelineCreateInfo`'s lifetime validity. Due to this approach, the maximum number of color attachments is limited to `8`. I don't think this is a big issue, but you can modify the `MAX_COLOR_ATTACHMENT_COUNT` if you want to increase the limit.
 
-`vcpkg.json`
-```json
-{
-   "dependencies": [
-      {
-         "name": "vku",
-         "features": [
-            "shaderc"
-         ]
-      }
-   ]
-}
-```
-
-`main.cpp`
-```c++
-#include <shaderc/shaderc.hpp>
-
-constexpr std::string_view vertexShaderCode = R"glsl(
-    // Your shader code
-)glsl";
-constexpr std::string_view fragmentShaderCode = R"glsl(
-    // Your shader code
-)glsl";
-
-const shaderc::Compiler compiler;
-
-vku::getGraphicsPipelineCreateInfo(
-    vku::createPipelineStages(
-        gpu.device,
-        vku::Shader { compiler, vertexShaderCode, vk::ShaderStageFlagBits::eVertex },
-        vku::Shader { fragmentShaderCode, vk::ShaderStageFlagBits::eFragment }
-    ).get(),
-    *pipelineLayout, 1)
-   ... // Other pipeline settings
-```
+> [!NOTE]
+> `vku::Shader` is neither represents the `vk::ShaderModule`, nor constructs the shader module. It only holds the shader path/code/raw GLSL string and its info. The shader module is created by the `vku::createPipelineStages` function.
 
 > [!NOTE]
 > Runtime GLSL compilation feature is not enabled by default. You have to manually set the CMake variable `VKU_USE_SHADERC` to `ON`, or specify the port feature `shaderc` if you're using vcpkg based dependency management.
@@ -1213,7 +1213,7 @@ vma::AllocationCreateInfo {
 
 After the buffer creation, we added the command buffer recording code that changes the image layout for transfer source and copies the image data into the buffer. For this operation, don't forget to add your image usage flag with `vk::ImageUsageFlagBits::eTransferSrc`.
 
-### 6.2. Persisting the Image
+### 6.2. Persisting Image
 
 After the queue gets idle, the de-staged data would be visible at the host side. Now we can persist the linearly flattened image data by image file, using third party library like `stb-image`.
 
