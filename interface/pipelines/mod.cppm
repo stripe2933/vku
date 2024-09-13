@@ -109,8 +109,7 @@ namespace vku {
      * - Color blend state: no blending, color write mask=all for all color attachments.
      * - Dynamic state: viewport and scissor.<br>
      * Each parameters in result struct are in static storage, therefore you don't have to care about their lifetime.
-     * @example
-     * Cube rendering graphics pipeline with vertex buffer of tightly-packed vec3, depth testing, 4x MSAA using
+     * @example Cube rendering graphics pipeline with vertex buffer of tightly-packed vec3, depth testing, 4x MSAA using
      * dynamic rendering (color format=B8G8R8A8Srgb, depth format=D32Sfloat):
      * @code
      * vk::raii::PipelineLayout pipelineLayout { device, vk::PipelineLayoutCreateInfo { ... } };
