@@ -26,7 +26,7 @@ namespace vku {
     export template <typename T, typename U>
     [[nodiscard]] auto getDebugUtilsObjectTagInfoEXT(
         T handle,
-        vk::ArrayProxyNoTemporaries<const U> data,
+        VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const U> data,
         const char *name = to_string(std::source_location::current()).c_str()
     ) noexcept -> VULKAN_HPP_NAMESPACE::DebugUtilsObjectTagInfoEXT {
         return { T::objectType, toUint64(handle), name, data };
