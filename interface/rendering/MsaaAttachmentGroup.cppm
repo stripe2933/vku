@@ -72,7 +72,7 @@ namespace vku {
             const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
             const Image &image,
             std::span<const VULKAN_HPP_NAMESPACE::Image> swapchainImages,
-            VULKAN_HPP_NAMESPACE::Format viewFormat
+            VULKAN_HPP_NAMESPACE::Format viewFormat = {}
         ) -> const SwapchainMsaaAttachment&;
         auto addSwapchainAttachment(
             const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
@@ -227,7 +227,7 @@ auto vku::MsaaAttachmentGroup::addSwapchainAttachment(
             {},
             image,
             VULKAN_HPP_NAMESPACE::ImageViewType::e2D,
-            viewFormat,
+            viewFormat == VULKAN_HPP_NAMESPACE::Format::eUndefined ? image.format : viewFormat,
             {},
             { VULKAN_HPP_NAMESPACE::ImageAspectFlagBits::eColor, 0, 1, 0, 1 },
         });
