@@ -8,7 +8,7 @@ endif()
 
 project(vku
     LANGUAGES CXX
-    DESCRIPTION "Vulkan simplifications."
+    DESCRIPTION "A set of Vulkan utilities based on RAII idiom and Modern C++ features."
     VERSION 0.1.0
 )
 
