@@ -57,6 +57,32 @@ struct std::hash<VULKAN_HPP_NAMESPACE::Semaphore> {
 #endif
 
 namespace vku {
+    /**
+     * Allocate command buffers from \p commandPool without heap allocation.
+     * @tparam N Number of command buffers to allocate.
+     * @param device Vulkan device. Must be same device from \p commandPool.
+     * @param commandPool Command pool to allocate command buffers.
+     * @param level Command buffer level (default: primary).
+     * @return Array of \p N command buffers.
+     * @throw vk::Result if failed to allocate command buffers.
+     */
+    export template <std::size_t N>
+    [[nodiscard]] auto allocateCommandBuffers(
+        VULKAN_HPP_NAMESPACE::Device device,
+        VULKAN_HPP_NAMESPACE::CommandPool commandPool,
+        VULKAN_HPP_NAMESPACE::CommandBufferLevel level = {}
+    ) -> std::array<VULKAN_HPP_NAMESPACE::CommandBuffer, N> {
+        std::array<VULKAN_HPP_NAMESPACE::CommandBuffer, N> commandBuffers;
+        const VULKAN_HPP_NAMESPACE::Result result = device.allocateCommandBuffers(
+            vku::unsafeAddress(VULKAN_HPP_NAMESPACE::CommandBufferAllocateInfo { commandPool, level, N }),
+            commandBuffers.data());
+
+        if (result != VULKAN_HPP_NAMESPACE::Result::eSuccess) {
+            throw result;
+        }
+        return commandBuffers;
+    }
+
     export template <std::invocable<VULKAN_HPP_NAMESPACE::CommandBuffer> F>
     struct ExecutionInfo {
         F commandRecorder;
@@ -75,11 +101,7 @@ namespace vku {
     ) -> void
         requires std::is_void_v<std::invoke_result_t<F, VULKAN_HPP_NAMESPACE::CommandBuffer>>
     {
-        const VULKAN_HPP_NAMESPACE::CommandBuffer commandBuffer = device.allocateCommandBuffers(VULKAN_HPP_NAMESPACE::CommandBufferAllocateInfo {
-            commandPool,
-            VULKAN_HPP_NAMESPACE::CommandBufferLevel::ePrimary,
-            1,
-        })[0];
+        const VULKAN_HPP_NAMESPACE::CommandBuffer commandBuffer = allocateCommandBuffers<1>(device, commandPool)[0];
         commandBuffer.begin({ VULKAN_HPP_NAMESPACE::CommandBufferUsageFlagBits::eOneTimeSubmit });
         std::invoke(FWD(f), commandBuffer);
         commandBuffer.end();
@@ -98,11 +120,7 @@ namespace vku {
         F &&f,
         VULKAN_HPP_NAMESPACE::Fence fence = {}
     ) -> std::invoke_result_t<F, VULKAN_HPP_NAMESPACE::CommandBuffer> {
-        const VULKAN_HPP_NAMESPACE::CommandBuffer commandBuffer = device.allocateCommandBuffers(VULKAN_HPP_NAMESPACE::CommandBufferAllocateInfo {
-            commandPool,
-            VULKAN_HPP_NAMESPACE::CommandBufferLevel::ePrimary,
-            1,
-        })[0];
+        const VULKAN_HPP_NAMESPACE::CommandBuffer commandBuffer = allocateCommandBuffers<1>(device, commandPool)[0];
         commandBuffer.begin({ VULKAN_HPP_NAMESPACE::CommandBufferUsageFlagBits::eOneTimeSubmit });
         auto result = std::invoke(FWD(f), commandBuffer);
         commandBuffer.end();

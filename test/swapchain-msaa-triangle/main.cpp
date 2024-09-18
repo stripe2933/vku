@@ -166,11 +166,7 @@ int main(){
         vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
         gpu.queueFamilies.graphicsPresent
     } };
-    const vk::CommandBuffer commandBuffer = (*gpu.device).allocateCommandBuffers(vk::CommandBufferAllocateInfo {
-        *graphicsCommandPool,
-        vk::CommandBufferLevel::ePrimary,
-        1,
-    })[0];
+    const vk::CommandBuffer commandBuffer = vku::allocateCommandBuffers<1>(*gpu.device, *graphicsCommandPool)[0];
 
     // Change all swapchain image layouts to PresentSrcKHR to avoid Undefined format for srcImageLayout of future
     // pipeline barriers.

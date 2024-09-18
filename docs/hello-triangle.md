@@ -1107,6 +1107,8 @@ int main() {
 
 Command buffer allocation and submission code is gone. `vku::executeSingleCommand` automatically allocates a command buffer from the given command pool, begins before/ends after the given command buffer recording function execution, and submits the command buffer into the given queue.
 
+For optimization, since it knows only a single command buffer have to be allocated (allocation count is known at the compile time), it uses `vku::allocateCommandBuffers<N>` to avoid the heap allocation.
+
 You can optionally pass the `vk::Fence` handle to the last parameter. With fence, it signaled when the submitted command buffer execution finished. Otherwise, *vku* does not handle any synchronization, therefore we should wait for the graphics queue to be idle manually.
 
 ### 5.1. Check Your First Triangle with Debuggers
