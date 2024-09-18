@@ -1,0 +1,11 @@
+#version 450
+
+layout (constant_id = 0) const uint FILL_VALUE = 0;
+
+layout (set = 0, binding = 0) writeonly buffer OutputBuffer {
+    uint data;
+};
+
+void main() {
+    data = FILL_VALUE;
+}

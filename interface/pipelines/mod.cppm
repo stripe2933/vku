@@ -72,6 +72,7 @@ namespace vku {
                             shaders.stage,
                             *shaderModule,
                             shaders.entryPoint,
+                            shaders.specializationInfo.transform([](const auto &x) { return &x; }).value_or(nullptr),
                         }...
                     };
                 }, shaderModules);

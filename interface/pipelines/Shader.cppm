@@ -8,6 +8,7 @@ module;
 #include <format>
 #include <fstream>
 #include <ios>
+#include <optional>
 #include <ranges>
 #include <source_location>
 #include <stdexcept>
@@ -36,6 +37,7 @@ namespace vku {
         std::vector<std::uint32_t> code;
         VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage;
         const char *entryPoint;
+        std::optional<VULKAN_HPP_NAMESPACE::SpecializationInfo> specializationInfo;
 
         // --------------------
         // Constructors.
@@ -50,6 +52,23 @@ namespace vku {
         Shader(std::vector<std::uint32_t> code, VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage, const char *entryPoint = "main");
 
         /**
+         * Construct <tt>Shader</tt> from existing SPIR-V shader code vector.
+         * @param code SPIR-V shader code. This will be moved to the struct.
+         * @param stage Shader stage.
+         * @param specializationInfo Specialization info that are used for specialization constants.
+         * @param entryPoint Entry point function name (default: "main").
+         * @note \p specializationInfo entries must live longer than the destination pipeline creation finish.
+         */
+        Shader(
+            std::vector<std::uint32_t> code, 
+            VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage, 
+            const VULKAN_HPP_NAMESPACE::SpecializationInfo &specializationInfo [[clang::lifetimebound]], 
+            const char *entryPoint = "main"
+        ) : Shader { std::move(code), stage, entryPoint } {
+            this->specializationInfo.emplace(specializationInfo);
+        }
+
+        /**
          * Construct <tt>Shader</tt> from compiled SPIR-V file.
          * @param path Path to the compiled SPIR-V file.
          * @param stage Shader stage.
@@ -57,8 +76,63 @@ namespace vku {
          */
         Shader(const std::filesystem::path &path, VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage, const char *entryPoint = "main");
 
+        /**
+         * Construct <tt>Shader</tt> from compiled SPIR-V file.
+         * @param path Path to the compiled SPIR-V file.
+         * @param stage Shader stage.
+         * @param specializationInfo Specialization info that are used for specialization constants.
+         * @param entryPoint Entry point function name (default: "main").
+         * @note \p specializationInfo entries must live longer than the destination pipeline creation finish.
+         */
+        Shader(
+            const std::filesystem::path &path, 
+            VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage, 
+            const VULKAN_HPP_NAMESPACE::SpecializationInfo &specializationInfo [[clang::lifetimebound]], 
+            const char *entryPoint = "main"
+        ) : Shader { path, stage, entryPoint } {
+            this->specializationInfo.emplace(specializationInfo);
+        }
+
 #ifdef VKU_USE_SHADERC
-        Shader(const shaderc::Compiler &compiler, std::string_view glsl, VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage, const char *entryPoint = "main", const char *identifier = to_string(std::source_location{}).c_str());
+        /**
+         * Construct <tt>Shader</tt> from GLSL source code.
+         * @param compiler Shader compiler instance.
+         * @param glsl GLSL source code.
+         * @param stage Shader stage. Only vertex/tessellation control/tessellation evaluation/geometry/fragment/compute shaders are supported.
+         * @param entryPoint Entry point function name (default: "main").
+         * @param identifier Identifier for the shader (default: current source location).
+         * @throw std::runtime_error If \p stage is unsupported.
+         * @throw std::runtime_error If shader compilation failed.
+         */
+        Shader(
+            const shaderc::Compiler &compiler, 
+            std::string_view glsl, 
+            VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage, 
+            const char *entryPoint = "main", 
+            const char *identifier = to_string(std::source_location::current()).c_str());
+        
+        /**
+         * Construct <tt>Shader</tt> from GLSL source code.
+         * @param compiler Shader compiler instance.
+         * @param glsl GLSL source code.
+         * @param stage Shader stage. Only vertex/tessellation control/tessellation evaluation/geometry/fragment/compute shaders are supported.
+         * @param specializationInfo Specialization info that are used for specialization constants.
+         * @param entryPoint Entry point function name (default: "main").
+         * @param identifier Identifier for the shader (default: current source location).
+         * @throw std::runtime_error If \p stage is unsupported.
+         * @throw std::runtime_error If shader compilation failed.
+         * @note \p specializationInfo entries must live longer than the destination pipeline creation finish.
+         */
+        Shader(
+            const shaderc::Compiler &compiler, 
+            std::string_view glsl, 
+            VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage, 
+            const VULKAN_HPP_NAMESPACE::SpecializationInfo &specializationInfo [[clang::lifetimebound]], 
+            const char *entryPoint = "main", 
+            const char *identifier = to_string(std::source_location::current()).c_str()
+        ) : Shader { compiler, glsl, stage, entryPoint, identifier } {
+            this->specializationInfo.emplace(specializationInfo);
+        }
 #endif
     };
 }

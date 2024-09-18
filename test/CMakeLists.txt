@@ -17,6 +17,13 @@ add_executable(pool_sizes pool_sizes.cpp)
 target_link_libraries(pool_sizes PRIVATE vku::vku)
 add_test(NAME pool_sizes COMMAND pool_sizes)
 
+add_executable(specialization_constant specialization_constant.cpp)
+target_link_libraries(specialization_constant PRIVATE vku::vku)
+target_compile_definitions(specialization_constant PRIVATE
+    COMPILED_SHADER_DIR="${CMAKE_CURRENT_SOURCE_DIR}/shaders/specialization_constant"
+)
+add_test(NAME specialization_constant COMMAND specialization_constant)
+
 add_subdirectory(msaa-triangle)
 add_subdirectory(triangle)
 add_subdirectory(swapchain-msaa-triangle)
