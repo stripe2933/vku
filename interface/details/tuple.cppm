@@ -18,10 +18,7 @@ import std;
 namespace vku {
     /**
      * Invoke the function with tuple elements.
-     * @param f Function to apply, must be invocable with all tuple element types.
-     * @param tuple Tuple to apply.
-     * @example
-     * @code
+     * @code{.cpp}
      * apply_by_value([](auto &&value) {
      *     std::println("{}", FWD(value));
      * }, std::forward_as_tuple(1, 2.f, "Hello world!"));
@@ -31,6 +28,8 @@ namespace vku {
      * // 2
      * // Hello world!
      * @endcode
+     * @param f Function to apply, must be invocable with all tuple element types.
+     * @param tuple Tuple to apply.
      */
     export auto apply_by_value(const auto &f, auto &&tuple) -> void {
         std::apply([&](auto &&...xs) {
@@ -40,10 +39,7 @@ namespace vku {
 
     /**
      * Invoke the function with tuple elements and their indices.
-     * @param f Function to apply, must be invocable with std::integral_constant<std::size_t, N> and N-th tuple element type.
-     * @param tuple Tuple to apply.
-     * @example
-     * @code
+     * @code{.cpp}
      * apply_with_index([]<std::size_t N>(std::integral_constant<std::size_t, N>, auto &&value) {
      *     std::println("{} {}", N, FWD(value));
      * }, std::forward_as_tuple(1, 2.f, "Hello world!"));
@@ -53,6 +49,8 @@ namespace vku {
      * // 1 2
      * // 2 Hello world!
      * @endcode
+     * @param f Function to apply, must be invocable with std::integral_constant<std::size_t, N> and N-th tuple element type.
+     * @param tuple Tuple to apply.
      */
     export auto apply_with_index(const auto &f, auto &&tuple) -> void {
         std::apply([&](auto &&...xs) {

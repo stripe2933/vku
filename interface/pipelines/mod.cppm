@@ -25,15 +25,9 @@ import :utils.RefHolder;
 namespace vku {
     /**
      * Create array of <tt>vk::PipelineShaderStageCreateInfos</tt> from <tt>vku::Shader</tt>s.
-     * @param device Vulkan-Hpp RAII device that is used to create <tt>vk::raii::ShaderModule</tt>s.
-     * @param shaders Variadic template parameters of <tt>vku::Shader</tt>s. This can be destroyed after the function
-     * call (because <tt>vk::raii::ShaderModule</tt> created from the <tt>Shader</tt>s will be stored in the <tt>RefHolder</tt>).
-     * @return vku::RefHolder of <tt>std::array<vk::PipelineShaderStageCreateInfo, sizeof...(shaders)></tt>, which can
-     * be contextually converted to <tt>std::array<vk::PipelineShaderStageCreateInfo, sizeof...(shaders)></tt>. Each
-     * create infos' corresponding <tt>vk::raii::ShaderModule</tt> will be stored in the return value.
-     * @example
+     *
      * Creating compute pipeline:
-     * @code
+     * @code{.cpp}
      * vk::raii::PipelineLayout pipelineLayout { device, vk::PipelineLayoutCreateInfo { ... } };
      * vk::raii::Pipeline pipeline { device, nullptr, vk::ComputePipelineCreateInfo {
      *     {},
@@ -45,8 +39,9 @@ namespace vku {
      *     *pipelineLayout,
      * } }; // vk::raii::ShaderModules that are stored in the vku::createPipelineStages's return value will be destroyed here.
      * @endcode
+     *
      * Creating graphics pipeline:
-     * @code
+     * @code{.cpp}
      * vk::raii::Pipeline pipeline { device, nullptr, vk::GraphicsPipelineCreateInfo {
      *     {},
      *     vku::createPipelineStages(
@@ -56,6 +51,13 @@ namespace vku {
      *     ... // Remaining pipeline settings.
      * } };
      * @endcode
+     *
+     * @param device Vulkan-Hpp RAII device that is used to create <tt>vk::raii::ShaderModule</tt>s.
+     * @param shaders Variadic template parameters of <tt>vku::Shader</tt>s. This can be destroyed after the function
+     * call (because <tt>vk::raii::ShaderModule</tt> created from the <tt>Shader</tt>s will be stored in the <tt>RefHolder</tt>).
+     * @return vku::RefHolder of <tt>std::array<vk::PipelineShaderStageCreateInfo, sizeof...(shaders)></tt>, which can
+     * be contextually converted to <tt>std::array<vk::PipelineShaderStageCreateInfo, sizeof...(shaders)></tt>. Each
+     * create infos' corresponding <tt>vk::raii::ShaderModule</tt> will be stored in the return value.
      */
     export template <std::convertible_to<Shader>... Shaders>
     [[nodiscard]] auto createPipelineStages(const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device, const Shaders &...shaders)
@@ -88,16 +90,7 @@ namespace vku {
 
     /**
      * A convenience function to create <tt>vk::GraphicsPipelineCreateInfo</tt> with mostly used pipeline parameters.
-     * @param stages Pipeline shader stages that have to be used. You can use <tt>vku::createPipelineStages</tt> to make
-     * it conveniently.
-     * @param layout Pipeline layout that is used for the pipeline.
-     * @param colorAttachmentCount Number of color attachments (default=<tt>0</tt>). This must be less than or equal to 8.
-     * @param hasDepthStencilAttachment Boolean value that indicates whether the pipeline has depth-stencil attachment (default=<tt>false</tt>).
-     * @param multisample MSAA sample count (default=<tt>vk::SampleCountFlagBits::e1</tt>).
-     * @return <tt>vk::GraphicsPipelineCreateInfo</tt> struct. You may have to set <tt>renderPass</tt> and
-     * <tt>subpass</tt> for conventional render-pass based pipeline creation, or set <tt>pNexts</tt> with
-     * <tt>vk::PipelineRenderingCreateInfo[KHR]</tt> for dynamic rendering.
-     * @note
+     *
      * Default pipeline parameters are:
      * - Vertex input state: no vertex buffer binding.
      * - Input assembly state: triangle list topology, no primitive restart.
@@ -109,10 +102,11 @@ namespace vku {
      *   test/write otherwise.
      * - Color blend state: no blending, color write mask=all for all color attachments.
      * - Dynamic state: viewport and scissor.<br>
-     * Each parameters in result struct are in static storage, therefore you don't have to care about their lifetime.
-     * @example Cube rendering graphics pipeline with vertex buffer of tightly-packed vec3, depth testing, 4x MSAA using
-     * dynamic rendering (color format=B8G8R8A8Srgb, depth format=D32Sfloat):
-     * @code
+     * Each parameter in result struct are in static storage, therefore you don't have to care about their lifetime.
+     *
+     * Following code create a cube rendering graphics pipeline with vertex buffer of tightly-packed vec3, depth testing,
+     * 4x MSAA using dynamic rendering (color format=B8G8R8A8Srgb, depth format=D32Sfloat):
+     * @code{.cpp}
      * vk::raii::PipelineLayout pipelineLayout { device, vk::PipelineLayoutCreateInfo { ... } };
      * vk::raii::Pipeline pipeline { device, nullptr, vk::StructureChain {
      *     getDefaultGraphicsPipelineCreateInfo(
@@ -137,6 +131,17 @@ namespace vku {
      *     },
      * }.get() };
      * @endcode
+     *
+     * @param stages Pipeline shader stages that have to be used. You can use <tt>vku::createPipelineStages</tt> to make
+     * it conveniently.
+     * @param layout Pipeline layout that is used for the pipeline.
+     * @param colorAttachmentCount Number of color attachments (default=<tt>0</tt>). This must be less than or equal to 8.
+     * @param hasDepthStencilAttachment Boolean value that indicates whether the pipeline has depth-stencil attachment (default=<tt>false</tt>).
+     * @param multisample MSAA sample count (default=<tt>vk::SampleCountFlagBits::e1</tt>).
+     * @return <tt>vk::GraphicsPipelineCreateInfo</tt> struct. You may have to set <tt>renderPass</tt> and
+     * <tt>subpass</tt> for conventional render-pass based pipeline creation, or set <tt>pNexts</tt> with
+     * <tt>vk::PipelineRenderingCreateInfo[KHR]</tt> for dynamic rendering.
+     * @throw std::runtime_error if \p colorAttachmentCount exceeds the maximum value (=8).
      */
     export
     [[nodiscard]] auto getDefaultGraphicsPipelineCreateInfo(

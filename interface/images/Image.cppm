@@ -30,7 +30,7 @@ namespace vku {
      * A thin wrapper around <tt>vk::Image</tt> with additional information such as extent, format, mip levels and array
      * layers. It also provides some utility functions to work with images. You can construct this struct from an existing
      * <tt>vk::Image</tt>.
-     *     */
+     */
     export struct Image {
         VULKAN_HPP_NAMESPACE::Image image;
         VULKAN_HPP_NAMESPACE::Extent3D extent;
@@ -54,7 +54,7 @@ namespace vku {
          * @param type Image view type (default=<tt>vk::ImageViewType::e2D<tt>).
          * @return <tt>vk::ImageViewCreateInfo</tt> struct.
          * @note See <tt>inferAspectFlags(vk::Format)</tt> for aspect flags inference rule.
-         * @note It internally asserts format is not <tt>vk::Format::eUndefined</tt> for debug (NDEBUG is not defined)
+         * @note It internally asserts format is not <tt>vk::Format::eUndefined</tt> for debug (<tt>NDEBUG</tt> is not defined)
          * environment.
          * @note It internally calls <tt>inferAspectFlags(vk::Format)</tt> and <tt>getViewCreateInfo(const vk::ImageSubresourceRange&, vk::ImageViewType)</tt>.
          */
@@ -121,35 +121,38 @@ namespace vku {
 
         /**
          * Get the available maximum mip levels for image that width=height=\p size.
+         * @code{.cpp}
+         * maxMipLevels(512) -> 10 // 512x512 image can have 10 mip images whose dimensions are 512x512, 256x256, ..., 1x1.
+         * @endcode
          * @param size Image dimension both applied to width and height.
          * @return Maximum mip levels.
-         * @note It internally asserts \p size is greater than zero for debug (NDEBUG is not defined) environment.
-         * @example
-         * maxMipLevels(512) -> 10 // 512x512 image can have 10 mip images whose dimensions are 512x512, 256x256, ..., 1x1.
+         * @note It internally asserts \p size is greater than zero for debug (<tt>NDEBUG</tt> is not defined) environment.
          */
         [[nodiscard]] static constexpr auto maxMipLevels(std::uint32_t size) NOEXCEPT_IF_RELEASE -> std::uint32_t;
 
         /**
          * Get the available maximum mip levels for image with the specified \p extent.
+         * @code{.cpp}
+         * maxMipLevels({ 512, 256 }) -> 9 // 512x256 image can have 9 mip images whose dimensions are 512x256, 256x128, ..., 2x1.
+         * maxMipLevels({ 512, 512 }) -> 10
+         * @endcode
          * @param extent Image dimension.
          * @return Maximum mip levels.
          * @note It internally calls <tt>maxMipLevels(std::min(extent.width, extent.height))</tt>.
          * @note maxMipLevels({ width, height }) is equivalent to maxMipLevels(std::min(width, height)).
-         * @example
-         * maxMipLevels({ 512, 256 }) -> 9 // 512x256 image can have 9 mip images whose dimensions are 512x256, 256x128, ..., 2x1.
-         * maxMipLevels({ 512, 512 }) -> 10
          */
         [[nodiscard]] static constexpr auto maxMipLevels(const VULKAN_HPP_NAMESPACE::Extent2D &extent) NOEXCEPT_IF_RELEASE -> std::uint32_t;
 
         /**
          * Get the extent of the specified mip level.
+         * @code{.cpp}
+         * mipExtent({ 512, 512 }, 3) -> { 64, 64 } // 512x512 image's 3rd (use zero-based indexing) mip image has 64x64 dimension.
+         * @endcode
          * @param extent Original image extent.
          * @param mipLevel Mip level, starts from zero, which must be less than <tt>maxMipLevels(extent)</tt>.
          * @return Mip image extent.
          * @note On debug environment (<tt>NDEBUG</tt> is not defined), this function will assert if \p mipLevel is
          * greater than maxMipLevels(\p extent).
-         * @example
-         * mipExtent({ 512, 512 }, 3) -> { 64, 64 } // 512x512 image's 3rd (use zero-based indexing) mip image has 64x64 dimension.
          */
         [[nodiscard]] static constexpr auto mipExtent(const VULKAN_HPP_NAMESPACE::Extent2D &extent, std::uint32_t mipLevel) NOEXCEPT_IF_RELEASE -> VULKAN_HPP_NAMESPACE::Extent2D;
     };
