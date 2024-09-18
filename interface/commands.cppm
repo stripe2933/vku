@@ -9,7 +9,6 @@ module;
 #include <functional>
 #include <map>
 #include <optional>
-#include <queue>
 #include <ranges>
 #include <span>
 #include <tuple>
