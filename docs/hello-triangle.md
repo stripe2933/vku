@@ -1,11 +1,11 @@
 # Tutorial: Hello Triangle
 
-In this tutorial, we'll create a simple triangle renderer without WSI (Window System Integration).
+In this tutorial, we'll render a simple colored triangle without WSI (Window System Integration).
 
 ![Hello Triangle Screenshot](images/hello-triangle/final.png)
 
 > [!IMPORTANT]
-> For simpler setup, we'll use `VK_KHR_dynamic_rendering` device extension to skip the complex render pass and framebuffer setup, therefore make sure your Vulkan driver supports the extension.
+> For simpler setup, we'll use `VK_KHR_dynamic_rendering` device extension to skip the complex render pass and framebuffer preparation. Make sure your Vulkan driver supports the extension.
 
 I'll explain each steps using Vulkan-Hpp RAII bindings first, then will explain which code can be replaced with *vku* provided. Note that this example has no WSI support yet, which will be covered in the [next tutorial](hello-triangle-window.md).
 
@@ -38,7 +38,7 @@ target_link_libraries(vku-tutorial PRIVATE vku::vku)
 ```
 
 `main.cpp`
-```cpp
+```c++
 import std;
 import vku;
 
@@ -58,9 +58,9 @@ int main() {
 
 ## 1. Creating Vulkan Instance
 
-To use the Vulkan API, an instance have to be created. Also, for Vulkan-Hpp's RAII binding, `vk::raii::Context`, which is not a part of the [Vulkan specification](https://registry.khronos.org/vulkan/specs/1.3-extensions/html/vkspec.html), have to be created before the instance creation. We'll use Vulkan 1.0 to start from the scratch.
+To use the Vulkan API, an instance have to be created. Also, for Vulkan-Hpp's RAII binding, `vk::raii::Context` has to be created before the instance creation. We'll use Vulkan 1.0 to start from the scratch.
 
-```cpp
+```c++
 int main() {
     const vk::raii::Context context;
     
@@ -71,9 +71,13 @@ int main() {
         0, // engineVersion
         vk::makeApiVersion(0, 1, 0, 0),
     };
+    constexpr std::array instanceLayers {
+        "VK_LAYER_KHRONOS_validation",
+    };
     const vk::raii::Instance instance { context, vk::InstanceCreateInfo {
         {}, // flags
         &appInfo,
+        instanceLayers,
     } };
 }
 ```
@@ -90,7 +94,7 @@ If you're in macOS and running Vulkan with [MoltenVK](https://github.com/Khronos
 
 Since MoltenVK is portable implementation of Vulkan based on Apple Metal, you have to specify some additional parameters. Here's the modified code:
 
-```cpp
+```c++
 int main() {
     const vk::raii::Context context;
 
@@ -98,6 +102,9 @@ int main() {
         "Hello Triangle", 0,
         nullptr, 0,
         vk::makeApiVersion(0, 1, 0, 0),
+    };
+    constexpr std::array instanceLayers {
+        "VK_LAYER_KHRONOS_validation",
     };
 #if __APPLE__
     constexpr std::array instanceExtensions {
@@ -112,7 +119,7 @@ int main() {
         {},
 #endif
         &appInfo,
-        {}, // pEnabledLayerNames
+        instanceLayers, // pEnabledLayerNames
 #if __APPLE__
         instanceExtensions, // pEnabledExtensionNames
 #endif
@@ -120,27 +127,24 @@ int main() {
 }
 ```
 
-> [!TIP]
-> I didn't add the instance layer `VK_LAYER_KHRONOS_validation`, because most of the tutorial reader would use the LunarG provided Vulkan SDK. The validation layer can be configured via [Vulkan Configurator](https://www.lunarg.com/introducing-the-new-vulkan-configurator-vkconfig/). Also, I won't use the debug utils messenger for the same reason. I recommend you to turn on the validation layer. 
-
 Now running your application will create a Vulkan instance and return 0.
 
 ---
 
-Let's talk about the current code's refactoring point. You may noticed that you cannot "inline" the parameters into `vk::InstanceCreateInfo` directly, like
+Let's talk about the current code's refactoring point. You may notice that you cannot "inline" the parameters into `vk::InstanceCreateInfo` directly, like
 
-```cpp
+```c++
 const vk::raii::Instance { context, vk::InstanceCreateInfo {
     {},
     &vk::ApplicationInfo { ... }, // <- Can't take the address of a rvalue.
-    {},
     { ... }, // <- vk::ArrayProxyNoTemporaries doesn't allow the construction from a rvalue.
+    { ... }, // same as above.
 } };
 ```
 
 Because Vulkan-Hpp disallows `vk::ArrayProxyNoTemporaries` construction from any rvalue. Since Vulkan structure is constructed for the future function calling parameter, its referencing data must be alive until the function calling end. The following code shows why allowing it is dangerous:
 
-```cpp
+```c++
 const vk::InstanceCreateInfo ci { 
     ...,
     { extension1, extension2, ... },
@@ -162,7 +166,7 @@ For solution, *vku* provides the two functions, `vku::unsafeAddress(const T&)` a
 
 With these functions, you can write the code like this:
 
-```cpp
+```c++
 const vk::raii::Context context;
 
 const vk::raii::Instance instance { context, vk::InstanceCreateInfo {
@@ -176,7 +180,7 @@ const vk::raii::Instance instance { context, vk::InstanceCreateInfo {
         nullptr, 0,
         vk::makeApiVersion(0, 1, 0, 0),
     }),
-    {},
+    vku::unsafeProxy<const char*>("VK_LAYER_KHRONOS_validation"), // Specified the template type, unless it will be deduced as char array.
 #if __APPLE__
     vku::unsafeProxy({
         vk::KHRGetPhysicalDeviceProperties2ExtensionName,
@@ -188,17 +192,11 @@ const vk::raii::Instance instance { context, vk::InstanceCreateInfo {
 
 Which got much clearer, and unnecessary variable naming is gone.
 
-### 1.3. Safety of `vku::unsafeAddress` and `vku::unsafeProxy`
-
-You have responsibility for object lifetime management, that's the reason why they are prefixed with `unsafe`.
-
-However, if you're using Clang or MSVC, compiler will give you some warning for the misusage, due to the graceful `[[lifetimebound]]` attribute ([Clang](https://clang.llvm.org/docs/AttributeReference.html#id593), [MSVC](https://learn.microsoft.com/en-us/cpp/code-quality/c26816?view=msvc-170)). Their function parameters are marked with the attribute, and you'll get warning when the lifetime of the parameter is shorter than the function's return value.
-
 ## 2. Creating a Vulkan Device with a Graphics Capable Queue
 
 For this step, we'll get the physical device from `instance`, and create a device with graphics queue. First, we have to check if there is a graphics operation cable physical device.
 
-```cpp
+```c++
 int main() {
     ... 
     const vk::raii::Instance instance { ... };
@@ -221,7 +219,7 @@ int main() {
 }
 ```
 
-For this tutorial, we only queried about the graphics queue family support for simplicity, but this process is widely varying on the application's purpose, such like:
+For this tutorial, we only queried about the graphics queue family support for brevity, but this process is widely varying on the application's purpose, such like:
 
 - Need dedicated compute/transfer queue.
 - Need to check the surface support for WSI.
@@ -232,25 +230,21 @@ I'll cover how these goal can be achieved with *vku* in the next tutorials.
 
 Next, creating a device with the graphics queue:
 
-```cpp
+```c++
 int main() {
     ...
     const vk::raii::PhysicalDevice physicalDevice { ... };
 
     const vk::raii::Device device { physicalDevice, vk::DeviceCreateInfo {
         {}, // flags
-        vku::unsafeProxy({ // queueCreateInfos
-            vk::DeviceQueueCreateInfo { 
-                {}, // flags 
-                graphicsQueueFamilyIndex, 
-                vku::unsafeProxy({ 1.f }), // queuePriorities
-            },
-        }),
+        vku::unsafeProxy(vk::DeviceQueueCreateInfo { 
+             {}, // flags 
+             graphicsQueueFamilyIndex, 
+             vku::unsafeProxy(1.f), // queuePriorities
+        }), // queueCreateInfos
         {}, // pEnabledLayerNames
 #if __APPLE__
-        vku::unsafeProxy({
-            vk::KHRPortabilitySubsetExtensionName,
-        }), // pEnabledExtensionNames
+        vku::unsafeProxy(vk::KHRPortabilitySubsetExtensionName), // pEnabledExtensionNames
 #endif
     } };
     const vk::Queue graphicsQueue = (*device).getQueue(graphicsQueueFamilyIndex, /* queueIndex */ 0);
@@ -265,7 +259,7 @@ Wow, we've done a lot of things! The amount of code is not much unbearable, but 
 
 *vku* provides `Gpu<QueueFamilies, Queues>` class for convenient and structured physical device selection and device creation. Here's the same featuring code with *vku*:
 
-```cpp
+```c++
 struct QueueFamilies {
     std::uint32_t graphics;
 
@@ -281,36 +275,32 @@ struct Queues {
 
     [[nodiscard]] static auto getCreateInfos(vk::PhysicalDevice, const QueueFamilies &queueFamilies) noexcept {
         return vku::RefHolder {
-            [=](std::span<const float> priorities) {
+            [=](const float &priority) {
                 return std::array {
                     vk::DeviceQueueCreateInfo {
                         {},
                         queueFamilies.graphics,
-                        priorities,
+                        vk::ArrayProxyNoTemporaries(priority),
                     },
                 };
             },
-            std::array { 1.f },
+            1.f,
         };
     }
-};
-
-struct Gpu : vku::Gpu<QueueFamilies, Queues> {
-    explicit Gpu(const vk::raii::Instance &instance)
-        : vku::Gpu<QueueFamilies, Queues> { instance, vku::Gpu<QueueFamilies, Queues>::Config {
-#if __APPLE__
-            .deviceExtensions = {
-                vk::KHRPortabilitySubsetExtensionName,
-            },
-#endif
-        } } { }
 };
 
 int main() {
     ...
     const vk::raii::Instance instance { ... };
     
-    const Gpu gpu { instance };
+    // Note: vku::Gpu<QueueFamilies, Queues>::Config can be omitted. I'll leave it for the demonstration.
+    const vku::Gpu<QueueFamilies, Queues> gpu { instance, vku::Gpu<QueueFamilies, Queues>::Config {
+#if __APPLE__
+         .deviceExtensions = {
+             vk::KHRPortabilitySubsetExtensionName,
+         },
+#endif
+    } };
     // gpu.physicalDevice (vk::raii::PhysicalDevice)
     // gpu.queueFamilies (QueueFamilies)
     // gpu.device (vk::raii::Device)
@@ -319,7 +309,7 @@ int main() {
 }
 ```
 
-`vku::Gpu::Config` has many parameters for sophisticated, fine-grained physical device selection, but I'll leave that details for later.
+All codes were gone! Parameters for physical device selection and device creation are in the `vku::Gpu<QueueFamilies, Queues>::Config` struct, and initialized for typical usage. If you want, the settings can be modified using constructor. This struct has many parameters for sophisticated, fine-grained physical device selection, but I'll leave that details for later.
 
 Here's the explanation of the code:
 
@@ -332,53 +322,47 @@ Here's the explanation of the code:
    
 2. After the physical device selection, `QueueFamilies` struct is constructed with the selected physical device. `vku::getGraphicsQueueFamily` is a helper function that accepts a physical device's queue family properties and returns the queue family index that supports the graphics operation. If there's no such queue family, it returns `std::nullopt`.
 
-3. After that, device is created with `Config`'s device extensions and queue create infos provided by `Queues::getCreateInfos`. This function **must** be implemented by the user, and meets the following requirements:
+3. After that, device is created with `Config`'s device extensions and queue create infos provided by `Queues::getCreateInfos`. This function **MUST** be implemented by the user, and meets the following requirements:
 
-   - It's signature must be `static auto getCreateInfos(vk::PhysicalDevice, const QueueFamilies&)`.
-   - It must return `vku::RefHolder` of contiguous `vk::DeviceQueueCreateInfo` container. `vku::RefHolder<T, Args...>` is a utility class, a container that can be contextually converted to a reference of type `T`, which has references for objects of `Args...`. In this code, since the returning `std::array<vk::DeviceQueueCreateInfo, 1>` needs the reference of queue priority array, it is wrapped with `vku::RefHolder`.
+   - It's signature must be `getCreateInfos(vk::PhysicalDevice, const QueueFamilies&)` and be static.
+   - It must **return `vku::RefHolder` of contiguous `vk::DeviceQueueCreateInfo` container**. `vku::RefHolder<T, Args...>` is a utility class, a container that can be contextually converted to a reference of type `T`, which has references for objects of `Args...`. In this code, since the returning `std::array<vk::DeviceQueueCreateInfo, 1>` needs the reference of queue priority value, it is wrapped with `vku::RefHolder`.
 
 4. After the device creation, the queues are gotten by constructing `Queues` with the device and queue families. This is implemented by user side.
 
 5. Finally, it creates `vma::Allocator`, which will be used as resource allocator such like buffer and image.
 
 > [!TIP]
-> Note that `Queues::getCreateInfos`'s returning container type doesn't have to be exactly `std::array`. `vku::Gpu` checks only if it's a contiguous range, therefore you can use `std::vector` or your own container type.
+> `Queues::getCreateInfos`'s returning container type doesn't have to be exactly `std::array`. `vku::Gpu` checks only if it's a contiguous range, therefore you can use `std::vector` or your own container type.
 
-> [!IMPORTANT]
-> You can use your own constructor for `QueueFamilies` and `Queues` structs. In further tutorials, I'll show you how to use the `vku::Gpu::Config` for more sophisticated physical device selection. The only requirement of these structs is that `QueueFamilies` must have `static auto getCreateInfos(vk::PhysicalDevice, const QueueFamilies&)` function.
-
-If you want the detailed physical device selection, you can simply pass the `verbose` boolean field as `true` to the `Gpu` constructor. With this, *vku* will print the list of the rejected physical devices with reasons, and will print the selected physical device with score.
+If you pass `verbose` boolean field as `true` to the `Gpu` constructor, physical device selection process (including rejection reason and score of the accepted physical device) is printed to `std::cerr`.
 
 <details>
    <summary>Example</summary>
    For example, the following (more sophisticated GPU selection) code
    
-   ```cpp
-   struct Gpu : vku::Gpu<QueueFamilies, Queues> {
-       explicit Gpu(const vk::raii::Instance &instance)
-           : vku::Gpu<QueueFamilies, Queues> { instance, vku::Gpu<QueueFamilies, Queues>::Config {
-               .verbose = true,
-               .deviceExtensions = {
-   #if __APPLE__
-                   vk::KHRPortabilitySubsetExtensionName,
-   #endif
-                   vk::KHRMaintenance4ExtensionName,
-                   vk::EXTDescriptorBufferExtensionName,
-                   vk::KHRDynamicRenderingLocalReadExtensionName,
-               },
-               .physicalDeviceFeatures = vk::PhysicalDeviceFeatures{}
-                   .setGeometryShader(true)
-                   .setIndependentBlend(true),
-               .devicePNexts = std::tuple {
-                   vk::PhysicalDeviceDescriptorBufferFeaturesEXT{}
-                       .setDescriptorBuffer(true)
-                       .setDescriptorBufferCaptureReplay(true),
-                   vk::PhysicalDeviceDynamicRenderingLocalReadFeaturesKHR{}
-                       .setDynamicRenderingLocalRead(true),
-               },
-               .apiVersion = vk::makeApiVersion(0, 1, 3, 0),
-           } } { }
-   };
+   ```c++
+   vku::Gpu<QueueFamilies, Queues> gpu { instance, vku::Gpu<QueueFamilies, Queues>::Config {
+       .verbose = true,
+       .deviceExtensions = {
+#if __APPLE__
+           vk::KHRPortabilitySubsetExtensionName,
+#endif
+           vk::KHRMaintenance4ExtensionName,
+           vk::EXTDescriptorBufferExtensionName,
+           vk::KHRDynamicRenderingLocalReadExtensionName,
+       },
+       .physicalDeviceFeatures = vk::PhysicalDeviceFeatures{}
+           .setGeometryShader(true)
+           .setIndependentBlend(true),
+       .devicePNexts = std::tuple {
+           vk::PhysicalDeviceDescriptorBufferFeaturesEXT{}
+               .setDescriptorBuffer(true)
+               .setDescriptorBufferCaptureReplay(true),
+           vk::PhysicalDeviceDynamicRenderingLocalReadFeaturesKHR{}
+               .setDynamicRenderingLocalRead(true),
+       },
+       .apiVersion = vk::makeApiVersion(0, 1, 3, 0),
+   } };
    ```
    
    The possible output is:
@@ -409,10 +393,10 @@ As explained in above, *vku* uses [Vulkan Memory Allocator (VMA)](https://gpuope
 
 The main allocator object, `vma::Allocator`, is inside `vku::Gpu` class as the public field. With this, your image generation get much simpler:
 
-```cpp
+```c++
 int main() {
     ... 
-    const Gpu gpu { instance };
+    const vku::Gpu<QueueFamilies, Queues> gpu { ... };
 
     const vku::AllocatedImage image { gpu.allocator, vk::ImageCreateInfo {
         {},
@@ -448,7 +432,7 @@ Due to this inheritance, you can take three advantages:
 
 After the image creation, we have to create the image view for it. 
 
-```cpp
+```c++
 int main() {
     const vku::AllocatedImage image { ... };
     
@@ -473,7 +457,7 @@ You can see `image` is implicitly converted to `vk::Image`.
 
 Since `vku::Image` has much more information than `vk::Image` (in this case, it knows its format), it has `getViewCreateInfo` method, which uses the format and inferred aspect flags from the format. Regarding this, the code can be:
 
-```cpp
+```c++
 int main() {
     const vku::AllocatedImage image { ... };
     
@@ -484,7 +468,7 @@ int main() {
 `getViewCreateInfo` method has two overloads:
 
 - `getViewCreateInfo(vk::ImageViewType type = vk::ImageViewType::e2D) -> vk::ImageViewCreateInfo`
-  It creates the `vk::ImageViewCreateInfo` with given image view type (default is `vk::ImageViewType::e2D`), with full subresource range and inferred aspect flags.
+  It creates the `vk::ImageViewCreateInfo` with given image view type (default is `vk::ImageViewType::e2D`), with full subresource range (all mip levels and array layers) and inferred aspect flags.
 - `getViewCreateInfo(const vk::ImageSubresourceRange &subresourceRange, vk::ImageViewType type = vk::ImageViewType::e2D) -> vk::ImageViewCreateInfo`
   It creates the `vk::ImageViewCreateInfo` with given image view type and subresource range. If you need the specific subresource range, you can use this overload.
 
@@ -497,9 +481,9 @@ To create a graphics pipeline, we have to:
 2. Create shader modules from SPIR-V binaries.
 3. Create a graphics pipeline using pipeline layout and shader modules.
 
-Pipeline layout creation is simple: we don't have any descriptor set layout or push constant now, therefore just passing a default `vk::PipelineLayoutCreateInfo` is enough.
+Pipeline layout creation is easy: we don't have any descriptor set layout or push constant now, therefore just passing a default `vk::PipelineLayoutCreateInfo` is enough.
 
-```cpp
+```c++
 int main() {
     ...
     const vk::raii::ImageView imageView { ... };
@@ -537,7 +521,7 @@ void main(){
 ```
 
 > [!NOTE]
-> We used the GLSL's initializer list-based initialization feature, which is supported from GLSL 4.6. [Here's](https://www.khronos.org/opengl/wiki/Data_Type_(GLSL)#Initializer_lists) the basic explanation of the feature.
+> We used the GLSL's [initializer list-based initialization](https://www.khronos.org/opengl/wiki/Data_Type_(GLSL)#Initializer_lists), which is supported from GLSL 4.6.
 
 `shaders/triangle.frag`
 ```glsl
@@ -574,7 +558,7 @@ target_compile_definitions(vku-tutorial PRIVATE
 ```
 
 `main.cpp`
-```cpp
+```c++
 [[nodiscard]] auto loadFileAsBinary(const std::filesystem::path &path) -> std::vector<std::uint32_t> {
     std::ifstream file { path, std::ios::binary };
     if (!file) {
@@ -610,7 +594,7 @@ int main() {
 
 Finally, the most cumbersome part of the Vulkan API, creating the graphics pipeline. Here's the code by using Vulkan-Hpp naively: 
 
-```cpp
+```c++
 int main() {
     const vk::raii::ShaderModule vertexShaderModule { ... };
     const vk::raii::ShaderModule fragmentShaderModule { ... };
@@ -688,7 +672,7 @@ Since the extent of the rendering attachment is known (512x512) and fixed, we em
 <details>
    <summary>I think it is worth to show what if we don't use `vku::unsafeProxy` and `vku::unsafeAddress`.</summary>
 
-   ```cpp
+   ```c++
    int main() {
        const std::array stages {
            vk::PipelineShaderStageCreateInfo {
@@ -788,7 +772,7 @@ Such a hard work! For real application, you would make hundred or thousand pipel
 
 *vku* combines the shader module loading, generation and `vk::GraphicsPipelineCreateInfo` generation into a single function. 
 
-```cpp
+```c++
 int main() {
     const vk::raii::PipelineLayout pipelineLayout { ... };
     
@@ -833,7 +817,7 @@ What happened? Let's see the explanation:
    - Dynamic state enabled with viewport and scissor.
    
    Its function signature is
-   ```cpp
+   ```c++
    getDefaultGraphicsPipelineCreateInfo(
       vk::ArrayProxyNoTemporaries<const vk::PipelineShaderStageCreateInfo> stages,
       vk::PipelineLayout layout,
@@ -852,7 +836,7 @@ What happened? Let's see the explanation:
    Most of your use case would not heavily vary from this standard pipeline setting, but some of them would. For such cases, you can modify the returned `vk::GraphicsPipelineCreateInfo` manually by using the Vulkan-Hpp's setter methods with builder pattern. In above code, we modified the rasterization/viewport/dynamic state by using `setPRasterizationState`, `setPViewportState`, and `setPDynamicState` methods.
 
 2. `vku::createPipelineStages` is the function that creates the `RefHolder` of `vk::PipelineShaderStageCreateInfo` array from the shader path/code/raw GLSL string. It accepts the device and an arbitrary number of `vku::Shader`s that have the shader code and stage flag. The function signature is
-   ```cpp
+   ```c++
    createPipelineStages(
       const vk::raii::Device &device, 
       const Shaders &...shaders
@@ -881,7 +865,7 @@ What happened? Let's see the explanation:
    ```
    
    `main.cpp`
-   ```cpp
+   ```c++
    #include <shaderc/shaderc.hpp>
    
    constexpr std::string_view vertexShaderCode = R"glsl(
@@ -938,26 +922,23 @@ Since `VK_KHR_dynamic_rendering` extension core from Vulkan 1.3, and we're using
 
 Setting device extension is already explained in above. How we can specify the `vk::DeviceCreateInfo`'s `pNext`? *vku* provides these mechanism with compile-time safe way. You can specify the `vk::DeviceCreateInfo`'s `pNext` chain by using the `vku::Gpu::Config`'s `devicePNexts` field. Here's the code:
 
-```cpp
-struct Gpu : vku::Gpu<QueueFamilies, Queues> {
-    explicit Gpu(const vk::raii::Instance &instance)
-        : vku::Gpu<QueueFamilies, Queues> { instance, vku::Gpu<QueueFamilies, Queues>::Config {
-            .verbose = true,
-            .deviceExtensions = {
-                vk::KHRMaintenance2ExtensionName, // for VK_KHR_depth_stencil_resolve
-                vk::KHRCreateRenderpass2ExtensionName, // for VK_KHR_depth_stencil_resolve
-                vk::KHRDepthStencilResolveExtensionName, // for VK_KHR_multiview
-                vk::KHRMultiviewExtensionName, // for VK_KHR_dynamic_rendering
-                vk::KHRDynamicRenderingExtensionName,
+```c++
+const vku::Gpu<QueueFamilies, Queues> gpu { instance, vku::Gpu<QueueFamilies, Queues>::Config {
+    .verbose = true,
+    .deviceExtensions = {
+        vk::KHRMaintenance2ExtensionName, // for VK_KHR_depth_stencil_resolve
+        vk::KHRCreateRenderpass2ExtensionName, // for VK_KHR_depth_stencil_resolve
+        vk::KHRDepthStencilResolveExtensionName, // for VK_KHR_multiview
+        vk::KHRMultiviewExtensionName, // for VK_KHR_dynamic_rendering
+        vk::KHRDynamicRenderingExtensionName,
 #if __APPLE__
-                vk::KHRPortabilitySubsetExtensionName,
+        vk::KHRPortabilitySubsetExtensionName,
 #endif
-            },
-            .devicePNexts = std::tuple {
-                vk::PhysicalDeviceDynamicRenderingFeatures { true },
-            },
-        } } { }
-};
+    },
+    .devicePNexts = std::tuple {
+        vk::PhysicalDeviceDynamicRenderingFeatures { true },
+    },
+} };
 ```
 
 You can pass the tuple of Vulkan structures that are used for the `pNext` chain of `vk::DeviceCreateInfo`. *vku* will enclose the concatenated `vk::DeviceCreateInfo` and this tuple into `vk::StructureChain`, so you can take the advantage of compile time pNext chain validation.
@@ -971,7 +952,7 @@ After enabling the dynamic rendering feature, running your application will not 
 
 For this step, we have to create the command buffer, record the rendering commands, and submit the command buffer into the graphics queue. Here's the Vulkan-Hpp code:
 
-```cpp
+```c++
 int main() {
     const vk::raii::Pipeline pipeline { ... };
 
@@ -1008,12 +989,10 @@ int main() {
         { { 0, 0 }, vku::toExtent2D(image.extent) }, // renderArea
         1, // layerCount
         0, // viewMask
-        vku::unsafeProxy({
-            vk::RenderingAttachmentInfo {
-                *imageView, vk::ImageLayout::eColorAttachmentOptimal,
-                {}, {}, {}, // resolveMode, resolveImageView, resolveImageLayout
-                vk::AttachmentLoadOp::eClear,vk::AttachmentStoreOp::eStore, vk::ClearColorValue { 0.f, 0.f, 0.f, 0.f },
-            },
+        vku::unsafeProxy(vk::RenderingAttachmentInfo {
+            *imageView, vk::ImageLayout::eColorAttachmentOptimal,
+            {}, {}, {}, // resolveMode, resolveImageView, resolveImageLayout
+            vk::AttachmentLoadOp::eClear,vk::AttachmentStoreOp::eStore, vk::ClearColorValue { 0.f, 0.f, 0.f, 0.f },
         }), // colorAttachments
     }, *gpu.device.getDispatcher());
 
@@ -1041,13 +1020,13 @@ We allocated the command buffer from graphics command pool, change the image lay
 > [!TIP]
 > You can set `VKU_DEFAULT_DYNAMIC_DISPATCHER` CMake variable at the configuration time, or add `dynamic-dispatcher` feature when use vcpkg to make Vulkan-Hpp uses dynamically loaded function pointers. For this feature, see [Using vku](using-vku.md) page and [Vulkan-Hpp documentation](https://github.com/KhronosGroup/Vulkan-Hpp/blob/main/README.md#extensions--per-device-function-pointers) for the details.
 
-`vku::fullSubresourceRange(vk::ImageAspectFlags aspectFlags = vk::ImageApsectFlagBits::eColor)` is *vku*'s utility function that generates the whole subresource region with the given aspect flags.
+`vku::fullSubresourceRange(vk::ImageAspectFlags aspectFlags = vk::ImageApsectFlagBits::eColor)` is *vku*'s utility function that generates the whole subresource region (all mip levels and array layers) with the given aspect flags.
 
 ---
 
 Not a big deal, but *vku* provides you a simpler mechanism for one-time command buffer allocation and submission, by `vku::executeSingleCommand`. Here's *vku* approach:
 
-```cpp
+```c++
 int main() {
     const vk::raii::Pipeline pipeline { ... };
     
@@ -1068,12 +1047,10 @@ int main() {
             { { 0, 0 }, vku::toExtent2D(image.extent) },
             1,
             0,
-            vku::unsafeProxy({
-                vk::RenderingAttachmentInfo {
-                    *imageView, vk::ImageLayout::eColorAttachmentOptimal,
-                    {}, {}, {},
-                    vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore, vk::ClearColorValue { 0.f, 0.f, 0.f, 0.f },
-                },
+            vku::unsafeProxy(vk::RenderingAttachmentInfo {
+                *imageView, vk::ImageLayout::eColorAttachmentOptimal,
+                {}, {}, {},
+                vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore, vk::ClearColorValue { 0.f, 0.f, 0.f, 0.f },
             }),
         }, *gpu.device.getDispatcher());
 
@@ -1147,9 +1124,9 @@ Alike `vku::AllocatedImage`, *vku* also offers you to use RAII wrapped buffer ob
 
 Since we're going to use the buffer for the de-staging purpose, we'll use the `vku::MappedBuffer` for this step. Here's the code:
 
-```cpp
+```c++
 int main() {
-    const Gpu gpu { instance };
+    const vku::Gpu<QueueFamilies, Queues> gpu { ... };
     
     const vku::AllocatedImage image { gpu.allocator, vk::ImageCreateInfo {
         {},
@@ -1206,7 +1183,7 @@ int main() {
 
 We created `destagingBuffer` with the required image data size (= (size of a texel) * (image width) * (image height)), and pass `allocationCreateInfo` as `vku::allocation::hostRead` constant, which is the constant that is predefined by
 
-```cpp
+```c++
 vma::AllocationCreateInfo {
     vma::AllocationCreateFlagBits::eHostAccessRandom | vma::AllocationCreateFlagBits::eMapped,
     vma::MemoryUsage::eAuto,
@@ -1218,7 +1195,7 @@ vma::AllocationCreateInfo {
 > [!WARNING]
 > `vku::MappedBuffer::MappedBuffer(vma::Allocator, const vk::BufferCreateInfo&, const vma::AllocationCreateInfo&)` constructor's last allocation create info parameter is default by
 > 
-> ```cpp
+> ```c++
 > vma::AllocationCreateInfo {
 >    vma::AllocationCreateFlagBits::eHostAccessSequentialWrite | vma::AllocationCreateFlagBits::eMapped,
 >    vma::MemoryUsage::eAuto,
@@ -1269,7 +1246,7 @@ target_compile_definitions(vku-tutorial PRIVATE
 ```
 
 `main.cpp`
-```cpp
+```c++
 #include <stb_image_write.h>
 
 ...
@@ -1283,7 +1260,7 @@ int main() {
 ```
 
 `impl.cpp`
-```cpp
+```c++
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
 ```
@@ -1294,7 +1271,7 @@ After the application launch, you can find the `output.png` file in the executab
 
 ---
 
-In the next tutorial, we'll render this triangle into the actual window (using [GLFW](https://www.glfw.org)), and how to effectively manage the multiple attachment images with *vku*. Stay tuned!
+In [the next tutorial](hello-triangle-window.md), we'll render this triangle into the actual window (using [GLFW](https://www.glfw.org)), and how to effectively manage the multiple attachment images with *vku*. Stay tuned!
 
 <details>
 <summary>Here's the full code of the tutorial.</summary>
@@ -1376,7 +1353,7 @@ void main(){
 ```
 
 `main.cpp`
-```cpp
+```c++
 #include <stb_image_write.h>
 
 import std;
@@ -1397,38 +1374,18 @@ struct Queues {
 
     [[nodiscard]] static auto getCreateInfos(vk::PhysicalDevice, const QueueFamilies &queueFamilies) noexcept {
         return vku::RefHolder {
-            [=](std::span<const float> priorities) {
+            [=](const float &priority) {
                 return std::array {
                     vk::DeviceQueueCreateInfo {
                         {},
                         queueFamilies.graphics,
-                        priorities,
+                        vk::ArrayProxyNoTemporaries(priority),
                     },
                 };
             },
-            std::array { 1.f },
+            1.f,
         };
     }
-};
-
-struct Gpu : vku::Gpu<QueueFamilies, Queues> {
-    explicit Gpu(const vk::raii::Instance &instance)
-        : vku::Gpu<QueueFamilies, Queues> { instance, vku::Gpu<QueueFamilies, Queues>::Config {
-            .verbose = true,
-            .deviceExtensions = {
-                vk::KHRMaintenance2ExtensionName,
-                vk::KHRCreateRenderpass2ExtensionName,
-                vk::KHRDepthStencilResolveExtensionName,
-                vk::KHRMultiviewExtensionName,
-                vk::KHRDynamicRenderingExtensionName,
-#if __APPLE__
-                vk::KHRPortabilitySubsetExtensionName,
-#endif
-            },
-            .devicePNexts = std::tuple {
-                vk::PhysicalDeviceDynamicRenderingFeatures { true },
-            },
-        } } { }
 };
 
 int main() {
@@ -1445,7 +1402,7 @@ int main() {
             nullptr, 0,
             vk::makeApiVersion(0, 1, 0, 0),
         }),
-        {},
+        vku::unsafeProxy<const char*>("VK_LAYER_KHRONOS_validation"),
 #if __APPLE__
         vku::unsafeProxy({
             vk::KHRGetPhysicalDeviceProperties2ExtensionName,
@@ -1454,7 +1411,22 @@ int main() {
 #endif
     } };
 
-    const Gpu gpu { instance };
+    const vku::Gpu<QueueFamilies, Queues> gpu { instance, vku::Gpu<QueueFamilies, Queues>::Config {
+         .verbose = true,
+         .deviceExtensions = {
+             vk::KHRMaintenance2ExtensionName,
+             vk::KHRCreateRenderpass2ExtensionName,
+             vk::KHRDepthStencilResolveExtensionName,
+             vk::KHRMultiviewExtensionName,
+             vk::KHRDynamicRenderingExtensionName,
+#if __APPLE__
+             vk::KHRPortabilitySubsetExtensionName,
+#endif
+         },
+         .devicePNexts = std::tuple {
+             vk::PhysicalDeviceDynamicRenderingFeatures { true },
+         },
+     } };
 
     const vku::AllocatedImage image { gpu.allocator, vk::ImageCreateInfo {
         {},
@@ -1520,12 +1492,10 @@ int main() {
             { { 0, 0 }, vku::toExtent2D(image.extent) },
             1,
             0,
-            vku::unsafeProxy({
-                vk::RenderingAttachmentInfo {
-                    *imageView, vk::ImageLayout::eColorAttachmentOptimal,
-                    {}, {}, {},
-                    vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore, vk::ClearColorValue { 0.f, 0.f, 0.f, 0.f },
-                },
+            vku::unsafeProxy(vk::RenderingAttachmentInfo {
+                *imageView, vk::ImageLayout::eColorAttachmentOptimal,
+                {}, {}, {},
+                vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore, vk::ClearColorValue { 0.f, 0.f, 0.f, 0.f },
             }),
         }, *gpu.device.getDispatcher());
 
@@ -1560,7 +1530,7 @@ int main() {
 ```
 
 `impl.cpp`
-```cpp
+```c++
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
 ```

@@ -1,6 +1,6 @@
 # Using vku
 
-This page explains about how to build and install *vku* for your system, and how to seamlessly integrate it to your package.
+This page explains about how to build and install *vku* for your system, and how to seamlessly integrate it into your project.
 
 ## 1. Usage Options
 
@@ -19,12 +19,6 @@ This page explains about how to build and install *vku* for your system, and how
 - [Vulkan-Hpp](https://github.com/KhronosGroup/Vulkan-Hpp): C++ bindings for Vulkan API
 - [VulkanMemoryAllocator-Hpp](https://github.com/YaaZ/VulkanMemoryAllocator-Hpp): C++ bindings for Vulkan Memory Allocator
 
-If you're using [shaderc](https://github.com/google/shaderc) runtime GLSL compilation feature (can be enabled by setting `VKU_USE_SHADERC` to `ON`), the installed Vulkan SDK must have `shaderc_combined` components and following CMake commands must be available.
-
-```CMake
-find_package(Vulkan COMPONENTS shaderc_combined REQUIRED)
-```
-
 If you're using vcpkg, these dependencies are automatically installed. Otherwise, you must install them manually, then following CMake commands would available.
 
 ```CMake
@@ -32,9 +26,15 @@ find_package(VulkanMemoryAllocator CONFIG REQUIRED)
 find_package(VulkanMemoryAllocator-Hpp CONFIG REQUIRED)
 ```
 
+If you're using [shaderc](https://github.com/google/shaderc) runtime GLSL compilation feature (can be enabled by setting `VKU_USE_SHADERC` to `ON`), the installed Vulkan SDK must have `shaderc_combined` components and following CMake commands must be available.
+
+```CMake
+find_package(Vulkan COMPONENTS shaderc_combined REQUIRED)
+```
+
 ### 2.2. Compilers and Build Tools
 
-*vku* uses the cutting edge C++20 feature, [module](https://en.cppreference.com/w/cpp/language/modules), which is not yet widely supported by most compilers. Unless you're using Windows and up-to-date MSVC compiler, most of the case you have to manually specify the non-system default compiler. The following is the instruction to build and install *vku*.
+*vku* uses the cutting edge C++20 feature, [module](https://en.cppreference.com/w/cpp/language/modules), which is not yet widely supported by most compilers. Unless you're using Windows and up-to-date MSVC compiler, most of the case you have to manually specify the non-system default compiler.
 
 Followings are the **minimum** requirement for building *vku*.
 
@@ -49,11 +49,6 @@ If you want to build *vku* with [C++23 standard library module](https://en.cppre
 
 - Build tool
   - CMake 3.30 or later (for experimental `import std;` support: see [here](https://www.kitware.com/import-std-in-cmake-3-30/) for the detail)
-
-If you want to manage the dependency with vcpkg, you need:
-
-- Dependency management tool
-  - vcpkg
 
 ## 3. Building and Installing vku
 
@@ -78,7 +73,7 @@ cmake --preset=vcpkg # Configure
 cmake --build build --target install # Build and install
 ```
 
-After the installation, CMake configuration files would be located in `build/install` directory. You can pass your own `CMAKE_INSTALL_PREFIX` when configuration time to change the installation directory (e.g. `C:\Program Files\vku`).
+After the installation, package config files will be located in `build/install` directory. You can pass your own `CMAKE_INSTALL_PREFIX` when configuration time to change the installation directory (e.g. `C:\Program Files\vku`).
 
 In future CMake project, you can use `find_package(vku CONFIG REQUIRED)` to use *vku*.
 
@@ -100,7 +95,8 @@ You can pass these CMake configuration parameters via either CLI or your own `CM
         -DCMAKE_EXE_LINKER_FLAGS="-L /opt/homebrew/opt/llvm/lib/c++ -Wl,-rpath,/opt/homebrew/opt/llvm/lib/c++ -lc++" # Configure
     cmake --build build --target install # Build and install
     ```
-- Use `CMakeUserPresets.json`:
+- Use CMake presets:
+
   `CMakeUserPresets.json`
   ```json
   {
@@ -125,7 +121,7 @@ You can pass these CMake configuration parameters via either CLI or your own `CM
 > [!NOTE]
 > About `CMAKE_CXX_FLAGS` and `CMAKE_EXE_LINKER_FLAGS` variable, see [libc++ documentation](https://releases.llvm.org/18.1.4/projects/libcxx/docs/UsingLibcxx.html#id4). These options make your compiler use the homebrew provided libc++, instead of the system default.
 
-After the installation, CMake configuration files would be located in `build/install` directory. You can pass your own `CMAKE_INSTALL_PREFIX` when configuration time to change the installation directory (e.g. `/usr/local`).
+After the installation, package config files will be located in `build/install` directory. You can pass your own `CMAKE_INSTALL_PREFIX` when configuration time to change the installation directory (e.g. `/usr/local`).
 
 In future CMake project, you can use `find_package(vku CONFIG REQUIRED)` to use *vku*.
 
@@ -159,15 +155,15 @@ cmake --build build --target install # Build and install
 
 Or you can make your own `CMakePresets.json` script (like [macOS + Clang](#macos-clang)).
 
-After the installation, CMake configuration files would be located in `build/install` directory. You can pass your own `CMAKE_INSTALL_PREFIX` when configuration time to change the installation directory (e.g. `/usr/local`).
+After the installation, package config files will be located in `build/install` directory. You can pass your own `CMAKE_INSTALL_PREFIX` when configuration time to change the installation directory (e.g. `/usr/local`).
 
 In future CMake project, you can use `find_package(vku CONFIG REQUIRED)` to use *vku*.
 
-## 4. Directly Use vku in Your CMake Project
+## 4. Directly use *vku* in Your CMake Project
 
 Most of the compiler specific setup would be same as the above. You have to set the proper compilers for *vku*'s requirement.
 
-If you're using vcpkg, since *vku* does not officially in the vcpkg ports (but it supports the usage with [overlay ports](https://learn.microsoft.com/en-us/vcpkg/concepts/overlay-ports)), you have to set some ports overlay and triplet settings.
+If you're using vcpkg, since *vku* does not officially in the vcpkg ports, you have to set some ports overlay and triplet settings.
 
 > [!NOTE]
 > I'm currently working for make *vku* to be available with vcpkg official ports.
@@ -198,7 +194,7 @@ Then, pass `VCPKG_OVERLAY_PORTS=${sourceDir}/overlays` to your vcpkg command. Fo
 }
 ```
 
-#### 4.1.2. Set the Proper Triplet and Chainload Settings
+#### 4.1.2. Set the Proper Triplet and Chainload Toolchain
 
 If your system default compiler does not support C++20 module, this step is mandatory. Here's the example for x64 Linux + libc++.
 
@@ -263,17 +259,11 @@ After this, you can use `find_package(vku CONFIG REQUIRED)` in your project.
 
 ## 5. Configuration Options
 
-Here are some CMake configuration options. You can pass these options via CLI or your own CMake presets.
+Here are some CMake configuration options. You can pass these options via either CLI, CMake presets or vcpkg feature.
 
-| Option                           | Description                                                    | Default |
-|----------------------------------|----------------------------------------------------------------|---------|
-| `VKU_USE_STD_MODULE`             | "Use the standard library module for compilation."             | `OFF`   |
-| `VKU_USE_SHADERC`                | "Add runtime GLSL compilation feature by shaderc."             | `OFF`   |
-| `VKU_DEFAULT_DYNAMIC_DISPATCHER` | "Use the vk::DispatchLoaderDynamic as the default dispatcher." | `OFF`   |
-| `VKU_ENABLE_TEST`                | "Enable the test targets."                                     | `OFF`   |
-
-If you're using vcpkg, some of these options can be turned on by features. Corresponding features are:
-
-- `std-module`: `VKU_USE_STD_MODULE`
-- `shaderc`: `VKU_USE_SHADERC`
-- `dynamic-dispatcher`: `VKU_DEFAULT_DYNAMIC_DISPATCHER`
+| Option                           | Description                                                  | Default |     vcpkg feature      |
+|----------------------------------|--------------------------------------------------------------|---------|:----------------------:|
+| `VKU_USE_STD_MODULE`             | Use the standard library module for compilation.             | `OFF`   |      `std-module`      |
+| `VKU_USE_SHADERC`                | Add runtime GLSL compilation feature by shaderc.             | `OFF`   |       `shaderc`        |
+| `VKU_DEFAULT_DYNAMIC_DISPATCHER` | Use the vk::DispatchLoaderDynamic as the default dispatcher. | `OFF`   |  `dynamic-dispatcher`  |
+| `VKU_ENABLE_TEST`                | Enable the test targets.                                     | `OFF`   |           -            |
