@@ -76,30 +76,23 @@ struct Gpu : vku::Gpu<QueueFamilies, Queues> {
 };
 
 struct ColorCheckComputer {
-    struct DescriptorSetLayout : vku::DescriptorSetLayout<vk::DescriptorType::eSampledImage, vk::DescriptorType::eStorageBuffer> {
-        explicit DescriptorSetLayout(const vk::raii::Device &device [[clang::lifetimebound]], std::uint32_t mipLevels)
-            : vku::DescriptorSetLayout<vk::DescriptorType::eSampledImage, vk::DescriptorType::eStorageBuffer> {
-                device, vk::DescriptorSetLayoutCreateInfo {
-                    {},
-                    vku::unsafeProxy({
-                        vk::DescriptorSetLayoutBinding { 0, vk::DescriptorType::eSampledImage, mipLevels, vk::ShaderStageFlagBits::eCompute },
-                        vk::DescriptorSetLayoutBinding { 1, vk::DescriptorType::eStorageBuffer, 1, vk::ShaderStageFlagBits::eCompute },
-                    }),
-                }
-            } { }
-    };
-
     struct PushConstant {
         std::array<float, 4> color;
         std::uint32_t mipLevel;
     };
 
-    DescriptorSetLayout descriptorSetLayout;
+    vku::DescriptorSetLayout<vk::DescriptorType::eSampledImage, vk::DescriptorType::eStorageBuffer> descriptorSetLayout;
     vk::raii::PipelineLayout pipelineLayout;
     vk::raii::Pipeline pipeline;
 
     explicit ColorCheckComputer(const vk::raii::Device &device [[clang::lifetimebound]], std::uint32_t mipLevels)
-        : descriptorSetLayout { device, mipLevels }
+        : descriptorSetLayout { device, {
+            {},
+            vku::unsafeProxy({
+                vk::DescriptorSetLayoutBinding { 0, vk::DescriptorType::eSampledImage, mipLevels, vk::ShaderStageFlagBits::eCompute },
+                vk::DescriptorSetLayoutBinding { 1, vk::DescriptorType::eStorageBuffer, 1, vk::ShaderStageFlagBits::eCompute },
+            }),
+        } }
         , pipelineLayout { device, vk::PipelineLayoutCreateInfo {
             {},
             *descriptorSetLayout,
@@ -180,14 +173,7 @@ int main() {
 
     const ColorCheckComputer colorCheckComputer { gpu.device, image.mipLevels };
 
-    const vk::raii::DescriptorPool descriptorPool { gpu.device, vk::DescriptorPoolCreateInfo {
-        {},
-        1,
-        vku::unsafeProxy({
-            vk::DescriptorPoolSize { vk::DescriptorType::eSampledImage, image.mipLevels },
-            vk::DescriptorPoolSize { vk::DescriptorType::eStorageBuffer, 1 },
-        }),
-    } };
+    const vk::raii::DescriptorPool descriptorPool { gpu.device, getPoolSizes(colorCheckComputer.descriptorSetLayout).getDescriptorPoolCreateInfo() };
     const auto [descriptorSet] = vku::allocateDescriptorSets(*gpu.device, *descriptorPool, std::tie(colorCheckComputer.descriptorSetLayout));
     gpu.device.updateDescriptorSets({
         descriptorSet.getWrite<0>(vku::unsafeProxy(imageViews | std::views::transform([](const auto &imageView) {

@@ -66,22 +66,15 @@ struct Gpu : vku::Gpu<QueueFamilies, Queues> {
 };
 
 struct BufferFillComputer {
-    struct DescriptorSetLayout : vku::DescriptorSetLayout<vk::DescriptorType::eStorageBuffer> {
-        explicit DescriptorSetLayout(const vk::raii::Device &device [[clang::lifetimebound]])
-            : vku::DescriptorSetLayout<vk::DescriptorType::eStorageBuffer> {
-                device, vk::DescriptorSetLayoutCreateInfo {
-                    {},
-                    vku::unsafeProxy(vk::DescriptorSetLayoutBinding { 0, vk::DescriptorType::eStorageBuffer, 1, vk::ShaderStageFlagBits::eCompute }),
-                }
-            } { }
-    };
-
-    DescriptorSetLayout descriptorSetLayout;
+    vku::DescriptorSetLayout<vk::DescriptorType::eStorageBuffer> descriptorSetLayout;
     vk::raii::PipelineLayout pipelineLayout;
     vk::raii::Pipeline pipeline;
 
     explicit BufferFillComputer(const vk::raii::Device &device [[clang::lifetimebound]], std::uint32_t value)
-        : descriptorSetLayout { device }
+        : descriptorSetLayout { device, {
+            {},
+            vku::unsafeProxy(vk::DescriptorSetLayoutBinding { 0, vk::DescriptorType::eStorageBuffer, 1, vk::ShaderStageFlagBits::eCompute }),
+        } }
         , pipelineLayout { device, vk::PipelineLayoutCreateInfo {
             {},
             *descriptorSetLayout,
