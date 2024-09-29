@@ -1,5 +1,7 @@
 module;
 
+#include <macros.hpp>
+
 #include <cerrno>
 #ifndef VKU_USE_STD_MODULE
 #include <cstdint>

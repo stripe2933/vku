@@ -1,5 +1,7 @@
 module;
 
+#include <macros.hpp>
+
 #ifndef VKU_USE_STD_MODULE
 #include <tuple>
 #include <utility>

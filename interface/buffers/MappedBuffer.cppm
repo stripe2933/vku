@@ -1,5 +1,7 @@
 module;
 
+#include <macros.hpp>
+
 #include <cassert>
 #ifndef VKU_USE_STD_MODULE
 #include <cstdint>
