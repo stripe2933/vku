@@ -5,8 +5,8 @@
       "name": "default",
       "displayName": "Default",
       "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/${presetName}",
-      "installDir": "${sourceDir}/install/${presetName}"
+      "binaryDir": "${sourceDir}/build",
+      "installDir": "${sourceDir}/build/install"
     },
     {
       "name": "vcpkg",
