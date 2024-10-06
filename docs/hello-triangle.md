@@ -1018,7 +1018,7 @@ If you're not familiar about how to use the `VK_KHR_dynamic_rendering` extension
 We allocated the command buffer from graphics command pool, change the image layout for color attachment usage, and do triangle rendering with the dynamic rendering scope. As mentioned above, since dynamic rendering feature is not core until Vulkan 1.3, you have to pass the dispatcher object to the `beginRenderingKHR` and `endRenderingKHR` functions (which can be omitted if you're using Vulkan 1.3).
 
 > [!TIP]
-> You can set `VKU_DEFAULT_DYNAMIC_DISPATCHER` CMake variable at the configuration time, or add `dynamic-dispatcher` feature when use vcpkg to make Vulkan-Hpp uses dynamically loaded function pointers. For this feature, see [Using vku](using-vku.md) page and [Vulkan-Hpp documentation](https://github.com/KhronosGroup/Vulkan-Hpp/blob/main/README.md#extensions--per-device-function-pointers) for the details.
+> You can set `VKU_DEFAULT_DYNAMIC_DISPATCHER` CMake variable at the configuration time, or add `dynamic-dispatcher` feature when use vcpkg to make Vulkan-Hpp uses dynamically loaded function pointers. For this feature, see [Using vku](using-vku.md) page and [Vulkan-Hpp documentation](https://github.com/KhronosGroup/Vulkan-Hpp/blob/main/README.md#extensions--per-device-function-pointers) for the details. With dynamic dispatch loader, you can omit the last parameter `*device.getDispatcher()`.
 
 `vku::fullSubresourceRange(vk::ImageAspectFlags aspectFlags = vk::ImageApsectFlagBits::eColor)` is *vku*'s utility function that generates the whole subresource region (all mip levels and array layers) with the given aspect flags.
 

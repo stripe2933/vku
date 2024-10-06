@@ -252,7 +252,7 @@ All done! Now configuring your project with `--preset=vcpkg` would automatically
    
 2. Using `CPM.cmake`:
     ```cmake
-    CPMAddPackage("gh:stripe2933/vku@v0.1.0")
+    CPMAddPackage("gh:stripe2933/vku@0.1.0")
     ```
    
 After this, you can use `find_package(vku CONFIG REQUIRED)` in your project.
