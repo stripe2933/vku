@@ -29,7 +29,7 @@ import std;
 #endif
 export import vk_mem_alloc_hpp;
 export import vulkan_hpp;
-import :details;
+import :details.concepts;
 import :utils;
 
 // #define VMA_HPP_NAMESPACE to vma, if not defined.
@@ -42,7 +42,7 @@ import :utils;
 namespace vku {
     export template <typename QueueFamilies, std::constructible_from<VULKAN_HPP_NAMESPACE::Device, const QueueFamilies&> Queues> requires
         requires(VULKAN_HPP_NAMESPACE::PhysicalDevice physicalDevice, const QueueFamilies &queueFamilies) {
-            { Queues::getCreateInfos(physicalDevice, queueFamilies).get() } -> ranges::contiguous_range_of<VULKAN_HPP_NAMESPACE::DeviceQueueCreateInfo>;
+            VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const VULKAN_HPP_NAMESPACE::DeviceQueueCreateInfo>(Queues::getCreateInfos(physicalDevice, queueFamilies).get());
         }
     class Gpu {
         [[nodiscard]] static auto getQueueFamilies(VULKAN_HPP_NAMESPACE::PhysicalDevice physicalDevice) noexcept -> QueueFamilies {

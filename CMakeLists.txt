@@ -65,7 +65,6 @@ target_sources(vku PUBLIC
         interface/details/concepts.cppm
         interface/details/container/OnDemandCounterStorage.cppm
         interface/details/functional.cppm
-        interface/details/ranges.cppm
         interface/details/to_string.cppm
         interface/details/tuple.cppm
         interface/Gpu.cppm

@@ -29,22 +29,16 @@ struct QueueFamilies {
 struct Queues {
     Queues(vk::Device, const QueueFamilies&) { }
 
-    [[nodiscard]] static auto getCreateInfos(vk::PhysicalDevice, const QueueFamilies &queueFamilies) noexcept
-#ifdef _MSC_VER
-        -> vku::RefHolder<std::array<vk::DeviceQueueCreateInfo, 1>, std::array<float, 1>>
-#endif
-    {
-        return vku::RefHolder {
-            [&](std::span<const float> priorities) {
-                return std::array {
-                    vk::DeviceQueueCreateInfo {
-                        {},
-                        queueFamilies.compute,
-                        priorities,
-                    },
+    [[nodiscard]] static auto getCreateInfos(vk::PhysicalDevice, const QueueFamilies &queueFamilies) noexcept -> vku::RefHolder<vk::DeviceQueueCreateInfo> {
+        return {
+            [&]() {
+                static constexpr float priority = 1.f;
+                return vk::DeviceQueueCreateInfo {
+                    {},
+                    queueFamilies.compute,
+                    vk::ArrayProxyNoTemporaries<const float>(priority),
                 };
             },
-            std::array { 1.f },
         };
     }
 };

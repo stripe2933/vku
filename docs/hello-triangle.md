@@ -276,12 +276,10 @@ struct Queues {
     [[nodiscard]] static auto getCreateInfos(vk::PhysicalDevice, const QueueFamilies &queueFamilies) noexcept {
         return vku::RefHolder {
             [=](const float &priority) {
-                return std::array {
-                    vk::DeviceQueueCreateInfo {
-                        {},
-                        queueFamilies.graphics,
-                        vk::ArrayProxyNoTemporaries(priority),
-                    },
+                return vk::DeviceQueueCreateInfo {
+                    {},
+                    queueFamilies.graphics,
+                    vk::ArrayProxyNoTemporaries(priority),
                 };
             },
             1.f,
@@ -325,14 +323,11 @@ Here's the explanation of the code:
 3. After that, device is created with `Config`'s device extensions and queue create infos provided by `Queues::getCreateInfos`. This function **MUST** be implemented by the user, and meets the following requirements:
 
    - It's signature must be `getCreateInfos(vk::PhysicalDevice, const QueueFamilies&)` and be static.
-   - It must **return `vku::RefHolder` of contiguous `vk::DeviceQueueCreateInfo` container**. `vku::RefHolder<T, Args...>` is a utility class, a container that can be contextually converted to a reference of type `T`, which has references for objects of `Args...`. In this code, since the returning `std::array<vk::DeviceQueueCreateInfo, 1>` needs the reference of queue priority value, it is wrapped with `vku::RefHolder`.
+   - It must return `vku::RefHolder` of **either a single `vk::DeviceQueueCreateInfo` struct** or **contiguous `vk::DeviceQueueCreateInfo` container**. `vku::RefHolder<T, Args...>` is a utility class, a container that can be contextually converted to a reference of type `T`, which has references for objects of `Args...`. In this code, since the returning `vk::DeviceQueueCreateInfo` needs the reference of queue priority value, it is wrapped with `vku::RefHolder`.
 
 4. After the device creation, the queues are gotten by constructing `Queues` with the device and queue families. This is implemented by user side.
 
 5. Finally, it creates `vma::Allocator`, which will be used as resource allocator such like buffer and image.
-
-> [!TIP]
-> `Queues::getCreateInfos`'s returning container type doesn't have to be exactly `std::array`. `vku::Gpu` checks only if it's a contiguous range, therefore you can use `std::vector` or your own container type.
 
 If you pass `verbose` boolean field as `true` to the `Gpu` constructor, physical device selection process (including rejection reason and score of the accepted physical device) is printed to `std::cerr`.
 
@@ -1375,12 +1370,10 @@ struct Queues {
     [[nodiscard]] static auto getCreateInfos(vk::PhysicalDevice, const QueueFamilies &queueFamilies) noexcept {
         return vku::RefHolder {
             [=](const float &priority) {
-                return std::array {
-                    vk::DeviceQueueCreateInfo {
-                        {},
-                        queueFamilies.graphics,
-                        vk::ArrayProxyNoTemporaries(priority),
-                    },
+                return vk::DeviceQueueCreateInfo {
+                    {},
+                    queueFamilies.graphics,
+                    vk::ArrayProxyNoTemporaries(priority),
                 };
             },
             1.f,
