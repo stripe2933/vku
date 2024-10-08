@@ -1,3 +1,6 @@
+/** @file utils/mod.cppm
+ */
+
 module;
 
 #include <cassert>

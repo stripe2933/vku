@@ -1,3 +1,6 @@
+/** @file rendering/AttachmentGroup.cppm
+ */
+
 module;
 
 #include <cassert>

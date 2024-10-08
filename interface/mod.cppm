@@ -1,3 +1,6 @@
+/** @file mod.cppm
+ */
+
 module;
 
 #if !defined(VKU_USE_STD_MODULE) && defined(_MSC_VER)

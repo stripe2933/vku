@@ -1,3 +1,6 @@
+/** @file details/to_string.cppm
+ */
+
 module;
 
 #ifndef VKU_USE_STD_MODULE

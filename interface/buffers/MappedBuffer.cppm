@@ -1,3 +1,6 @@
+/** @file buffers/MappedBuffer.cppm
+ */
+
 module;
 
 #include <cassert>

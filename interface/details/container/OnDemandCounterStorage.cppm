@@ -1,3 +1,6 @@
+/** @file details/container/OnDemandCounterStorage.cppm
+ */
+
 module;
 
 #ifndef VKU_USE_STD_MODULE

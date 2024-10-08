@@ -1,3 +1,6 @@
+/** @file images/Image.cppm
+ */
+
 module;
 
 #include <cassert>

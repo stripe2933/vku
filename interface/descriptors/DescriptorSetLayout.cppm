@@ -1,3 +1,6 @@
+/** @file descriptors/DescriptorSetLayout.cppm
+ */
+
 module;
 
 #include <cassert>

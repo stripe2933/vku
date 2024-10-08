@@ -1,3 +1,6 @@
+/** @file rendering/MsaaAttachmentGroup.cppm
+ */
+
 module;
 
 #include <cassert>

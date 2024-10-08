@@ -1,3 +1,6 @@
+/** @file pipelines/Shader.cppm
+ */
+
 module;
 
 #include <cerrno>

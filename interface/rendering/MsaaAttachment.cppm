@@ -1,3 +1,6 @@
+/** @file rendering/MsaaAttachment.cppm
+ */
+
 module;
 
 #ifndef VKU_USE_STD_MODULE

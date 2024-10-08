@@ -1,3 +1,5 @@
+/** @file details/functional.cppm
+ */
 export module vku:details.functional;
 
 namespace details {
