@@ -21,7 +21,7 @@ export module vku:descriptors.PoolSizes;
 import std;
 #endif
 export import vulkan_hpp;
-import :details;
+import :details.concepts;
 import :utils.RefHolder;
 
 namespace vku {

@@ -41,7 +41,7 @@ template <> struct WriteDescriptorInfo<VULKAN_HPP_NAMESPACE::DescriptorType::eIn
 template <VULKAN_HPP_NAMESPACE::DescriptorType Type> using WriteDescriptorInfo_t = typename WriteDescriptorInfo<Type>::type;
 
 namespace vku {
-    export template <concepts::derived_from_value_specialization_of<DescriptorSetLayout> Layout>
+    export template <details::derived_from_value_specialization_of<DescriptorSetLayout> Layout>
     class DescriptorSet : public VULKAN_HPP_NAMESPACE::DescriptorSet {
     public:
         DescriptorSet() noexcept = default;
@@ -52,7 +52,7 @@ namespace vku {
 
         template <std::uint32_t Binding>
         [[nodiscard]] auto getWrite(const VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const WriteDescriptorInfo_t<get<Binding>(Layout::bindingTypes)>> &descriptorInfos) const noexcept -> VULKAN_HPP_NAMESPACE::WriteDescriptorSet {
-            constexpr auto attachInfo = multilambda {
+            constexpr auto attachInfo = details::multilambda {
                 [](VULKAN_HPP_NAMESPACE::WriteDescriptorSet writeDescriptorSet, const VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const VULKAN_HPP_NAMESPACE::DescriptorImageInfo> &descriptorInfos) {
 #ifdef VULKAN_HPP_NO_SETTERS
                     writeDescriptorSet.descriptorCount = static_cast<std::uint32_t>(descriptorInfos.size());
@@ -105,14 +105,14 @@ namespace vku {
             return getWrite<Binding>(descriptorInfo);
         }
 
-        template <concepts::derived_from_value_specialization_of<DescriptorSetLayout>... Layouts>
+        template <details::derived_from_value_specialization_of<DescriptorSetLayout>... Layouts>
         friend auto allocateDescriptorSets(VULKAN_HPP_NAMESPACE::Device, VULKAN_HPP_NAMESPACE::DescriptorPool, const std::tuple<Layouts...> &layouts) -> std::tuple<DescriptorSet<std::remove_cvref_t<Layouts>>...>;
 
     private:
         explicit DescriptorSet(VULKAN_HPP_NAMESPACE::DescriptorSet descriptorSet) noexcept : VULKAN_HPP_NAMESPACE::DescriptorSet { descriptorSet } {}
     };
 
-    export template <concepts::derived_from_value_specialization_of<DescriptorSetLayout>... Layouts>
+    export template <details::derived_from_value_specialization_of<DescriptorSetLayout>... Layouts>
     [[nodiscard]] auto allocateDescriptorSets(
         VULKAN_HPP_NAMESPACE::Device device,
         VULKAN_HPP_NAMESPACE::DescriptorPool pool,

@@ -1,6 +1,6 @@
 export module vku:details.functional;
 
-namespace vku::inline functional {
+namespace details {
     export template <typename ...Fs>
     struct multilambda : Fs... {
         using Fs::operator()...;

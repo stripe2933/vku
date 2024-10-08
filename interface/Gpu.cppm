@@ -206,7 +206,7 @@ namespace vku {
 
         template <typename... DevicePNexts>
         struct Config {
-            static constexpr bool hasPhysicalDeviceFeatures = !concepts::one_of<VULKAN_HPP_NAMESPACE::PhysicalDeviceFeatures2, DevicePNexts...>;
+            static constexpr bool hasPhysicalDeviceFeatures = !details::one_of<VULKAN_HPP_NAMESPACE::PhysicalDeviceFeatures2, DevicePNexts...>;
 
             bool verbose = false;
             std::vector<const char*> deviceExtensions = {};

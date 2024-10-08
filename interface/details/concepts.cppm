@@ -13,7 +13,7 @@ export module vku:details.concepts;
 import std;
 #endif
 
-namespace vku::concepts {
+namespace details {
     template <typename>
     struct is_tuple_like : std::false_type{};
     template <typename T, typename U>

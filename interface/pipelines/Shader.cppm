@@ -109,7 +109,7 @@ namespace vku {
             std::string_view glsl, 
             VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage, 
             const char *entryPoint = "main", 
-            const char *identifier = to_string(std::source_location::current()).c_str());
+            const char *identifier = details::to_string(std::source_location::current()).c_str());
         
         /**
          * Construct <tt>Shader</tt> from GLSL source code.
@@ -129,7 +129,7 @@ namespace vku {
             VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage, 
             const VULKAN_HPP_NAMESPACE::SpecializationInfo &specializationInfo [[clang::lifetimebound]], 
             const char *entryPoint = "main", 
-            const char *identifier = to_string(std::source_location::current()).c_str()
+            const char *identifier = details::to_string(std::source_location::current()).c_str()
         ) : Shader { compiler, glsl, stage, entryPoint, identifier } {
             this->specializationInfo.emplace(specializationInfo);
         }
@@ -193,7 +193,7 @@ vku::Shader::Shader(
         case VULKAN_HPP_NAMESPACE::ShaderStageFlagBits::eCompute:
             return shaderc_glsl_compute_shader;
         default:
-            throw std::runtime_error { std::format("Unsupported shader stage: {}", to_string(stage)) };
+            throw std::runtime_error { std::format("Unsupported shader stage: {}", details::to_string(stage)) };
     }
 }
 

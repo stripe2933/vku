@@ -16,7 +16,7 @@ import std;
 
 #define FWD(...) static_cast<decltype(__VA_ARGS__)&&>(__VA_ARGS__)
 
-namespace vku::inline details::container {
+namespace details {
     /**
      * An associative container that creates the objects on demand, when the number of times the key type is accessed is
      * greater than the number of objects stored. The constructed objects are inserted into the <tt>std::deque</tt>'s end,

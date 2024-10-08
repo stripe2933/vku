@@ -370,7 +370,7 @@ auto vku::MsaaAttachmentGroup::getRenderingInfo(
                 return std::pair { *pMsaaAttachment->view, *pMsaaAttachment->resolveView };
             }
 
-            return visit(multilambda {
+            return visit(details::multilambda {
                 [](const MsaaAttachment &msaaAttachment) {
                     return std::pair { *msaaAttachment.view, *msaaAttachment.resolveView };
                 },
@@ -463,7 +463,7 @@ auto vku::MsaaAttachmentGroup::getRenderingInfo(
                 return std::pair { *pMsaaAttachment->view, *pMsaaAttachment->resolveView };
             }
 
-            return visit(multilambda {
+            return visit(details::multilambda {
                 [](const MsaaAttachment &msaaAttachment) {
                     return std::pair { *msaaAttachment.view, *msaaAttachment.resolveView };
                 },

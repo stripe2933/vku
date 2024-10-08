@@ -305,7 +305,7 @@ auto vku::AttachmentGroup::getRenderingInfo(
                 return *pAttachment->view;
             }
 
-            return visit(multilambda {
+            return visit(details::multilambda {
                 [](const Attachment &attachment) {
                     return *attachment.view;
                 },
@@ -399,7 +399,7 @@ auto vku::AttachmentGroup::getRenderingInfo(
                 return *pAttachment->view;
             }
 
-            return visit(multilambda {
+            return visit(details::multilambda {
                 [](const Attachment &attachment) {
                     return *attachment.view;
                 },

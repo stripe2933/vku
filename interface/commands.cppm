@@ -154,8 +154,8 @@ namespace vku {
             }));
         }
 
-        container::OnDemandCounterStorage timelineSemaphores
-            = container::makeOnDemandCounterStorage<std::uint64_t>([&]() -> VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Semaphore {
+        details::OnDemandCounterStorage timelineSemaphores
+            = details::makeOnDemandCounterStorage<std::uint64_t>([&]() -> VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Semaphore {
                 return { device, VULKAN_HPP_NAMESPACE::StructureChain {
                     VULKAN_HPP_NAMESPACE::SemaphoreCreateInfo{},
                     VULKAN_HPP_NAMESPACE::SemaphoreTypeCreateInfo { VULKAN_HPP_NAMESPACE::SemaphoreType::eTimeline, 0 },
@@ -168,10 +168,10 @@ namespace vku {
         std::map<std::tuple<VULKAN_HPP_NAMESPACE::Queue, std::uint64_t, std::optional<std::uint64_t>>, std::pair<std::vector<VULKAN_HPP_NAMESPACE::CommandBuffer>, VULKAN_HPP_NAMESPACE::Semaphore>> submitInfos;
         std::unordered_multimap<std::uint64_t, VULKAN_HPP_NAMESPACE::Semaphore> waitSemaphoresPerSignalValues;
 
-        apply_with_index([&]<std::size_t Is>(std::integral_constant<std::size_t, Is>, auto &&executionInfos){
+        details::apply_with_index([&]<std::size_t Is>(std::integral_constant<std::size_t, Is>, auto &&executionInfos){
             static constexpr std::uint64_t waitSemaphoreValue = Is;
             static constexpr std::uint64_t signalSemaphoreValue = Is + 1;
-            apply_by_value([&](auto &&executionInfo) {
+            details::apply_by_value([&](auto &&executionInfo) {
                 // Get command buffer from FIFO queue and pop it.
                 auto &poolCommandBuffers = commandBuffersPerPool[executionInfo.commandPool];
                 VULKAN_HPP_NAMESPACE::CommandBuffer commandBuffer = poolCommandBuffers.back();

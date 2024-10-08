@@ -18,7 +18,7 @@ import std;
 #endif
 export import vulkan_hpp;
 export import :descriptors.PoolSizes;
-import :details;
+import :details.concepts;
 
 #define INDEX_SEQ(Is, N, ...) [&]<std::size_t ...Is>(std::index_sequence<Is...>) __VA_ARGS__ (std::make_index_sequence<N>{})
 
@@ -51,7 +51,7 @@ namespace vku {
         }
     };
 
-    export template <concepts::derived_from_value_specialization_of<DescriptorSetLayout>... Layouts>
+    export template <details::derived_from_value_specialization_of<DescriptorSetLayout>... Layouts>
     [[nodiscard]] auto getPoolSizes(const Layouts &...layouts) noexcept -> PoolSizes {
         return (layouts.getPoolSize() + ...);
     }

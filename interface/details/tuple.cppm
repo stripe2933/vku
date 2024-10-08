@@ -15,7 +15,7 @@ import std;
 #define INDEX_SEQ(Is, N, ...) [&]<std::size_t ...Is>(std::index_sequence<Is...>) __VA_ARGS__ (std::make_index_sequence<N>{})
 #define FWD(...) static_cast<decltype(__VA_ARGS__)&&>(__VA_ARGS__)
 
-namespace vku {
+namespace details {
     /**
      * Invoke the function with tuple elements.
      * @code{.cpp}
