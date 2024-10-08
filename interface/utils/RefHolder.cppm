@@ -28,8 +28,10 @@ namespace vku{
      * TODO: add more description and examples.
      */
     export template <typename T, typename... Ts>
-    struct RefHolder {
+    class RefHolder {
         std::tuple<Ts...> temporaryValues;
+
+    public:
         T value;
 
         template <std::invocable<Ts&...> F>
