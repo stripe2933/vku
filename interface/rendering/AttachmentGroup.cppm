@@ -12,6 +12,10 @@ module;
 #include <span>
 #include <variant>
 #include <vector>
+
+#ifdef _MSC_VER
+#include <forward_list>
+#endif
 #endif
 
 #include <vulkan/vulkan_hpp_macros.hpp>

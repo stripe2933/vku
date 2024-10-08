@@ -3,7 +3,7 @@ name: Deploy Doxygen Documentation to Pages
 on:
   push:
     branches:
-      - master
+      - module
 
 jobs:
   build:

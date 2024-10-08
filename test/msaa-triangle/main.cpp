@@ -5,6 +5,7 @@
 #include <tuple>
 #include <variant>
 #ifdef _MSC_VER
+#include <forward_list>
 #include <string_view>
 #endif
 #endif
