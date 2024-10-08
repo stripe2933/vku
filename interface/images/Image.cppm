@@ -9,6 +9,7 @@ module;
 #include <algorithm>
 #include <bit>
 #include <ranges>
+#include <utility>
 #endif
 
 #include <vulkan/vulkan_hpp_macros.hpp>

@@ -13,6 +13,7 @@ module;
 #include <tuple>
 #include <type_traits>
 #include <utility>
+#include <variant>
 #endif
 
 #include <span>
