@@ -15,25 +15,28 @@ export import vulkan_hpp;
 
 namespace vku {
     /**
-     * A thin wrapper around <tt>vk::Buffer</tt> with additional information such as buffer size in bytes. You can
-     * construct this struct from an existing <tt>vk::Buffer</tt>.
+     * @brief Non-owning <tt>vk::Buffer</tt> handle with the additional information.
      */
     export struct Buffer {
+        /**
+         * @brief Vulkan handle that represents the buffer.
+         */
         VULKAN_HPP_NAMESPACE::Buffer buffer;
+
+        /**
+         * @brief Buffer size in bytes.
+         */
         VULKAN_HPP_NAMESPACE::DeviceSize size;
 
         // --------------------
         // User-defined conversion functions.
         // --------------------
 
-        [[nodiscard]] operator VULKAN_HPP_NAMESPACE::Buffer() const noexcept; // can be implicitly converted to vk::Buffer.
+        /**
+         * Make this struct implicitly convertible to <tt>vk::Buffer</tt>.
+         */
+        [[nodiscard]] operator VULKAN_HPP_NAMESPACE::Buffer() const noexcept {
+            return buffer;
+        }
     };
-}
-
-// --------------------
-// Implementations.
-// --------------------
-
-vku::Buffer::operator VULKAN_HPP_NAMESPACE::Buffer() const noexcept {
-    return buffer;
 }

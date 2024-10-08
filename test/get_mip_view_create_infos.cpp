@@ -222,7 +222,7 @@ int main() {
                 level,
             });
 
-            const vk::Extent2D mipExtent = image.mipExtent(level);
+            const vk::Extent2D mipExtent = image.mipExtent2D(level);
             constexpr auto divCeil = [](std::uint32_t num, std::uint32_t denom) noexcept {
                 return num / denom + (num % denom != 0);
             };
