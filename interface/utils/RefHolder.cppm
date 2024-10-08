@@ -35,7 +35,7 @@ namespace vku{
         T value;
 
         template <std::invocable<Ts&...> F>
-        RefHolder(
+        explicit(sizeof...(Ts) == 0) RefHolder(
             F &&f,
             auto &&...temporaryValues
         ) : temporaryValues { FWD(temporaryValues)... },

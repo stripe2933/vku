@@ -56,7 +56,7 @@ struct Queues {
         , transfer { device.getQueue(queueFamilies.transfer, 0) } { }
 
     [[nodiscard]] static auto getCreateInfos(vk::PhysicalDevice, const QueueFamilies &queueFamilies) noexcept -> vku::RefHolder<std::vector<vk::DeviceQueueCreateInfo>> {
-        return {
+        return vku::RefHolder {
             [&]() {
                 std::vector uniqueIndices { queueFamilies.compute, queueFamilies.graphics, queueFamilies.transfer };
                 const auto [begin, end] = std::ranges::unique(uniqueIndices);

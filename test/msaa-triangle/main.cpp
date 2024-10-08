@@ -40,7 +40,7 @@ struct Queues {
         : graphics { device.getQueue(queueFamilies.graphics, 0) } { }
 
     [[nodiscard]] static auto getCreateInfos(vk::PhysicalDevice, const QueueFamilies &queueFamilies) noexcept -> vku::RefHolder<vk::DeviceQueueCreateInfo> {
-        return {
+        return vku::RefHolder {
             [&]() {
                 static constexpr float priority = 1.f;
                 return vk::DeviceQueueCreateInfo {
