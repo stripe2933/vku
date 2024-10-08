@@ -43,6 +43,11 @@ import :utils;
 #define CHECK_FEATURE(feature) if (pPhysicalDeviceFeatures->feature && !availableFeatures.feature) { unavailableFeatures.push_back(#feature); }
 
 namespace vku {
+    /**
+     * @brief Bootstrapper for Vulkan RAII physical device, device, allocator creation.
+     * @tparam QueueFamilies A struct type that would contain the queue family indices of the selected physical device.
+     * @tparam Queues A struct type that would contain the queue handles of the created device. It must implement the static function named `getCreateInfos` that is returning RefHolder of either a single <tt>vk::DeviceQueueCreateInfo</tt> or contiguous range of <tt>vk::DeviceQueueCreateInfo</tt>s.
+     */
     export template <typename QueueFamilies, std::constructible_from<VULKAN_HPP_NAMESPACE::Device, const QueueFamilies&> Queues> requires
         requires(VULKAN_HPP_NAMESPACE::PhysicalDevice physicalDevice, const QueueFamilies &queueFamilies) {
             VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const VULKAN_HPP_NAMESPACE::DeviceQueueCreateInfo>(Queues::getCreateInfos(physicalDevice, queueFamilies).get());
@@ -209,7 +214,7 @@ namespace vku {
 
         template <typename... DevicePNexts>
         struct Config {
-            static constexpr bool hasPhysicalDeviceFeatures = !details::one_of<VULKAN_HPP_NAMESPACE::PhysicalDeviceFeatures2, DevicePNexts...>;
+            static constexpr bool hasPhysicalDeviceFeatures = !concepts::one_of<VULKAN_HPP_NAMESPACE::PhysicalDeviceFeatures2, DevicePNexts...>;
 
             bool verbose = false;
             std::vector<const char*> deviceExtensions = {};
@@ -223,12 +228,36 @@ namespace vku {
             std::uint32_t apiVersion = VULKAN_HPP_NAMESPACE::makeApiVersion(0, 1, 0, 0);
         };
 
+        /**
+         * @brief Vulkan RAII physical device.
+         */
         VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PhysicalDevice physicalDevice;
+
+        /**
+         * @brief Physical device queue families.
+         */
         QueueFamilies queueFamilies;
+
+        /**
+         * @brief Vulkan RAII device.
+         */
         VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device device;
-        Queues queues { *device, queueFamilies };
+
+        /**
+         * @brief Device queues.
+         */
+        Queues queues;
+
+        /**
+         * @brief VMA allocator.
+         */
         VMA_HPP_NAMESPACE::Allocator allocator;
 
+        /**
+         * @brief Create Vulkan physical device, device, allocator and retrieve queues from the device at once.
+         * @param instance Vulkan RAII instance that the physical device will be created from.
+         * @param config Configuration parameter struct.
+         */
         template <typename... DevicePNexts>
         explicit Gpu(
             const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance &instance [[clang::lifetimebound]],
@@ -236,6 +265,7 @@ namespace vku {
         ) : physicalDevice { selectPhysicalDevice(instance, config) },
             queueFamilies { config.queueFamilyGetter(physicalDevice) },
             device { createDevice(config) },
+            queues { *device, queueFamilies },
             allocator { createAllocator(instance, config) } { }
 
         ~Gpu() {

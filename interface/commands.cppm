@@ -60,7 +60,7 @@ struct std::hash<VULKAN_HPP_NAMESPACE::Semaphore> {
 
 namespace vku {
     /**
-     * Allocate command buffers from \p commandPool without heap allocation.
+     * @brief Allocate compile-time amount of command buffers from \p commandPool.
      * @tparam N Number of command buffers to allocate.
      * @param device Vulkan device. Must be same device from \p commandPool.
      * @param commandPool Command pool to allocate command buffers.
@@ -69,14 +69,14 @@ namespace vku {
      * @throw vk::Result if failed to allocate command buffers.
      */
     export template <std::size_t N>
-    [[nodiscard]] auto allocateCommandBuffers(
+    [[nodiscard]] std::array<VULKAN_HPP_NAMESPACE::CommandBuffer, N> allocateCommandBuffers(
         VULKAN_HPP_NAMESPACE::Device device,
         VULKAN_HPP_NAMESPACE::CommandPool commandPool,
         VULKAN_HPP_NAMESPACE::CommandBufferLevel level = {}
-    ) -> std::array<VULKAN_HPP_NAMESPACE::CommandBuffer, N> {
+    ) {
         std::array<VULKAN_HPP_NAMESPACE::CommandBuffer, N> commandBuffers;
         const VULKAN_HPP_NAMESPACE::Result result = device.allocateCommandBuffers(
-            vku::unsafeAddress(VULKAN_HPP_NAMESPACE::CommandBufferAllocateInfo { commandPool, level, N }),
+            unsafeAddress(VULKAN_HPP_NAMESPACE::CommandBufferAllocateInfo { commandPool, level, N }),
             commandBuffers.data());
 
         if (result != VULKAN_HPP_NAMESPACE::Result::eSuccess) {
@@ -93,16 +93,29 @@ namespace vku {
         std::optional<std::uint64_t> signalValue { 0ULL };
     };
 
+    /**
+     * @brief Allocate a command buffer from \p commandPool, record commands, and submit it to \p queue.
+     *
+     * The allocated command buffer will automatically begin before and ended after the command buffer recording.
+     * If \p fence is null handle, no explicit synchronization is performed and caller has the responsibility to synchronize the command buffer execution ends (such like <tt>queue.waitIdle()</tt>).
+     * Otherwise, the function will wait until the command buffer execution ends.
+     *
+     * @tparam F Function that accepts the command buffer and records commands to it.
+     * @param device Vulkan device. Must be same device from \p commandPool.
+     * @param commandPool Command pool to allocate a single command buffer.
+     * @param queue Queue to submit the allocated command buffer.
+     * @param f Function that accepts the command buffer and records commands to it.
+     * @param fence Fence to signal when the command buffer is completed, if presented.
+     */
     export template <std::invocable<VULKAN_HPP_NAMESPACE::CommandBuffer> F>
-    auto executeSingleCommand(
+        requires std::is_void_v<std::invoke_result_t<F, VULKAN_HPP_NAMESPACE::CommandBuffer>>
+    void executeSingleCommand(
         VULKAN_HPP_NAMESPACE::Device device,
         VULKAN_HPP_NAMESPACE::CommandPool commandPool,
         VULKAN_HPP_NAMESPACE::Queue queue,
         F &&f,
         VULKAN_HPP_NAMESPACE::Fence fence = {}
-    ) -> void
-        requires std::is_void_v<std::invoke_result_t<F, VULKAN_HPP_NAMESPACE::CommandBuffer>>
-    {
+    ) {
         const VULKAN_HPP_NAMESPACE::CommandBuffer commandBuffer = allocateCommandBuffers<1>(device, commandPool)[0];
         commandBuffer.begin({ VULKAN_HPP_NAMESPACE::CommandBufferUsageFlagBits::eOneTimeSubmit });
         std::invoke(FWD(f), commandBuffer);
@@ -114,14 +127,17 @@ namespace vku {
         }, fence);
     }
 
+    /**
+     * @copydoc vku::executeSingleCommand<F>(vk::Device, vk::CommandPool, vk::Queue, F&&, vk::Fence)
+     */
     export template <std::invocable<VULKAN_HPP_NAMESPACE::CommandBuffer> F>
-    [[nodiscard]] auto executeSingleCommand(
+    [[nodiscard]] std::invoke_result_t<F, VULKAN_HPP_NAMESPACE::CommandBuffer> executeSingleCommand(
         VULKAN_HPP_NAMESPACE::Device device,
         VULKAN_HPP_NAMESPACE::CommandPool commandPool,
         VULKAN_HPP_NAMESPACE::Queue queue,
         F &&f,
         VULKAN_HPP_NAMESPACE::Fence fence = {}
-    ) -> std::invoke_result_t<F, VULKAN_HPP_NAMESPACE::CommandBuffer> {
+    ) {
         const VULKAN_HPP_NAMESPACE::CommandBuffer commandBuffer = allocateCommandBuffers<1>(device, commandPool)[0];
         commandBuffer.begin({ VULKAN_HPP_NAMESPACE::CommandBufferUsageFlagBits::eOneTimeSubmit });
         auto result = std::invoke(FWD(f), commandBuffer);

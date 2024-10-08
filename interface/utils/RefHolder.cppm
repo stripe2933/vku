@@ -20,15 +20,12 @@ import std;
 
 namespace vku{
     /**
-     * <tt>RefHolder<T, Ts...></tt> is a container that can be contextually converted to a reference of type <tt>T</tt>,
-     * which has references for the types <tt>Ts...</tt>.
+     * @brief A container type that can be contextually converted to a reference of type <tt>T</tt>, which has references for instances of the types <tt>Ts...</tt>.
+     *
+     * This class is intended to be used in a situation for returning the value that has references to the various types, but they don't have to be emphasized (function users don't have to know about them, they only care about the value).
+     *
      * @tparam T A type that represents the value of <tt>RefHolder</tt>.
      * @tparam Ts Types that are used as references for the value of <tt>RefHolder</tt>.
-     * @note This class is intended to be used in a situation for returning the value that has references to the various
-     * types, but they doesn't have to be emphasized (function users don't have to know about them, they only care about
-     * the value).
-     *
-     * TODO: add more description and examples.
      */
     export template <typename T, typename... Ts>
     class RefHolder {
@@ -44,11 +41,27 @@ namespace vku{
         ) : temporaryValues { FWD(temporaryValues)... },
             value { std::apply(FWD(f), this->temporaryValues) } { }
 
+        /**
+         * Make this struct implicitly convertible to <tt>T&</tt>.
+         */
         [[nodiscard]] constexpr operator T&() noexcept { return value; }
+
+        /**
+         * Make this struct implicitly convertible to <tt>const T&</tt>.
+         */
         [[nodiscard]] constexpr operator const T&() const noexcept { return value; }
 
-        [[nodiscard]] constexpr auto get() noexcept -> T& { return value; }
-        [[nodiscard]] constexpr auto get() const noexcept -> const T& { return value; }
+        /**
+         * @brief Get the reference of the value.
+         * @return Reference of the value.
+         */
+        [[nodiscard]] constexpr T& get() noexcept { return value; }
+
+        /**
+         * @brief Get the const reference of the value.
+         * @return Const reference of the value.
+         */
+        [[nodiscard]] constexpr const T& get() const noexcept { return value; }
     };
 
     // --------------------

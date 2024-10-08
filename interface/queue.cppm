@@ -25,14 +25,14 @@ export import vulkan_hpp;
 
 namespace vku {
     /**
-     * Get compute capable queue family index.
+     * @brief Retrieve the index of compute capable queue family from \p queueFamilyProperties.
      * @param queueFamilyProperties Queue family properties. Could be enumerated by <tt>vk::PhysicalDevice::getQueueFamilyProperties</tt>.
      * @return The index of the compute capable queue family, or <tt>std::nullopt</tt> if not found.
      */
     export
-    [[nodiscard]] auto getComputeQueueFamily(
+    [[nodiscard]] std::optional<std::uint32_t> getComputeQueueFamily(
         std::span<const VULKAN_HPP_NAMESPACE::QueueFamilyProperties> queueFamilyProperties
-    ) noexcept -> std::optional<std::uint32_t> {
+    ) noexcept {
         for (std::uint32_t i = 0; const VULKAN_HPP_NAMESPACE::QueueFamilyProperties &properties : queueFamilyProperties) {
             if (properties.queueFlags & VULKAN_HPP_NAMESPACE::QueueFlagBits::eCompute) {
                 return i;
@@ -43,14 +43,17 @@ namespace vku {
     }
 
     /**
-     * Get compute specialized (queue flag without graphics) queue family index.
+     * @brief Retrieve the index of compute specialized queue family from \p queueFamilyProperties.
+     *
+     * <i>Compute specialized</i> means the queue family that supports compute operations but not graphics operations.
+     *
      * @param queueFamilyProperties Queue family properties. Could be enumerated by <tt>vk::PhysicalDevice::getQueueFamilyProperties</tt>.
      * @return The index of the compute specialized queue family, or <tt>std::nullopt</tt> if not found.
      */
     export
-    [[nodiscard]] auto getComputeSpecializedQueueFamily(
+    [[nodiscard]] std::optional<std::uint32_t> getComputeSpecializedQueueFamily(
         std::span<const VULKAN_HPP_NAMESPACE::QueueFamilyProperties> queueFamilyProperties
-    ) noexcept -> std::optional<std::uint32_t> {
+    ) noexcept {
         for (std::uint32_t i = 0; const VULKAN_HPP_NAMESPACE::QueueFamilyProperties &properties : queueFamilyProperties) {
             if (properties.queueFlags & VULKAN_HPP_NAMESPACE::QueueFlagBits::eCompute && !(properties.queueFlags & VULKAN_HPP_NAMESPACE::QueueFlagBits::eGraphics)) {
                 return i;
@@ -61,14 +64,14 @@ namespace vku {
     }
 
     /**
-     * Get graphics capable queue family index.
+     * @brief Retrieve the index of graphics capable queue family from \p queueFamilyProperties.
      * @param queueFamilyProperties Queue family properties. Could be enumerated by <tt>vk::PhysicalDevice::getQueueFamilyProperties</tt>.
      * @return The index of the graphics capable queue family, or <tt>std::nullopt</tt> if not found.
      */
     export
-    [[nodiscard]] auto getGraphicsQueueFamily(
+    [[nodiscard]] std::optional<std::uint32_t> getGraphicsQueueFamily(
         std::span<const VULKAN_HPP_NAMESPACE::QueueFamilyProperties> queueFamilyProperties
-    ) noexcept -> std::optional<std::uint32_t> {
+    ) noexcept {
         for (std::uint32_t i = 0; const VULKAN_HPP_NAMESPACE::QueueFamilyProperties &properties : queueFamilyProperties) {
             if (properties.queueFlags & VULKAN_HPP_NAMESPACE::QueueFlagBits::eGraphics) {
                 return i;
@@ -79,14 +82,17 @@ namespace vku {
     }
 
     /**
-     * Get transfer specialized (queue flag without both compute and graphics) queue family index.
+     * @brief Retrieve the index of transfer specialized queue family from \p queueFamilyProperties.
+     *
+     * <i>Transfer specialized</i> means the queue family that supports transfer operations but not compute or graphics operations.
+     *
      * @param queueFamilyProperties Queue family properties. Could be enumerated by <tt>vk::PhysicalDevice::getQueueFamilyProperties</tt>.
      * @return The index of the transfer specialized queue family, or <tt>std::nullopt</tt> if not found.
      */
     export
-    [[nodiscard]] auto getTransferSpecializedQueueFamily(
+    [[nodiscard]] std::optional<std::uint32_t> getTransferSpecializedQueueFamily(
         std::span<const VULKAN_HPP_NAMESPACE::QueueFamilyProperties> queueFamilyProperties
-    ) noexcept -> std::optional<std::uint32_t> {
+    ) noexcept {
         for (std::uint32_t i = 0; const VULKAN_HPP_NAMESPACE::QueueFamilyProperties &properties : queueFamilyProperties) {
             if (properties.queueFlags & VULKAN_HPP_NAMESPACE::QueueFlagBits::eTransfer && !(properties.queueFlags & (VULKAN_HPP_NAMESPACE::QueueFlagBits::eCompute | VULKAN_HPP_NAMESPACE::QueueFlagBits::eGraphics))) {
                 return i;
@@ -97,18 +103,18 @@ namespace vku {
     }
 
     /**
-     * Get present capable queue family index.
+     * @brief Retrieve the index of present capable queue family from \p queueFamilyProperties.
      * @param physicalDevice Vulkan physical device to get queue families from.
      * @param surface Surface to test for presentation support.
      * @param queueFamilyCount Number of queue families, which is identical to <tt>physicalDevice.getQueueFamilyProperties().size()</tt>.
      * @return The index of the present capable queue family, or <tt>std::nullopt</tt> if not found.
      */
     export
-    [[nodiscard]] auto getPresentQueueFamily(
+    [[nodiscard]] std::optional<std::uint32_t> getPresentQueueFamily(
         VULKAN_HPP_NAMESPACE::PhysicalDevice physicalDevice,
         VULKAN_HPP_NAMESPACE::SurfaceKHR surface,
         std::uint32_t queueFamilyCount
-    ) -> std::optional<std::uint32_t> {
+    ) {
         for (std::uint32_t i = 0; i < queueFamilyCount; ++i) {
             if (physicalDevice.getSurfaceSupportKHR(i, surface)) {
                 return i;
@@ -118,7 +124,7 @@ namespace vku {
     }
 
     /**
-     * Get both graphics and present capable queue family index.
+     * @brief Retrieve the index of both graphics and present capable queue family from \p queueFamilyProperties.
      * @param physicalDevice Vulkan physical device to get queue families from.
      * @param surface Surface to test for presentation support.
      * @param queueFamilyProperties Queue family properties, which is identical to <tt>physicalDevice.getQueueFamilyProperties()</tt>.
@@ -127,11 +133,11 @@ namespace vku {
      * family ownership transfer between graphics and present queues.
      */
     export
-    [[nodiscard]] auto getGraphicsPresentQueueFamily(
+    [[nodiscard]] std::optional<std::uint32_t> getGraphicsPresentQueueFamily(
         VULKAN_HPP_NAMESPACE::PhysicalDevice physicalDevice,
         VULKAN_HPP_NAMESPACE::SurfaceKHR surface,
         std::span<const VULKAN_HPP_NAMESPACE::QueueFamilyProperties> queueFamilyProperties
-    ) -> std::optional<std::uint32_t> {
+    ) {
         for (std::uint32_t i = 0; const VULKAN_HPP_NAMESPACE::QueueFamilyProperties &properties : queueFamilyProperties) {
             if (properties.queueFlags & VULKAN_HPP_NAMESPACE::QueueFlagBits::eGraphics && physicalDevice.getSurfaceSupportKHR(i, surface)) {
                 return i;
@@ -142,7 +148,7 @@ namespace vku {
     }
 
     /**
-     * Get both compute and present capable queue family index.
+     * @brief Retrieve the index of both compute and present capable queue family from \p queueFamilyProperties.
      * @param physicalDevice Vulkan physical device to get queue families from.
      * @param surface Surface to test for presentation support.
      * @param queueFamilyProperties Queue family properties, which is identical to <tt>physicalDevice.getQueueFamilyProperties()</tt>.
@@ -151,11 +157,11 @@ namespace vku {
      * ownership transfer between compute and present queues.
      */
     export
-    [[nodiscard]] auto getComputePresentQueueFamily(
+    [[nodiscard]] std::optional<std::uint32_t> getComputePresentQueueFamily(
         VULKAN_HPP_NAMESPACE::PhysicalDevice physicalDevice,
         VULKAN_HPP_NAMESPACE::SurfaceKHR surface,
         std::span<const VULKAN_HPP_NAMESPACE::QueueFamilyProperties> queueFamilyProperties
-    ) -> std::optional<std::uint32_t> {
+    ) {
         for (std::uint32_t i = 0; const VULKAN_HPP_NAMESPACE::QueueFamilyProperties &properties : queueFamilyProperties) {
             if (properties.queueFlags & VULKAN_HPP_NAMESPACE::QueueFlagBits::eCompute && physicalDevice.getSurfaceSupportKHR(i, surface)) {
                 return i;

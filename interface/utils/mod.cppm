@@ -37,8 +37,8 @@ export import vulkan_hpp;
 
 namespace vku {
     /**
-     * Take a temporary value and return its address. The result address is only valid until the end of the expression,
-     * which contains the temporary value.
+     * @brief Take a temporary value and return its address.
+     *
      * In Vulkan-Hpp API, you can use this function to pass temporary values to functions that require a pointer.
      * For example, the following code creating a Vulkan instance with an application info
      * @code{.cpp}
@@ -58,17 +58,19 @@ namespace vku {
      *     vku::unsafeAddress(vk::ApplicationInfo { ... }),
      * } }; // vk::ApplicationInfo destroyed here, however vk::raii::Instance already created and it's fine.
      * @endcode
+     *
      * @param value Temporary value.
      * @return Address of the temporary value.
+     * @warning The result address is only valid until the end of the expression, which contains the temporary value.
      */
     export template <typename T>
-    [[nodiscard]] auto unsafeAddress(const T &value [[clang::lifetimebound]]) noexcept -> const T* {
+    [[nodiscard]] const T* unsafeAddress(const T &value [[clang::lifetimebound]]) noexcept {
         return &value;
     }
 
     /**
-     * Take a temporary value and return <tt>vk::ArrayProxyNoTemporaries</tt> of it. The result is only valid until the
-     * end of the expression, which contains the temporary value.
+     * @brief Take a temporary value and return <tt>vk::ArrayProxyNoTemporaries</tt> of it.
+     *
      * @code{.cpp}
      * vk::raii::Device device { physicalDevice, vk::DeviceCreateInfo {
      *     {},
@@ -77,30 +79,32 @@ namespace vku {
      *     ...
      * };
      * @endcode
+     *
      * @param value Temporary value.
      * @return <tt>vk::ArrayProxyNoTemporaries</tt> of the temporary value.
      * @note The intention of this function follows the same reason as <tt>unsafeAddress</tt> function.
+     * @warning The result is only valid until the end of the expression, which contains the temporary value.
      */
     export template <typename T>
-    [[nodiscard]] auto unsafeProxy(const T &value [[clang::lifetimebound]]) noexcept -> VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const T> {
+    [[nodiscard]] VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const T> unsafeProxy(const T &value [[clang::lifetimebound]]) noexcept {
         return value;
     }
 
     /**
-     * Take a temporary contiguous range and return <tt>vk::ArrayProxyNoTemporaries</tt> of it. The result is only valid
-     * until the end of the expression, which contains the temporary range.
+     * @brief Take a temporary contiguous range and return <tt>vk::ArrayProxyNoTemporaries</tt> of it.
      * @param range Temporary contiguous range.
      * @return <tt>vk::ArrayProxyNoTemporaries</tt> of the temporary range.
      * @note The intention of this function follows the same reason as <tt>unsafeAddress</tt> function.
+     * @warning The result is only valid until the end of the expression, which contains the temporary range.
      */
     export template <std::ranges::contiguous_range R>
-    [[nodiscard]] auto unsafeProxy(const R &range [[clang::lifetimebound]]) noexcept -> VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const std::ranges::range_value_t<R>> {
+    [[nodiscard]] VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const std::ranges::range_value_t<R>> unsafeProxy(const R &range [[clang::lifetimebound]]) noexcept {
         return range;
     }
 
     /**
-     * Take a temporary initializer list and return <tt>vk::ArrayProxyNoTemporaries</tt> of it. The result is only valid
-     * until the end of the expression, which contains the temporary initializer list.
+     * @brief Take a temporary initializer list and return <tt>vk::ArrayProxyNoTemporaries</tt> of it.
+     *
      * @code{.cpp}
      * vk::raii::DescriptorSetLayout device { device, vk::DescriptorSetLayoutCreateInfo {
      *     {},
@@ -112,93 +116,103 @@ namespace vku {
      *     }), // OK. Just make ensure that vk::DescriptorSetLayoutBindings alive until the end of the descriptor set layout creation.
      * };
      * @endcode
+     *
      * @param list Temporary initializer list.
      * @return <tt>vk::ArrayProxyNoTemporaries</tt> of the temporary initializer list.
      * @note The intention of this function follows the same reason as <tt>unsafeAddress</tt> function.
+     * @warning The result is only valid until the end of the expression, which contains the temporary initializer list.
      */
     export template <typename T>
-    [[nodiscard]] auto unsafeProxy(const std::initializer_list<T> &list [[clang::lifetimebound]]) noexcept -> VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const T> {
+    [[nodiscard]] VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const T> unsafeProxy(const std::initializer_list<T> &list [[clang::lifetimebound]]) noexcept {
         return list;
     }
 
     /**
-     * Check whether \p flag is contained in \p flags.
+     * @brief Check whether \p flag is contained in \p flags.
      * @param flags Vulkan flags.
      * @param flag Vulkan flag bit.
      * @return <tt>true</tt> If flag is contained in flags, <tt>false</tt> otherwise.
      * @see contains(vk::Flags<T>, vk::Flags<T>) -> bool
      */
     export template <typename T>
-    [[nodiscard]] constexpr auto contains(VULKAN_HPP_NAMESPACE::Flags<T> flags, T flag) noexcept -> bool {
+    [[nodiscard]] constexpr bool contains(VULKAN_HPP_NAMESPACE::Flags<T> flags, T flag) noexcept {
         return (flags & flag) == flag;
     }
 
     /**
-     * Check whether \p sub is contained in \p super.
+     * @brief Check whether \p sub is contained in \p super.
      * @param super Vulkan flags.
      * @param sub Vulkan flags.
      * @return <tt>true</tt> If sub is contained in super, <tt>false</tt> otherwise.
      * @see contains(vk::Flags<T>, T) -> bool
      */
     export template <typename T>
-    [[nodiscard]] constexpr auto contains(VULKAN_HPP_NAMESPACE::Flags<T> super, VULKAN_HPP_NAMESPACE::Flags<T> sub) noexcept -> bool {
+    [[nodiscard]] constexpr bool contains(VULKAN_HPP_NAMESPACE::Flags<T> super, VULKAN_HPP_NAMESPACE::Flags<T> sub) noexcept {
         return (super & sub) == sub;
     }
 
     /**
-     * Convert <tt>vk::Extent3D</tt> to <tt>vk::Extent2D</tt>. The depth component is discarded.
+     * @brief Convert <tt>vk::Extent3D</tt> to <tt>vk::Extent2D</tt>.
+     *
+     * The depth component is discarded.
+     *
      * @param extent Extent to convert.
      * @return Converted extent.
      */
     export
-    [[nodiscard]] constexpr auto toExtent2D(const VULKAN_HPP_NAMESPACE::Extent3D &extent) noexcept -> VULKAN_HPP_NAMESPACE::Extent2D {
+    [[nodiscard]] constexpr VULKAN_HPP_NAMESPACE::Extent2D toExtent2D(const VULKAN_HPP_NAMESPACE::Extent3D &extent) noexcept {
         return { extent.width, extent.height };
     }
 
     /**
-     * Convert <tt>vk::Offset2D</tt> to <tt>vk::Extent2D</tt>. Negative component is converted to the least unsigned
-     * integer congruent to the source integer.
+     * @brief Convert <tt>vk::Offset2D</tt> to <tt>vk::Extent2D</tt>.
+     *
+     * Negative component is converted to the least unsigned integer congruent to the source integer.
+     *
      * @param offset Offset to convert.
      * @return Converted extent.
      * @note Negative component will be cast to unsigned int, with C++ standard conversion rule.
      */
     export
-    [[nodiscard]] constexpr auto toExtent2D(const VULKAN_HPP_NAMESPACE::Offset2D &offset) noexcept -> VULKAN_HPP_NAMESPACE::Extent2D {
+    [[nodiscard]] constexpr VULKAN_HPP_NAMESPACE::Extent2D toExtent2D(const VULKAN_HPP_NAMESPACE::Offset2D &offset) noexcept {
         return { static_cast<std::uint32_t>(offset.x), static_cast<std::uint32_t>(offset.y) };
     }
 
     /**
-     * Convert <tt>vk::Offset3D</tt> to <tt>vk::Offset2D</tt>. The z component is discarded.
+     * @brief Convert <tt>vk::Offset3D</tt> to <tt>vk::Offset2D</tt>.
+     *
+     * The z component is discarded.
+     *
      * @param offset Offset to convert.
      * @return Converted offset.
      */
     export
-    [[nodiscard]] constexpr auto toOffset2D(const VULKAN_HPP_NAMESPACE::Offset3D &offset) noexcept -> VULKAN_HPP_NAMESPACE::Offset2D {
+    [[nodiscard]] constexpr VULKAN_HPP_NAMESPACE::Offset2D toOffset2D(const VULKAN_HPP_NAMESPACE::Offset3D &offset) noexcept {
         return { offset.x, offset.y };
     }
 
     /**
-     * Convert <tt>vk::Extent2D</tt> to <tt>vk::Offset2D</tt>.
-     * @param extent Extent to convert.
+     * @brief Convert <tt>vk::Extent2D</tt> to <tt>vk::Offset2D</tt>.
+     * @param extent Extent to convert. Its width and height must be less than or equal to <tt>2^31 - 1</tt>.
      * @return Converted offset.
-     * @note It internally asserts if width or height is overflowing (> 2^31 - 1).
-     * @note Signed integer overflow is UB in C++. Make sure that the width and height are less than 2^31 - 1.
      */
     export
-    [[nodiscard]] constexpr auto toOffset2D(const VULKAN_HPP_NAMESPACE::Extent2D &extent) NOEXCEPT_IF_RELEASE -> VULKAN_HPP_NAMESPACE::Offset2D {
+    [[nodiscard]] constexpr VULKAN_HPP_NAMESPACE::Offset2D toOffset2D(const VULKAN_HPP_NAMESPACE::Extent2D &extent) NOEXCEPT_IF_RELEASE {
         assert(std::in_range<std::int32_t>(extent.width) && "Overflowing width.");
         assert(std::in_range<std::int32_t>(extent.height) && "Overflowing height.");
         return { static_cast<std::int32_t>(extent.width), static_cast<std::int32_t>(extent.height) };
     }
 
     /**
-     * Convert <tt>vk::Extent2D</tt> to <tt>vk::Viewport</tt>, with depth=0..1 and additional negative height flag.
+     * @brief Convert <tt>vk::Extent2D</tt> to <tt>vk::Viewport</tt>, with depth=0..1.
+     *
      * For example, setting viewport and scissor as full region of the swapchain for pipeline dynamic state would be:
      * @code{.cpp}
      * vk::Extent2D swapchainExtent = ...;
      * cb.setViewport(0, vku::toViewport(swapchainExtent, true)); // Use negative viewport height.
      * cb.setScissor(0, vk::Rect2D { { 0, 0 }, swapchainExtent });
      * @endcode
+     *
      * @param extent Extent to convert.
      * @param negativeHeight Whether the height is negative. Default is <tt>false</tt>.
      * @return Converted viewport.
@@ -206,7 +220,7 @@ namespace vku {
      * for detail.
      */
     export
-    [[nodiscard]] constexpr auto toViewport(const VULKAN_HPP_NAMESPACE::Extent2D &extent, bool negativeHeight = false) noexcept -> VULKAN_HPP_NAMESPACE::Viewport {
+    [[nodiscard]] constexpr VULKAN_HPP_NAMESPACE::Viewport toViewport(const VULKAN_HPP_NAMESPACE::Extent2D &extent, bool negativeHeight = false) noexcept {
         if (negativeHeight) {
             return { 0.f, static_cast<float>(extent.height), static_cast<float>(extent.width), -static_cast<float>(extent.height), 0.f, 1.f };
         }
@@ -216,51 +230,52 @@ namespace vku {
     }
 
     /**
-     * Cast the Vulkan object handle into its corresponding C handle.
+     * @brief Cast the Vulkan object handle into its corresponding C handle.
+     *
      * @code{.cpp}
      * vku::AllocatedImage image { device, vk::ImageCreateInfo { ... } };
      * toCType<vk::Image>(image); // VkImage struct. Image is first implicitly converted to vk::Image, and passed as the parameter.
      * vk::raii::ImageView imageView { device, image.getViewCreateInfo { ... } };
      * toCType(*imageView); // VkImageView struct. Handle type is automatically inferred.
      * @endcode
+     *
      * @tparam T Type of Vulkan handle.
      * @param handle Vulkan object handle.
      * @return The corresponding inner C handle of \p handle.
-     * @note RAII object must be explicitly converted to non-RAII handle before it passed as \p handle.
      */
     export template <typename T>
-    [[nodiscard]] auto toCType(T handle) noexcept -> typename T::CType {
+    [[nodiscard]] typename T::CType toCType(T handle) noexcept {
         return static_cast<typename T::CType>(handle);
     }
 
     /**
-     * Get the 64-bit GPU address of the Vulkan object.
+     * @brief Get the 64-bit GPU address of the Vulkan object.
+     *
      * @code{.cpp}
      * vku::AllocatedImage image { device, vk::ImageCreateInfo { ... } };
      * toUint64<vk::Image>(image); // Image is first implicitly converted to vk::Image, and passed as the parameter.
      * vk::raii::ImageView imageView { device, image.getViewCreateInfo { ... } };
      * toUint64(*imageView); // Handle type is automatically inferred.
      * @endcode
+     *
      * @tparam T Type of Vulkan handle.
      * @param handle Vulkan object handle.
      * @return The 64-bit GPU address.
-     * @note RAII object must be explicitly converted to non-RAII handle before it passed as \p handle.
      */
     export template <typename T>
-    [[nodiscard]] auto toUint64(T handle) noexcept -> std::uint64_t {
+    [[nodiscard]] std::uint64_t toUint64(T handle) noexcept {
         return reinterpret_cast<std::uint64_t>(toCType(handle));
     }
 
     /**
-     * Get aspect ratio (width / height) of the extent.
+     * @brief Get aspect ratio (width / height) of the 2-dimensional extent.
      * @tparam T Floating point type to calculate the aspect ratio. Default is <tt>float</tt>.
-     * @param extent Extent to calculate the aspect ratio.
+     * @param extent Extent to calculate the aspect ratio. Its height must not be zero.
      * @return Aspect ratio of the extent.
-     * @note Assertion error if height is zero (zero division).
      */
     export template <std::floating_point T = float>
-    [[nodiscard]] constexpr auto aspect(const VULKAN_HPP_NAMESPACE::Extent2D &extent) NOEXCEPT_IF_RELEASE -> T {
-        assert(extent.height != 0 && "Height must not be zero.");
+    [[nodiscard]] constexpr T aspect(const VULKAN_HPP_NAMESPACE::Extent2D &extent) NOEXCEPT_IF_RELEASE {
+        assert(extent.height != 0 && "Height must be nonzero.");
         return static_cast<T>(extent.width) / static_cast<T>(extent.height);
     }
 }
