@@ -108,6 +108,7 @@ int main() {
 #endif
 
     const vk::raii::Context context;
+
     const vk::raii::Instance instance { context, vk::InstanceCreateInfo {
 #if __APPLE__
         vk::InstanceCreateFlagBits::eEnumeratePortabilityKHR,
@@ -126,6 +127,10 @@ int main() {
         }),
 #endif
     } };
+#if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(*instance);
+#endif
+
     const Gpu gpu { instance };
 
     constexpr std::array colors {
