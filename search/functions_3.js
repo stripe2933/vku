@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['executesinglecommand_0',['executeSingleCommand',['../commands_8cppm.html#ae75b7b5db4d438cb98e803f0a1217462',1,'vku::executeSingleCommand(vk::Device device, vk::CommandPool commandPool, vk::Queue queue, F &amp;&amp;f, vk::Fence fence={})'],['../commands_8cppm.html#a585c7d56511e50bb0736ce25cecfdfd1',1,'vku::executeSingleCommand(vk::Device device, vk::CommandPool commandPool, vk::Queue queue, F &amp;&amp;f, vk::Fence fence={})']]]
+  ['inferaspectflags_0',['inferAspectFlags',['../structvku_1_1Image.html#a23cb66ce094de41f38d0566cbd15e671',1,'vku::Image']]]
 ];

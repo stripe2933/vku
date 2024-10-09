@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['vku_0',['vku',['../index.html',1,'']]]
+  ['using_20vku_0',['Using vku',['../md_docs_2using-vku.html',1,'']]]
 ];
