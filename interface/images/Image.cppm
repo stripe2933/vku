@@ -123,7 +123,7 @@ namespace vku {
          */
         [[nodiscard]] CLANG_INLINE auto getMipViewCreateInfos(VULKAN_HPP_NAMESPACE::ImageViewType type = VULKAN_HPP_NAMESPACE::ImageViewType::e2D) const NOEXCEPT_IF_RELEASE {
             return std::views::iota(0U, mipLevels)
-                | std::views::transform([&, aspectFlags = inferAspectFlags(format)](std::uint32_t level) {
+                | std::views::transform([this, type, aspectFlags = inferAspectFlags(format)](std::uint32_t level) {
                     return VULKAN_HPP_NAMESPACE::ImageViewCreateInfo {
                         {},
                         image,
