@@ -95,12 +95,12 @@ int main(){
             vk::makeApiVersion(0, 1, 0, 0),
         }),
         {},
-#if __APPLE__
         vku::unsafeProxy({
             vk::KHRGetPhysicalDeviceProperties2ExtensionName,
+#if __APPLE__
             vk::KHRPortabilityEnumerationExtensionName,
-        }),
 #endif
+        }),
     } };
 #if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
     VULKAN_HPP_DEFAULT_DISPATCHER.init(*instance);

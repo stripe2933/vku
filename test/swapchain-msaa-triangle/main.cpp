@@ -103,12 +103,12 @@ int main(){
         }),
         {},
         vku::unsafeProxy({
-#if __APPLE__
             vk::KHRGetPhysicalDeviceProperties2ExtensionName,
-            vk::KHRPortabilityEnumerationExtensionName,
-#endif
             vk::KHRSurfaceExtensionName,
             vk::EXTHeadlessSurfaceExtensionName,
+#if __APPLE__
+            vk::KHRPortabilityEnumerationExtensionName,
+#endif
         }),
     } };
 #if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
