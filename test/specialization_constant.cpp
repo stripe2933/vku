@@ -2,7 +2,6 @@
 #ifndef VKU_USE_STD_MODULE
 #include <cstdint>
 #include <array>
-#include <span>
 #include <tuple>
 #ifdef _MSC_VER
 #include <format>

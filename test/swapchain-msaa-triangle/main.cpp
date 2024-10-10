@@ -4,7 +4,6 @@
 #include <array>
 #include <format>
 #include <ranges>
-#include <span>
 #include <stdexcept>
 #include <tuple>
 #include <variant>

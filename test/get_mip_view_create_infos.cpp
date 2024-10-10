@@ -5,7 +5,6 @@
 #include <array>
 #include <functional>
 #include <ranges>
-#include <span>
 #include <tuple>
 #include <vector>
 #ifdef _MSC_VER
