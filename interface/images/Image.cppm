@@ -242,7 +242,7 @@ namespace vku {
             std::uint32_t mipLevel
         ) NOEXCEPT_IF_RELEASE {
             assert(mipLevel < maxMipLevels(extent) && "mipLevel must be less than maxMipLevels(extent)");
-            return { extent.width >> mipLevel, extent.height >> mipLevel };
+            return { std::max(extent.width >> mipLevel, 1U), std::max(extent.height >> mipLevel, 1U) };
         }
 
         /**
@@ -261,7 +261,7 @@ namespace vku {
             std::uint32_t mipLevel
         ) NOEXCEPT_IF_RELEASE {
             assert(mipLevel < maxMipLevels(extent) && "mipLevel must be less than maxMipLevels(extent)");
-            return { extent.width >> mipLevel, extent.height >> mipLevel, extent.depth >> mipLevel };
+            return { std::max(extent.width >> mipLevel, 1U), std::max(extent.height >> mipLevel, 1U), std::max(extent.depth >> mipLevel, 1U) };
         }
     };
 
