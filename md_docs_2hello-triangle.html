@@ -759,8 +759,8 @@ I think it is worth to show what if we don't use <code>vku::unsafeProxy</code> a
 <div class="line">        vku::getDefaultGraphicsPipelineCreateInfo(</div>
 <div class="line">            vku::createPipelineStages(</div>
 <div class="line">                gpu.device,</div>
-<div class="line">                <a class="code hl_struct" href="structvku_1_1Shader.html">vku::Shader</a> { COMPILED_SHADER_DIR <span class="stringliteral">&quot;/triangle.vert.spv&quot;</span> <span class="comment">/* path */</span>, vk::ShaderStageFlagBits::eVertex },</div>
-<div class="line">                <a class="code hl_struct" href="structvku_1_1Shader.html">vku::Shader</a> { COMPILED_SHADER_DIR <span class="stringliteral">&quot;/triangle.frag.spv&quot;</span> <span class="comment">/* path */</span>, vk::ShaderStageFlagBits::eFragment }).get(),</div>
+<div class="line">                <a class="code hl_function" href="structvku_1_1Shader.html#a5089098c11057b7ba4b6e9f0ecdb03bc">vku::Shader::fromSpirvFile</a>(COMPILED_SHADER_DIR <span class="stringliteral">&quot;/triangle.vert.spv&quot;</span> <span class="comment">/* path */</span>, vk::ShaderStageFlagBits::eVertex),</div>
+<div class="line">                <a class="code hl_function" href="structvku_1_1Shader.html#a5089098c11057b7ba4b6e9f0ecdb03bc">vku::Shader::fromSpirvFile</a>(COMPILED_SHADER_DIR <span class="stringliteral">&quot;/triangle.frag.spv&quot;</span> <span class="comment">/* path */</span>, vk::ShaderStageFlagBits::eFragment)).get(),</div>
 <div class="line">            *pipelineLayout, 1 <span class="comment">/* colorAttachmentCount */</span>) <span class="comment">// stages</span></div>
 <div class="line">            .setPRasterizationState(vku::unsafeAddress(vk::PipelineRasterizationStateCreateInfo {</div>
 <div class="line">                {},</div>
@@ -782,7 +782,7 @@ I think it is worth to show what if we don't use <code>vku::unsafeProxy</code> a
 <div class="line">        },</div>
 <div class="line">    }.get() };</div>
 <div class="line">}</div>
-<div class="ttc" id="astructvku_1_1Shader_html"><div class="ttname"><a href="structvku_1_1Shader.html">vku::Shader</a></div><div class="ttdef"><b>Definition</b> Shader.cppm:39</div></div>
+<div class="ttc" id="astructvku_1_1Shader_html_a5089098c11057b7ba4b6e9f0ecdb03bc"><div class="ttname"><a href="structvku_1_1Shader.html#a5089098c11057b7ba4b6e9f0ecdb03bc">vku::Shader::fromSpirvFile</a></div><div class="ttdeci">static RefHolder&lt; Shader, std::vector&lt; std::byte &gt; &gt; fromSpirvFile(const std::filesystem::path &amp;path, vk::ShaderStageFlagBits stage, const vk::SpecializationInfo *pSpecializationInfo=nullptr, const char *entryPoint=&quot;main&quot;)</div><div class="ttdoc">Create Shader from compiled SPIR-V file.</div><div class="ttdef"><b>Definition</b> Shader.cppm:123</div></div>
 </div><!-- fragment --><p>What happened? Let's see the explanation:</p>
 <ol type="1">
 <li><p class="startli"><code>vku::getDefaultGraphicsPipelineCreateInfo</code> is the function that returns a "standard" <code>vk::GraphicsPipelineCreateInfo</code>. The term "standard" means the most commonly used settings, which are:</p><ul>
@@ -811,17 +811,17 @@ I think it is worth to show what if we don't use <code>vku::unsafeProxy</code> a
 </ul>
 <p class="startli">Most of your use case would not heavily vary from this standard pipeline setting, but some of them would. For such cases, you can modify the returned <code>vk::GraphicsPipelineCreateInfo</code> manually by using the Vulkan-Hpp's setter methods with builder pattern. In above code, we modified the rasterization/viewport/dynamic state by using <code>setPRasterizationState</code>, <code>setPViewportState</code>, and <code>setPDynamicState</code> methods.</p>
 </li>
-<li><p class="startli"><code>vku::createPipelineStages</code> is the function that creates the <code>RefHolder</code> of <code>vk::PipelineShaderStageCreateInfo</code> array from the shader path/code/raw GLSL string. It accepts the device and an arbitrary number of <code><a class="el" href="structvku_1_1Shader.html">vku::Shader</a></code>s that have the shader code and stage flag. The function signature is </p><div class="fragment"><div class="line">++</div>
+<li><p class="startli"><code>vku::createPipelineStages</code> is the function that creates the <code>RefHolder</code> of <code>vk::PipelineShaderStageCreateInfo</code> array from the shader path/code/raw GLSL string. It accepts the device and an arbitrary number of <code><a class="el" href="structvku_1_1Shader.html" title="A lightweight representation of SPIR-V shader code and additional information (stage,...">vku::Shader</a></code>s that have the shader code and stage flag. The function signature is </p><div class="fragment"><div class="line">++</div>
 <div class="line">  createPipelineStages(</div>
 <div class="line">     <span class="keyword">const</span> vk::raii::Device &amp;device, </div>
 <div class="line">     <span class="keyword">const</span> Shaders &amp;...shaders</div>
 <div class="line">  ) -&gt; RefHolder&lt;std::array&lt;vk::PipelineShaderStageCreateInfo, <span class="keyword">sizeof</span>...(Shaders)&gt;, std::array&lt;vk::raii::ShaderModule, <span class="keyword">sizeof</span>...(Shaders)&gt;&gt;</div>
 </div><!-- fragment --><p> Each parameter represents:</p><ul>
 <li><code>device</code>: The Vulkan device which creates the shader modules.</li>
-<li><code>shaders</code>: The <code><a class="el" href="structvku_1_1Shader.html">vku::Shader</a></code> objects that represent the shader codes and their infos, such like shader stage (<code>vk::ShaderStageFlagBits</code>) and entry point (<code>"main"</code> by default). You can construct the struct by either the shader path (<code>std::filesystem::path</code>), existing SPIR-V binary (<code>std::vector&lt;std::uint32_t&gt;</code>), or raw GLSL string (<code>shaderc::Compiler</code> and <code>std::string_view</code>).</li>
+<li><code>shaders</code>: The <code><a class="el" href="structvku_1_1Shader.html" title="A lightweight representation of SPIR-V shader code and additional information (stage,...">vku::Shader</a></code> objects that represent the shader codes and their infos, such like shader stage (<code>vk::ShaderStageFlagBits</code>), specialization constants (<code>nullptr</code> by default) and entry point (<code>"main"</code> by default). You can construct the struct by existing SPIR-V binary (any contiguous range of <code>std::uint32_t</code>s that can be convertible to <code>std::span&lt;const std::uint32_t&gt;</code>), or you may use a convenient functions like <code><a class="el" href="structvku_1_1Shader.html#a5089098c11057b7ba4b6e9f0ecdb03bc" title="Create Shader from compiled SPIR-V file.">vku::Shader::fromSpirvFile</a></code> (load SPIR-V compiled binary from the file directly) or</li>
 </ul>
 <p class="startli">And since the result is <code><a class="el" href="classvku_1_1RefHolder.html" title="A container type that can be contextually converted to a reference of type T, which has references fo...">vku::RefHolder</a></code> of the <code>vk::PipelineShaderStageCreateInfo</code> array, you can finally get the lvalue reference of inner stage create infos by calling the <code>get()</code> method.</p>
-<p class="startli">Thanks to the shaderc, you may just embed the raw GLSL string into the C++ code, and compile it at runtime. Here's the example:</p>
+<p class="startli">Thanks to the shaderc, you may just load the raw GLSL string and compile it to the SPIR-V code at runtime. Here's the example:</p>
 <p class="startli"><code>vcpkg.json</code> </p><div class="fragment"><div class="line">{</div>
 <div class="line">   &quot;dependencies&quot;: [</div>
 <div class="line">      {</div>
@@ -835,23 +835,17 @@ I think it is worth to show what if we don't use <code>vku::unsafeProxy</code> a
 </div><!-- fragment --><p class="startli"><code>main.cpp</code> </p><div class="fragment"><div class="line">++</div>
 <div class="line"><span class="preprocessor">  #include &lt;shaderc/shaderc.hpp&gt;</span></div>
 <div class="line">  </div>
-<div class="line">  <span class="keyword">constexpr</span> std::string_view vertexShaderCode = R<span class="stringliteral">&quot;glsl(</span></div>
-<div class="line"><span class="stringliteral">      // Your shader code</span></div>
-<div class="line"><span class="stringliteral">  )glsl&quot;;</span></div>
-<div class="line"><span class="stringliteral">  </span><span class="keyword">constexpr</span> std::string_view fragmentShaderCode = R<span class="stringliteral">&quot;glsl(</span></div>
-<div class="line"><span class="stringliteral">      // Your shader code</span></div>
-<div class="line"><span class="stringliteral">  )glsl&quot;;</span></div>
-<div class="line"><span class="stringliteral">  </span></div>
-<div class="line"><span class="stringliteral">  </span><span class="keyword">const</span> shaderc::Compiler compiler;</div>
+<div class="line">  <span class="keyword">const</span> shaderc::Compiler compiler;</div>
 <div class="line">  </div>
 <div class="line">  vku::getGraphicsPipelineCreateInfo(</div>
 <div class="line">      vku::createPipelineStages(</div>
 <div class="line">          gpu.device,</div>
-<div class="line">          <a class="code hl_struct" href="structvku_1_1Shader.html">vku::Shader</a> { compiler, vertexShaderCode, vk::ShaderStageFlagBits::eVertex },</div>
-<div class="line">          <a class="code hl_struct" href="structvku_1_1Shader.html">vku::Shader</a> { compiler, fragmentShaderCode, vk::ShaderStageFlagBits::eFragment }</div>
+<div class="line">          <a class="code hl_function" href="structvku_1_1Shader.html#ab6eee8151a23d0b1c65af87145bf76ec">vku::Shader::fromGLSLFile</a>(compiler, COMPILED_SHADER_DIR <span class="stringliteral">&quot;/triangle.vert&quot;</span> <span class="comment">/* path */</span>, {} <span class="comment">/* compile option */</span>, vk::ShaderStageFlagBits::eVertex),</div>
+<div class="line">          <a class="code hl_function" href="structvku_1_1Shader.html#ab6eee8151a23d0b1c65af87145bf76ec">vku::Shader::fromGLSLFile</a>(compiler, COMPILED_SHADER_DIR <span class="stringliteral">&quot;/triangle.frag&quot;</span> <span class="comment">/* path */</span>, {} <span class="comment">/* compile option */</span>, vk::ShaderStageFlagBits::eFragment)</div>
 <div class="line">      ).get(),</div>
 <div class="line">      *pipelineLayout, 1)</div>
 <div class="line">     ... <span class="comment">// Other pipeline settings</span></div>
+<div class="ttc" id="astructvku_1_1Shader_html_ab6eee8151a23d0b1c65af87145bf76ec"><div class="ttname"><a href="structvku_1_1Shader.html#ab6eee8151a23d0b1c65af87145bf76ec">vku::Shader::fromGLSLFile</a></div><div class="ttdeci">static RefHolder&lt; Shader, std::vector&lt; std::uint32_t &gt; &gt; fromGLSLFile(shaderc::Compiler compiler, const std::filesystem::path &amp;glslPath, vk::ShaderStageFlagBits stage, const shaderc::CompileOptions &amp;compileOptions, const vk::SpecializationInfo *pSpecializationInfo=nullptr)</div><div class="ttdoc">Create Shader from GLSL file.</div><div class="ttdef"><b>Definition</b> Shader.cppm:198</div></div>
 </div><!-- fragment --></li>
 <li>Some <em>vku</em>'s utility functions are used:<ul>
 <li><code>vku::toExtent2D(const vk::Extent3D &amp;extent)</code>: drop the <code>depth</code> field of the <code>extent</code> and return it. Useful when you're working with 2D image (whose <code>depth</code> is <code>1</code>).</li>
@@ -865,7 +859,7 @@ I think it is worth to show what if we don't use <code>vku::unsafeProxy</code> a
 <li><em>vku</em> stores these standard graphics pipeline properties into the static storage, therefore you don't have to worry about the returned <code>vk::GraphicsPipelineCreateInfo</code>'s lifetime validity. Due to this approach, the maximum number of color attachments is limited to <code>8</code>. I don't think this is a big issue, but you can modify the <code>MAX_COLOR_ATTACHMENT_COUNT</code> if you want to increase the limit.</li>
 </ol>
 </dd></dl>
-<dl class="section note"><dt>Note</dt><dd><code><a class="el" href="structvku_1_1Shader.html">vku::Shader</a></code> neither represents the <code>vk::ShaderModule</code>, nor constructs the shader module. It only holds the SPIR-V shader code and its info. The shader module is created by calling <code>vku::createPipelineStages</code> function.</dd>
+<dl class="section note"><dt>Note</dt><dd><code><a class="el" href="structvku_1_1Shader.html" title="A lightweight representation of SPIR-V shader code and additional information (stage,...">vku::Shader</a></code> neither represents the <code>vk::ShaderModule</code>, nor constructs the shader module. It only holds the SPIR-V shader code and its info. The shader module is created by calling <code>vku::createPipelineStages</code> function.</dd>
 <dd>
 Runtime GLSL compilation feature is not enabled by default. You have to manually set the CMake variable <code>VKU_USE_SHADERC</code> to <code>ON</code>, or specify the port feature <code>shaderc</code> if you're using vcpkg.</dd></dl>
 <h2><a class="anchor" id="autotoc_md21"></a>
@@ -1336,8 +1330,8 @@ Here's the full code of the tutorial.</summary>
 <div class="line">        vku::getDefaultGraphicsPipelineCreateInfo(</div>
 <div class="line">            vku::createPipelineStages(</div>
 <div class="line">                gpu.device,</div>
-<div class="line">                <a class="code hl_struct" href="structvku_1_1Shader.html">vku::Shader</a> { COMPILED_SHADER_DIR <span class="stringliteral">&quot;/triangle.vert.spv&quot;</span>, vk::ShaderStageFlagBits::eVertex },</div>
-<div class="line">                <a class="code hl_struct" href="structvku_1_1Shader.html">vku::Shader</a> { COMPILED_SHADER_DIR <span class="stringliteral">&quot;/triangle.frag.spv&quot;</span>, vk::ShaderStageFlagBits::eFragment }).get(),</div>
+<div class="line">                <a class="code hl_function" href="structvku_1_1Shader.html#a5089098c11057b7ba4b6e9f0ecdb03bc">vku::Shader::fromSpirvFile</a>(COMPILED_SHADER_DIR <span class="stringliteral">&quot;/triangle.vert.spv&quot;</span>, vk::ShaderStageFlagBits::eVertex),</div>
+<div class="line">                <a class="code hl_function" href="structvku_1_1Shader.html#a5089098c11057b7ba4b6e9f0ecdb03bc">vku::Shader::fromSpirvFile</a>(COMPILED_SHADER_DIR <span class="stringliteral">&quot;/triangle.frag.spv&quot;</span>, vk::ShaderStageFlagBits::eFragment)).get(),</div>
 <div class="line">            *pipelineLayout, 1)</div>
 <div class="line">            .setPRasterizationState(vku::unsafeAddress(vk::PipelineRasterizationStateCreateInfo {</div>
 <div class="line">                {},</div>

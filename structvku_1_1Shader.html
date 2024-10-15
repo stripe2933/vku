@@ -90,42 +90,49 @@ $(function(){ initResizable(false); });
 <div id="doc-content">
 <div class="header">
   <div class="summary">
-<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="structvku_1_1Shader-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">vku::Shader Struct Reference<span class="mlabels"><span class="mlabel">export</span></span><div class="ingroups">module <a class="el" href="module__vku.html">vku</a></div></div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>A lightweight representation of SPIR-V shader code and additional information (stage, specialization info, and entry point).  
+ <a href="#details">More...</a></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
-Public Member Functions</h2></td></tr>
-<tr class="memitem:a8298c26d414a90e3d8b89e5dc375b028" id="r_a8298c26d414a90e3d8b89e5dc375b028"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8298c26d414a90e3d8b89e5dc375b028">Shader</a> (std::vector&lt; std::uint32_t &gt; code, vk::ShaderStageFlagBits stage, const char *entryPoint=&quot;main&quot;)</td></tr>
-<tr class="separator:a8298c26d414a90e3d8b89e5dc375b028"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ce4b7fb04cabe1459914839802c84cd" id="r_a8ce4b7fb04cabe1459914839802c84cd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8ce4b7fb04cabe1459914839802c84cd">Shader</a> (std::vector&lt; std::uint32_t &gt; code, vk::ShaderStageFlagBits stage, const vk::SpecializationInfo &amp;specializationInfo, const char *entryPoint=&quot;main&quot;)</td></tr>
-<tr class="separator:a8ce4b7fb04cabe1459914839802c84cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad1b2a0eb20125719224acc3e9d939514" id="r_ad1b2a0eb20125719224acc3e9d939514"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad1b2a0eb20125719224acc3e9d939514">Shader</a> (const std::filesystem::path &amp;path, vk::ShaderStageFlagBits stage, const char *entryPoint=&quot;main&quot;)</td></tr>
-<tr class="separator:ad1b2a0eb20125719224acc3e9d939514"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56e72a00ab94d208399629341e0c5085" id="r_a56e72a00ab94d208399629341e0c5085"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a56e72a00ab94d208399629341e0c5085">Shader</a> (const std::filesystem::path &amp;path, vk::ShaderStageFlagBits stage, const vk::SpecializationInfo &amp;specializationInfo, const char *entryPoint=&quot;main&quot;)</td></tr>
-<tr class="separator:a56e72a00ab94d208399629341e0c5085"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a5089098c11057b7ba4b6e9f0ecdb03bc" id="r_a5089098c11057b7ba4b6e9f0ecdb03bc"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classvku_1_1RefHolder.html">RefHolder</a>&lt; <a class="el" href="structvku_1_1Shader.html">Shader</a>, std::vector&lt; std::byte &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5089098c11057b7ba4b6e9f0ecdb03bc">fromSpirvFile</a> (const std::filesystem::path &amp;path, vk::ShaderStageFlagBits stage, const vk::SpecializationInfo *<a class="el" href="#a0b4032f7664dd76f886a5698ea3f29a4">pSpecializationInfo</a>=nullptr, const char *entryPoint=&quot;main&quot;)</td></tr>
+<tr class="memdesc:a5089098c11057b7ba4b6e9f0ecdb03bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create <a class="el" href="structvku_1_1Shader.html" title="A lightweight representation of SPIR-V shader code and additional information (stage,...">Shader</a> from compiled SPIR-V file.  <br /></td></tr>
+<tr class="separator:a5089098c11057b7ba4b6e9f0ecdb03bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31f68403a9cbae18e468c83f1a081c98" id="r_a31f68403a9cbae18e468c83f1a081c98"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classvku_1_1RefHolder.html">RefHolder</a>&lt; <a class="el" href="structvku_1_1Shader.html">Shader</a>, std::vector&lt; std::uint32_t &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a31f68403a9cbae18e468c83f1a081c98">fromGLSLString</a> (shaderc::Compiler compiler, std::string_view glsl, vk::ShaderStageFlagBits stage, const shaderc::CompileOptions &amp;compileOptions, const vk::SpecializationInfo *<a class="el" href="#a0b4032f7664dd76f886a5698ea3f29a4">pSpecializationInfo</a>=nullptr, const char *identifier=details::to_string(std::source_location::current()).c_str())</td></tr>
+<tr class="memdesc:a31f68403a9cbae18e468c83f1a081c98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create <a class="el" href="structvku_1_1Shader.html" title="A lightweight representation of SPIR-V shader code and additional information (stage,...">Shader</a> from GLSL string.  <br /></td></tr>
+<tr class="separator:a31f68403a9cbae18e468c83f1a081c98"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6eee8151a23d0b1c65af87145bf76ec" id="r_ab6eee8151a23d0b1c65af87145bf76ec"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classvku_1_1RefHolder.html">RefHolder</a>&lt; <a class="el" href="structvku_1_1Shader.html">Shader</a>, std::vector&lt; std::uint32_t &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab6eee8151a23d0b1c65af87145bf76ec">fromGLSLFile</a> (shaderc::Compiler compiler, const std::filesystem::path &amp;glslPath, vk::ShaderStageFlagBits stage, const shaderc::CompileOptions &amp;compileOptions, const vk::SpecializationInfo *<a class="el" href="#a0b4032f7664dd76f886a5698ea3f29a4">pSpecializationInfo</a>=nullptr)</td></tr>
+<tr class="memdesc:ab6eee8151a23d0b1c65af87145bf76ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create <a class="el" href="structvku_1_1Shader.html" title="A lightweight representation of SPIR-V shader code and additional information (stage,...">Shader</a> from GLSL file.  <br /></td></tr>
+<tr class="separator:ab6eee8151a23d0b1c65af87145bf76ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a695fed921d5976393348d074a3eef090" id="r_a695fed921d5976393348d074a3eef090"><td class="memItemLeft" align="right" valign="top"><a id="a695fed921d5976393348d074a3eef090" name="a695fed921d5976393348d074a3eef090"></a>
-std::vector&lt; std::uint32_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>code</b></td></tr>
-<tr class="separator:a695fed921d5976393348d074a3eef090"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac28de1579bef1eb2c5442f7c8f6cfedd" id="r_ac28de1579bef1eb2c5442f7c8f6cfedd"><td class="memItemLeft" align="right" valign="top"><a id="ac28de1579bef1eb2c5442f7c8f6cfedd" name="ac28de1579bef1eb2c5442f7c8f6cfedd"></a>
+std::span&lt; const std::uint32_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>code</b></td></tr>
+<tr class="memdesc:ac28de1579bef1eb2c5442f7c8f6cfedd"><td class="mdescLeft">&#160;</td><td class="mdescRight">SPIR-V code. <br /></td></tr>
+<tr class="separator:ac28de1579bef1eb2c5442f7c8f6cfedd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a702ebccd60274d9dc1dfdecc24ce0286" id="r_a702ebccd60274d9dc1dfdecc24ce0286"><td class="memItemLeft" align="right" valign="top"><a id="a702ebccd60274d9dc1dfdecc24ce0286" name="a702ebccd60274d9dc1dfdecc24ce0286"></a>
 vk::ShaderStageFlagBits&#160;</td><td class="memItemRight" valign="bottom"><b>stage</b></td></tr>
 <tr class="separator:a702ebccd60274d9dc1dfdecc24ce0286"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b4032f7664dd76f886a5698ea3f29a4" id="r_a0b4032f7664dd76f886a5698ea3f29a4"><td class="memItemLeft" align="right" valign="top">const vk::SpecializationInfo *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0b4032f7664dd76f886a5698ea3f29a4">pSpecializationInfo</a></td></tr>
+<tr class="memdesc:a0b4032f7664dd76f886a5698ea3f29a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">The pointer to the specialization info to be used.  <br /></td></tr>
+<tr class="separator:a0b4032f7664dd76f886a5698ea3f29a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c8a884754eeef69d085cbfcdc0b7c01" id="r_a3c8a884754eeef69d085cbfcdc0b7c01"><td class="memItemLeft" align="right" valign="top"><a id="a3c8a884754eeef69d085cbfcdc0b7c01" name="a3c8a884754eeef69d085cbfcdc0b7c01"></a>
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>entryPoint</b></td></tr>
+const char *&#160;</td><td class="memItemRight" valign="bottom"><b>entryPoint</b> = &quot;main&quot;</td></tr>
 <tr class="separator:a3c8a884754eeef69d085cbfcdc0b7c01"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a44a46a996b138669d062309fd6418e19" id="r_a44a46a996b138669d062309fd6418e19"><td class="memItemLeft" align="right" valign="top"><a id="a44a46a996b138669d062309fd6418e19" name="a44a46a996b138669d062309fd6418e19"></a>
-std::optional&lt; vk::SpecializationInfo &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>specializationInfo</b></td></tr>
-<tr class="separator:a44a46a996b138669d062309fd6418e19"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a8298c26d414a90e3d8b89e5dc375b028" name="a8298c26d414a90e3d8b89e5dc375b028"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8298c26d414a90e3d8b89e5dc375b028">&#9670;&#160;</a></span>Shader() <span class="overload">[1/4]</span></h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>A lightweight representation of SPIR-V shader code and additional information (stage, specialization info, and entry point). </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="ab6eee8151a23d0b1c65af87145bf76ec" name="ab6eee8151a23d0b1c65af87145bf76ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6eee8151a23d0b1c65af87145bf76ec">&#9670;&#160;</a></span>fromGLSLFile()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -134,9 +141,14 @@ std::optional&lt; vk::SpecializationInfo &gt;&#160;</td><td class="memItemRight"
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">vku::Shader::Shader </td>
+          <td class="memname">static <a class="el" href="classvku_1_1RefHolder.html">RefHolder</a>&lt; <a class="el" href="structvku_1_1Shader.html">Shader</a>, std::vector&lt; std::uint32_t &gt; &gt; vku::Shader::fromGLSLFile </td>
           <td>(</td>
-          <td class="paramtype">std::vector&lt; std::uint32_t &gt;</td>          <td class="paramname"><span class="paramname"><em>code</em></span>, </td>
+          <td class="paramtype">shaderc::Compiler</td>          <td class="paramname"><span class="paramname"><em>compiler</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::filesystem::path &amp;</td>          <td class="paramname"><span class="paramname"><em>glslPath</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -146,28 +158,48 @@ std::optional&lt; vk::SpecializationInfo &gt;&#160;</td><td class="memItemRight"
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>entryPoint</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;main&quot;</span>&#160;)</td>
+          <td class="paramtype">const shaderc::CompileOptions &amp;</td>          <td class="paramname"><span class="paramname"><em>compileOptions</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const vk::SpecializationInfo *</td>          <td class="paramname"><span class="paramname"><em>pSpecializationInfo</em></span><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span>&#160;)</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">export</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">nodiscard</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Construct <code><a class="el" href="structvku_1_1Shader.html">Shader</a></code> from existing SPIR-V shader code vector. </p><dl class="params"><dt>Parameters</dt><dd>
+
+<p>Create <a class="el" href="structvku_1_1Shader.html" title="A lightweight representation of SPIR-V shader code and additional information (stage,...">Shader</a> from GLSL file. </p>
+<p>Load GLSL file and compile it into SPIR-V code in runtime using shaderc. You can specify the several compile options (e.g., target environment, optimization level, etc.) by passing the appropriate <code>compileOptions</code> struct, and also <code>identifier</code> for shader identification.</p>
+<p>If you're looking for compile the already existing GLSL string, use <a class="el" href="#a31f68403a9cbae18e468c83f1a081c98" title="Create Shader from GLSL string.">vku::Shader::fromGLSLString</a> instead.</p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">code</td><td>SPIR-V shader code. This will be moved to the struct. </td></tr>
-    <tr><td class="paramname">stage</td><td><a class="el" href="structvku_1_1Shader.html">Shader</a> stage. </td></tr>
-    <tr><td class="paramname">entryPoint</td><td>Entry point function name (default: "main"). </td></tr>
+    <tr><td class="paramname">compiler</td><td>The shaderc compiler. </td></tr>
+    <tr><td class="paramname">glslPath</td><td>The path to the GLSL file. </td></tr>
+    <tr><td class="paramname">stage</td><td>The stage of the shader. Must be a kind of either vertex, tessellation control, tessellation evaluation, geometry, fragment, or compute. </td></tr>
+    <tr><td class="paramname">compileOptions</td><td>The compile options. </td></tr>
+    <tr><td class="paramname">pSpecializationInfo</td><td>The specialization info of the shader. If <code>nullptr</code>, no specialization is used. </td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="classvku_1_1RefHolder.html" title="A container type that can be contextually converted to a reference of type T, which has references fo...">RefHolder</a> of the <a class="el" href="structvku_1_1Shader.html" title="A lightweight representation of SPIR-V shader code and additional information (stage,...">Shader</a>. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>If the compilation failed. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section warning"><dt>Warning</dt><dd>If <code>pSpecializationInfo</code> passed, its lifetime must be tied to its actual usage (passed to <code>vk::create{Graphics,Compute}Pipeline</code>). </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function is available only if the macro <code>VKU_USE_SHADERC</code> is defined. </dd></dl>
 
 </div>
 </div>
-<a id="a8ce4b7fb04cabe1459914839802c84cd" name="a8ce4b7fb04cabe1459914839802c84cd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8ce4b7fb04cabe1459914839802c84cd">&#9670;&#160;</a></span>Shader() <span class="overload">[2/4]</span></h2>
+<a id="a31f68403a9cbae18e468c83f1a081c98" name="a31f68403a9cbae18e468c83f1a081c98"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a31f68403a9cbae18e468c83f1a081c98">&#9670;&#160;</a></span>fromGLSLString()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -176,9 +208,14 @@ std::optional&lt; vk::SpecializationInfo &gt;&#160;</td><td class="memItemRight"
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">vku::Shader::Shader </td>
+          <td class="memname">static <a class="el" href="classvku_1_1RefHolder.html">RefHolder</a>&lt; <a class="el" href="structvku_1_1Shader.html">Shader</a>, std::vector&lt; std::uint32_t &gt; &gt; vku::Shader::fromGLSLString </td>
           <td>(</td>
-          <td class="paramtype">std::vector&lt; std::uint32_t &gt;</td>          <td class="paramname"><span class="paramname"><em>code</em></span>, </td>
+          <td class="paramtype">shaderc::Compiler</td>          <td class="paramname"><span class="paramname"><em>compiler</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string_view</td>          <td class="paramname"><span class="paramname"><em>glsl</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -188,35 +225,54 @@ std::optional&lt; vk::SpecializationInfo &gt;&#160;</td><td class="memItemRight"
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const vk::SpecializationInfo &amp;</td>          <td class="paramname"><span class="paramname"><em>specializationInfo</em></span>, </td>
+          <td class="paramtype">const shaderc::CompileOptions &amp;</td>          <td class="paramname"><span class="paramname"><em>compileOptions</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>entryPoint</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;main&quot;</span>&#160;)</td>
+          <td class="paramtype">const vk::SpecializationInfo *</td>          <td class="paramname"><span class="paramname"><em>pSpecializationInfo</em></span><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>identifier</em></span><span class="paramdefsep"> = </span><span class="paramdefval">details::to_string(std::source_location::current()).c_str()</span>&#160;)</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">export</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">nodiscard</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Construct <code><a class="el" href="structvku_1_1Shader.html">Shader</a></code> from existing SPIR-V shader code vector. </p><dl class="params"><dt>Parameters</dt><dd>
+
+<p>Create <a class="el" href="structvku_1_1Shader.html" title="A lightweight representation of SPIR-V shader code and additional information (stage,...">Shader</a> from GLSL string. </p>
+<p>Compile GLSL string into SPIR-V code in runtime using shaderc. You can specify the several compile options (e.g., target environment, optimization level, etc.) by passing the appropriate <code>compileOptions</code> struct, and also <code>identifier</code> for shader identification.</p>
+<p>If you're looking for directly load the GLSL file and process it, use <a class="el" href="#ab6eee8151a23d0b1c65af87145bf76ec" title="Create Shader from GLSL file.">vku::Shader::fromGLSLFile</a> instead.</p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">code</td><td>SPIR-V shader code. This will be moved to the struct. </td></tr>
-    <tr><td class="paramname">stage</td><td><a class="el" href="structvku_1_1Shader.html">Shader</a> stage. </td></tr>
-    <tr><td class="paramname">specializationInfo</td><td>Specialization info that are used for specialization constants. </td></tr>
-    <tr><td class="paramname">entryPoint</td><td>Entry point function name (default: "main"). </td></tr>
+    <tr><td class="paramname">compiler</td><td>The shaderc compiler. </td></tr>
+    <tr><td class="paramname">glsl</td><td>The GLSL string. </td></tr>
+    <tr><td class="paramname">stage</td><td>The stage of the shader. Must be a kind of either vertex, tessellation control, tessellation evaluation, geometry, fragment, or compute. </td></tr>
+    <tr><td class="paramname">compileOptions</td><td>The compile options. </td></tr>
+    <tr><td class="paramname">pSpecializationInfo</td><td>The specialization info of the shader. If <code>nullptr</code>, no specialization is used. </td></tr>
+    <tr><td class="paramname">identifier</td><td>The identifier of the shader. If not specified, it will use the function caller's source location. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section note"><dt>Note</dt><dd><code>specializationInfo</code> entries must live longer than the destination pipeline creation finish. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="classvku_1_1RefHolder.html" title="A container type that can be contextually converted to a reference of type T, which has references fo...">RefHolder</a> of the <a class="el" href="structvku_1_1Shader.html" title="A lightweight representation of SPIR-V shader code and additional information (stage,...">Shader</a>. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>If the compilation failed. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section warning"><dt>Warning</dt><dd>If <code>pSpecializationInfo</code> passed, its lifetime must be tied to its actual usage (passed to <code>vk::create{Graphics,Compute}Pipeline</code>). </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function is available only if the macro <code>VKU_USE_SHADERC</code> is defined. </dd></dl>
 
 </div>
 </div>
-<a id="ad1b2a0eb20125719224acc3e9d939514" name="ad1b2a0eb20125719224acc3e9d939514"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad1b2a0eb20125719224acc3e9d939514">&#9670;&#160;</a></span>Shader() <span class="overload">[3/4]</span></h2>
+<a id="a5089098c11057b7ba4b6e9f0ecdb03bc" name="a5089098c11057b7ba4b6e9f0ecdb03bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5089098c11057b7ba4b6e9f0ecdb03bc">&#9670;&#160;</a></span>fromSpirvFile()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -225,7 +281,7 @@ std::optional&lt; vk::SpecializationInfo &gt;&#160;</td><td class="memItemRight"
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">vku::Shader::Shader </td>
+          <td class="memname">static <a class="el" href="classvku_1_1RefHolder.html">RefHolder</a>&lt; <a class="el" href="structvku_1_1Shader.html">Shader</a>, std::vector&lt; std::byte &gt; &gt; vku::Shader::fromSpirvFile </td>
           <td>(</td>
           <td class="paramtype">const std::filesystem::path &amp;</td>          <td class="paramname"><span class="paramname"><em>path</em></span>, </td>
         </tr>
@@ -237,72 +293,51 @@ std::optional&lt; vk::SpecializationInfo &gt;&#160;</td><td class="memItemRight"
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const vk::SpecializationInfo *</td>          <td class="paramname"><span class="paramname"><em>pSpecializationInfo</em></span><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>entryPoint</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;main&quot;</span>&#160;)</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">export</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">nodiscard</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Construct <code><a class="el" href="structvku_1_1Shader.html">Shader</a></code> from compiled SPIR-V file. </p><dl class="params"><dt>Parameters</dt><dd>
+
+<p>Create <a class="el" href="structvku_1_1Shader.html" title="A lightweight representation of SPIR-V shader code and additional information (stage,...">Shader</a> from compiled SPIR-V file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">path</td><td>Path to the compiled SPIR-V file. </td></tr>
-    <tr><td class="paramname">stage</td><td><a class="el" href="structvku_1_1Shader.html">Shader</a> stage. </td></tr>
-    <tr><td class="paramname">entryPoint</td><td>Entry point function name (default: "main"). </td></tr>
+    <tr><td class="paramname">path</td><td>Path to the SPIR-V file. </td></tr>
+    <tr><td class="paramname">stage</td><td>The stage of the shader. </td></tr>
+    <tr><td class="paramname">pSpecializationInfo</td><td>The specialization info of the shader. If <code>nullptr</code>, no specialization is used. </td></tr>
+    <tr><td class="paramname">entryPoint</td><td>The entry point of the shader. Default is <code>"main"</code>. </td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="classvku_1_1RefHolder.html" title="A container type that can be contextually converted to a reference of type T, which has references fo...">RefHolder</a> of the <a class="el" href="structvku_1_1Shader.html" title="A lightweight representation of SPIR-V shader code and additional information (stage,...">Shader</a>. </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>If <code>pSpecializationInfo</code> passed, its lifetime must be tied to its actual usage (passed to <code>vk::create{Graphics,Compute}Pipeline</code>). </dd></dl>
 
 </div>
 </div>
-<a id="a56e72a00ab94d208399629341e0c5085" name="a56e72a00ab94d208399629341e0c5085"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a56e72a00ab94d208399629341e0c5085">&#9670;&#160;</a></span>Shader() <span class="overload">[4/4]</span></h2>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a0b4032f7664dd76f886a5698ea3f29a4" name="a0b4032f7664dd76f886a5698ea3f29a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b4032f7664dd76f886a5698ea3f29a4">&#9670;&#160;</a></span>pSpecializationInfo</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">vku::Shader::Shader </td>
-          <td>(</td>
-          <td class="paramtype">const std::filesystem::path &amp;</td>          <td class="paramname"><span class="paramname"><em>path</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">vk::ShaderStageFlagBits</td>          <td class="paramname"><span class="paramname"><em>stage</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const vk::SpecializationInfo &amp;</td>          <td class="paramname"><span class="paramname"><em>specializationInfo</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>entryPoint</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;main&quot;</span>&#160;)</td>
+          <td class="memname">const vk::SpecializationInfo* vku::Shader::pSpecializationInfo</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">export</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
-<p>Construct <code><a class="el" href="structvku_1_1Shader.html">Shader</a></code> from compiled SPIR-V file. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">path</td><td>Path to the compiled SPIR-V file. </td></tr>
-    <tr><td class="paramname">stage</td><td><a class="el" href="structvku_1_1Shader.html">Shader</a> stage. </td></tr>
-    <tr><td class="paramname">specializationInfo</td><td>Specialization info that are used for specialization constants. </td></tr>
-    <tr><td class="paramname">entryPoint</td><td>Entry point function name (default: "main"). </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section note"><dt>Note</dt><dd><code>specializationInfo</code> entries must live longer than the destination pipeline creation finish. </dd></dl>
+
+<p>The pointer to the specialization info to be used. </p>
+<p>If <code>nullptr</code>, no specialization is used. </p><dl class="section warning"><dt>Warning</dt><dd>If passed, its lifetime must be tied to its actual usage (passed to <code>vk::create{Graphics,Compute}Pipeline</code>). </dd></dl>
 
 </div>
 </div>

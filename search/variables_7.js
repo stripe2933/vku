@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['physicaldevice_0',['physicalDevice',['../classvku_1_1Gpu.html#ac652b76fc19fcaa1e58dff32f4f74223',1,'vku::Gpu']]]
+  ['miplevels_0',['mipLevels',['../structvku_1_1Image.html#a905018936a2d315777361cf1206c7e2b',1,'vku::Image']]]
 ];

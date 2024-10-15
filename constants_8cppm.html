@@ -102,8 +102,12 @@ $(function(){ initResizable(false); });
 Variables</h2></td></tr>
 <tr class="memitem:a2e4a5e99a9a4b684ce5a159cb42476fa" id="r_a2e4a5e99a9a4b684ce5a159cb42476fa"><td class="memItemLeft" align="right" valign="top">constexpr vma::AllocationCreateInfo&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2e4a5e99a9a4b684ce5a159cb42476fa">vku::allocation::hostWrite</a></td></tr>
 <tr class="separator:a2e4a5e99a9a4b684ce5a159cb42476fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2edefc2221497983da59153685e35bb7" id="r_a2edefc2221497983da59153685e35bb7"><td class="memItemLeft" align="right" valign="top">constexpr vma::AllocationCreateInfo&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2edefc2221497983da59153685e35bb7">vku::allocation::hostTransferWrite</a></td></tr>
+<tr class="separator:a2edefc2221497983da59153685e35bb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ba2b52262af85e8c70e68c092c2f497" id="r_a3ba2b52262af85e8c70e68c092c2f497"><td class="memItemLeft" align="right" valign="top">constexpr vma::AllocationCreateInfo&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3ba2b52262af85e8c70e68c092c2f497">vku::allocation::hostRead</a></td></tr>
 <tr class="separator:a3ba2b52262af85e8c70e68c092c2f497"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a438b49c1edb2390180df26f6c34c46f5" id="r_a438b49c1edb2390180df26f6c34c46f5"><td class="memItemLeft" align="right" valign="top">constexpr vma::AllocationCreateInfo&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a438b49c1edb2390180df26f6c34c46f5">vku::allocation::hostTransferRead</a></td></tr>
+<tr class="separator:a438b49c1edb2390180df26f6c34c46f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac5fe73cb546d36454f840f3613df5deb" id="r_ac5fe73cb546d36454f840f3613df5deb"><td class="memItemLeft" align="right" valign="top">constexpr vma::AllocationCreateInfo&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac5fe73cb546d36454f840f3613df5deb">vku::allocation::deviceLocal</a></td></tr>
 <tr class="separator:ac5fe73cb546d36454f840f3613df5deb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaa873e89d5c7d9b0696a7571a90811d3" id="r_aaa873e89d5c7d9b0696a7571a90811d3"><td class="memItemLeft" align="right" valign="top">constexpr vma::AllocationCreateInfo&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaa873e89d5c7d9b0696a7571a90811d3">vku::allocation::deviceLocalDedicated</a></td></tr>
@@ -241,6 +245,58 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">{</div>
 <div class="line">        vma::AllocationCreateFlagBits::eHostAccessRandom | vma::AllocationCreateFlagBits::eMapped,</div>
+<div class="line">        vma::MemoryUsage::eAuto,</div>
+<div class="line">    }</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a438b49c1edb2390180df26f6c34c46f5" name="a438b49c1edb2390180df26f6c34c46f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a438b49c1edb2390180df26f6c34c46f5">&#9670;&#160;</a></span>hostTransferRead</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vma::AllocationCreateInfo vku::allocation::hostTransferRead</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span><span class="mlabel">export</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">{</div>
+<div class="line">        vma::AllocationCreateFlagBits::eHostAccessRandom | vma::AllocationCreateFlagBits::eHostAccessAllowTransferInstead | vma::AllocationCreateFlagBits::eMapped,</div>
+<div class="line">        vma::MemoryUsage::eAuto,</div>
+<div class="line">    }</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a2edefc2221497983da59153685e35bb7" name="a2edefc2221497983da59153685e35bb7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2edefc2221497983da59153685e35bb7">&#9670;&#160;</a></span>hostTransferWrite</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vma::AllocationCreateInfo vku::allocation::hostTransferWrite</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span><span class="mlabel">export</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">{</div>
+<div class="line">        vma::AllocationCreateFlagBits::eHostAccessSequentialWrite | vma::AllocationCreateFlagBits::eHostAccessAllowTransferInstead | vma::AllocationCreateFlagBits::eMapped,</div>
 <div class="line">        vma::MemoryUsage::eAuto,</div>
 <div class="line">    }</div>
 </div><!-- fragment -->

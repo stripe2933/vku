@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['miplevels_0',['mipLevels',['../structvku_1_1Image.html#a905018936a2d315777361cf1206c7e2b',1,'vku::Image']]]
+  ['image_0',['image',['../structvku_1_1Image.html#ac01bef1ba9b7e23c642db38f0990b449',1,'vku::Image']]]
 ];

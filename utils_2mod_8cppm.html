@@ -141,12 +141,18 @@ Functions</h2></td></tr>
 <tr class="memitem:ab001c5feb202c4af70a726be14399094" id="r_ab001c5feb202c4af70a726be14399094"><td class="memItemLeft" align="right" valign="top">constexpr vk::Extent2D&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab001c5feb202c4af70a726be14399094">vku::toExtent2D</a> (const vk::Offset2D &amp;offset) noexcept</td></tr>
 <tr class="memdesc:ab001c5feb202c4af70a726be14399094"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert <code>vk::Offset2D</code> to <code>vk::Extent2D</code>.  <br /></td></tr>
 <tr class="separator:ab001c5feb202c4af70a726be14399094"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31a184c23d633b0c7de3d4c802dc5741" id="r_a31a184c23d633b0c7de3d4c802dc5741"><td class="memItemLeft" align="right" valign="top">constexpr vk::Extent3D&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a31a184c23d633b0c7de3d4c802dc5741">vku::toExtent3D</a> (const vk::Offset3D &amp;offset) noexcept</td></tr>
+<tr class="memdesc:a31a184c23d633b0c7de3d4c802dc5741"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert <code>vk::Offset3D</code> to <code>vk::Extent3D</code>.  <br /></td></tr>
+<tr class="separator:a31a184c23d633b0c7de3d4c802dc5741"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3ee19a144f8b949b075c62298a5a6b6" id="r_ad3ee19a144f8b949b075c62298a5a6b6"><td class="memItemLeft" align="right" valign="top">constexpr vk::Offset2D&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad3ee19a144f8b949b075c62298a5a6b6">vku::toOffset2D</a> (const vk::Offset3D &amp;offset) noexcept</td></tr>
 <tr class="memdesc:ad3ee19a144f8b949b075c62298a5a6b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert <code>vk::Offset3D</code> to <code>vk::Offset2D</code>.  <br /></td></tr>
 <tr class="separator:ad3ee19a144f8b949b075c62298a5a6b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a49eeca9c359188486f42f856f94ede" id="r_a9a49eeca9c359188486f42f856f94ede"><td class="memItemLeft" align="right" valign="top">constexpr vk::Offset2D&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9a49eeca9c359188486f42f856f94ede">vku::toOffset2D</a> (const vk::Extent2D &amp;extent) noexcept</td></tr>
 <tr class="memdesc:a9a49eeca9c359188486f42f856f94ede"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert <code>vk::Extent2D</code> to <code>vk::Offset2D</code>.  <br /></td></tr>
 <tr class="separator:a9a49eeca9c359188486f42f856f94ede"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abab2b68fe3aeb64d9caaf2c9b7a50648" id="r_abab2b68fe3aeb64d9caaf2c9b7a50648"><td class="memItemLeft" align="right" valign="top">constexpr vk::Offset3D&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abab2b68fe3aeb64d9caaf2c9b7a50648">vku::toOffset3D</a> (const vk::Extent3D &amp;extent) noexcept</td></tr>
+<tr class="memdesc:abab2b68fe3aeb64d9caaf2c9b7a50648"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert <code>vk::Extent3D</code> to <code>vk::Offset3D</code>.  <br /></td></tr>
+<tr class="separator:abab2b68fe3aeb64d9caaf2c9b7a50648"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a29e841ddac56506300072b6e3aeaedf6" id="r_a29e841ddac56506300072b6e3aeaedf6"><td class="memItemLeft" align="right" valign="top">constexpr vk::Viewport&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a29e841ddac56506300072b6e3aeaedf6">vku::toViewport</a> (const vk::Extent2D &amp;extent, bool negativeHeight=false) noexcept</td></tr>
 <tr class="memdesc:a29e841ddac56506300072b6e3aeaedf6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert <code>vk::Extent2D</code> to <code>vk::Viewport</code>, with depth=0..1.  <br /></td></tr>
 <tr class="separator:a29e841ddac56506300072b6e3aeaedf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -427,6 +433,42 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a id="a31a184c23d633b0c7de3d4c802dc5741" name="a31a184c23d633b0c7de3d4c802dc5741"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a31a184c23d633b0c7de3d4c802dc5741">&#9670;&#160;</a></span>toExtent3D()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vk::Extent3D vku::toExtent3D </td>
+          <td>(</td>
+          <td class="paramtype">const vk::Offset3D &amp;</td>          <td class="paramname"><span class="paramname"><em>offset</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">nodiscard</span><span class="mlabel">constexpr</span><span class="mlabel">export</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Convert <code>vk::Offset3D</code> to <code>vk::Extent3D</code>. </p>
+<p>Negative component is converted to the least unsigned integer congruent to the source integer.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">offset</td><td>Offset to convert. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Converted extent. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Negative component will be cast to unsigned int, with C++ standard conversion rule. </dd></dl>
+
+</div>
+</div>
 <a id="a9a49eeca9c359188486f42f856f94ede" name="a9a49eeca9c359188486f42f856f94ede"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9a49eeca9c359188486f42f856f94ede">&#9670;&#160;</a></span>toOffset2D() <span class="overload">[1/2]</span></h2>
 
@@ -489,6 +531,40 @@ template&lt;typename T &gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">offset</td><td>Offset to convert. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Converted offset. </dd></dl>
+
+</div>
+</div>
+<a id="abab2b68fe3aeb64d9caaf2c9b7a50648" name="abab2b68fe3aeb64d9caaf2c9b7a50648"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abab2b68fe3aeb64d9caaf2c9b7a50648">&#9670;&#160;</a></span>toOffset3D()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vk::Offset3D vku::toOffset3D </td>
+          <td>(</td>
+          <td class="paramtype">const vk::Extent3D &amp;</td>          <td class="paramname"><span class="paramname"><em>extent</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">nodiscard</span><span class="mlabel">constexpr</span><span class="mlabel">export</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Convert <code>vk::Extent3D</code> to <code>vk::Offset3D</code>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">extent</td><td>Extent to convert. Its width, height and depth must be less than or equal to <code>2^31 - 1</code>. </td></tr>
   </table>
   </dd>
 </dl>

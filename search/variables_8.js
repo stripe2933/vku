@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['queuefamilies_0',['queueFamilies',['../classvku_1_1Gpu.html#ac3214ac3c3f29749af7a315e470d6838',1,'vku::Gpu']]],
-  ['queues_1',['queues',['../classvku_1_1Gpu.html#aa4f2eba0a76666d32e25ff2284250dde',1,'vku::Gpu']]]
+  ['physicaldevice_0',['physicalDevice',['../classvku_1_1Gpu.html#ac652b76fc19fcaa1e58dff32f4f74223',1,'vku::Gpu']]],
+  ['pspecializationinfo_1',['pSpecializationInfo',['../structvku_1_1Shader.html#a0b4032f7664dd76f886a5698ea3f29a4',1,'vku::Shader']]]
 ];

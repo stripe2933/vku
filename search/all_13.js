@@ -9,5 +9,6 @@ var searchData=
   ['prerequisites_6',['2. Prerequisites',['../md_docs_2using-vku.html#autotoc_md31',1,'']]],
   ['project_7',['4. Directly use &lt;em&gt;vku&lt;/em&gt; in Your CMake Project',['../md_docs_2using-vku.html#autotoc_md40',1,'']]],
   ['projects_20that_20uses_20vku_8',['Projects that uses vku',['../index.html#autotoc_md2',1,'']]],
-  ['proper_20triplet_20and_20chainload_20toolchain_9',['4.1.2. Set the Proper Triplet and Chainload Toolchain',['../md_docs_2using-vku.html#autotoc_md43',1,'']]]
+  ['proper_20triplet_20and_20chainload_20toolchain_9',['4.1.2. Set the Proper Triplet and Chainload Toolchain',['../md_docs_2using-vku.html#autotoc_md43',1,'']]],
+  ['pspecializationinfo_10',['pSpecializationInfo',['../structvku_1_1Shader.html#a0b4032f7664dd76f886a5698ea3f29a4',1,'vku::Shader']]]
 ];

@@ -91,6 +91,7 @@ $(function(){ initResizable(false); });
 <div class="header">
   <div class="summary">
 <a href="#define-members">Macros</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">mod.cppm File Reference<div class="ingroups">module <a class="el" href="module__vku.html">vku</a></div></div></div>
 </div><!--header-->
@@ -106,11 +107,18 @@ Macros</h2></td></tr>
 <tr class="memitem:afd225855dfc2e91115150383cad53e7d" id="r_afd225855dfc2e91115150383cad53e7d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afd225855dfc2e91115150383cad53e7d">ARRAY_OF</a>(N, ...)</td></tr>
 <tr class="separator:afd225855dfc2e91115150383cad53e7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:ab9986da6e47250c6acd3f2155a4804a6" id="r_ab9986da6e47250c6acd3f2155a4804a6"><td class="memTemplParams" colspan="2"><a id="ab9986da6e47250c6acd3f2155a4804a6" name="ab9986da6e47250c6acd3f2155a4804a6"></a>
+template&lt;typename T , std::size_t &gt; </td></tr>
+<tr class="memitem:ab9986da6e47250c6acd3f2155a4804a6"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><b>type_tag</b> = T</td></tr>
+<tr class="separator:ab9986da6e47250c6acd3f2155a4804a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ad87de5c8533012b059e21c80a61a3c76" id="r_ad87de5c8533012b059e21c80a61a3c76"><td class="memTemplParams" colspan="2">template&lt;std::convertible_to&lt; <a class="el" href="structvku_1_1Shader.html">Shader</a> &gt;... Shaders&gt; </td></tr>
-<tr class="memitem:ad87de5c8533012b059e21c80a61a3c76"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ad87de5c8533012b059e21c80a61a3c76">vku::createPipelineStages</a> (const vk::raii::Device &amp;device, const Shaders &amp;...shaders)</td></tr>
-<tr class="separator:ad87de5c8533012b059e21c80a61a3c76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b563274d5f28c5da2ce0e3eb57e9aae" id="r_a6b563274d5f28c5da2ce0e3eb57e9aae"><td class="memTemplParams" colspan="2">template&lt;typename... Shaders&gt; </td></tr>
+<tr class="memitem:a6b563274d5f28c5da2ce0e3eb57e9aae"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a6b563274d5f28c5da2ce0e3eb57e9aae">vku::createPipelineStages</a> (const vk::raii::Device &amp;device, const Shaders &amp;...shaders) -&gt; <a class="el" href="classvku_1_1RefHolder.html">RefHolder</a>&lt; std::array&lt; vk::PipelineShaderStageCreateInfo, sizeof...(Shaders)&gt;, std::array&lt; vk::raii::ShaderModule, sizeof...(Shaders)&gt; &gt;</td></tr>
+<tr class="separator:a6b563274d5f28c5da2ce0e3eb57e9aae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a73425e127dde79a67b49f29c40b9b13b" id="r_a73425e127dde79a67b49f29c40b9b13b"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a73425e127dde79a67b49f29c40b9b13b">vku::getDefaultGraphicsPipelineCreateInfo</a> (vk::ArrayProxyNoTemporaries&lt; const vk::PipelineShaderStageCreateInfo &gt; stages, vk::PipelineLayout layout, std::uint32_t colorAttachmentCount=0, bool hasDepthStencilAttachment=false, vk::SampleCountFlagBits multisample=vk::SampleCountFlagBits::e1) -&gt; vk::GraphicsPipelineCreateInfo</td></tr>
 <tr class="separator:a73425e127dde79a67b49f29c40b9b13b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -165,13 +173,13 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ad87de5c8533012b059e21c80a61a3c76" name="ad87de5c8533012b059e21c80a61a3c76"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad87de5c8533012b059e21c80a61a3c76">&#9670;&#160;</a></span>createPipelineStages()</h2>
+<a id="a6b563274d5f28c5da2ce0e3eb57e9aae" name="a6b563274d5f28c5da2ce0e3eb57e9aae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6b563274d5f28c5da2ce0e3eb57e9aae">&#9670;&#160;</a></span>createPipelineStages()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;std::convertible_to&lt; Shader &gt;... Shaders&gt; </div>
+template&lt;typename... Shaders&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -184,7 +192,7 @@ template&lt;std::convertible_to&lt; Shader &gt;... Shaders&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const Shaders &amp;...</td>          <td class="paramname"><span class="paramname"><em>shaders</em></span>&#160;)</td>
+          <td class="paramtype">const Shaders &amp;...</td>          <td class="paramname"><span class="paramname"><em>shaders</em></span>&#160;) -&gt; <a class="el" href="classvku_1_1RefHolder.html">RefHolder</a>&lt;std::array&lt;vk::PipelineShaderStageCreateInfo, sizeof...(Shaders)&gt;, std::array&lt;vk::raii::ShaderModule, sizeof...(Shaders)&gt;&gt; </td>
         </tr>
       </table>
   </td>
@@ -193,7 +201,7 @@ template&lt;std::convertible_to&lt; Shader &gt;... Shaders&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Create array of <code>vk::PipelineShaderStageCreateInfos</code> from <code><a class="el" href="structvku_1_1Shader.html">vku::Shader</a></code>s.</p>
+<p>Create array of <code>vk::PipelineShaderStageCreateInfos</code> from <code><a class="el" href="structvku_1_1Shader.html" title="A lightweight representation of SPIR-V shader code and additional information (stage,...">vku::Shader</a></code>s.</p>
 <p>Creating compute pipeline: </p><div class="fragment"><div class="line">vk::raii::PipelineLayout pipelineLayout { device, vk::PipelineLayoutCreateInfo { ... } };</div>
 <div class="line">vk::raii::Pipeline pipeline { device, <span class="keyword">nullptr</span>, vk::ComputePipelineCreateInfo {</div>
 <div class="line">    {},</div>
@@ -201,22 +209,22 @@ template&lt;std::convertible_to&lt; Shader &gt;... Shaders&gt; </div>
 <div class="line">    <span class="comment">// vku::RefHolder&lt;...&gt;::get() to explicitly get the array, and access the first element.</span></div>
 <div class="line">    vku::createPipelineStages(</div>
 <div class="line">        device,</div>
-<div class="line">        <a class="code hl_struct" href="structvku_1_1Shader.html">vku::Shader</a> { <span class="stringliteral">&quot;shader.comp.spv&quot;</span>, vk::ShaderStageFlagBits::eCompute }).get()[0],</div>
+<div class="line">        <a class="code hl_function" href="structvku_1_1Shader.html#a5089098c11057b7ba4b6e9f0ecdb03bc">vku::Shader::fromSpirvFile</a>(<span class="stringliteral">&quot;shader.comp.spv&quot;</span>, vk::ShaderStageFlagBits::eCompute)).get()[0],</div>
 <div class="line">    *pipelineLayout,</div>
 <div class="line">} }; <span class="comment">// vk::raii::ShaderModules that are stored in the vku::createPipelineStages&#39;s return value will be destroyed here.</span></div>
-<div class="ttc" id="astructvku_1_1Shader_html"><div class="ttname"><a href="structvku_1_1Shader.html">vku::Shader</a></div><div class="ttdef"><b>Definition</b> Shader.cppm:39</div></div>
+<div class="ttc" id="astructvku_1_1Shader_html_a5089098c11057b7ba4b6e9f0ecdb03bc"><div class="ttname"><a href="structvku_1_1Shader.html#a5089098c11057b7ba4b6e9f0ecdb03bc">vku::Shader::fromSpirvFile</a></div><div class="ttdeci">static RefHolder&lt; Shader, std::vector&lt; std::byte &gt; &gt; fromSpirvFile(const std::filesystem::path &amp;path, vk::ShaderStageFlagBits stage, const vk::SpecializationInfo *pSpecializationInfo=nullptr, const char *entryPoint=&quot;main&quot;)</div><div class="ttdoc">Create Shader from compiled SPIR-V file.</div><div class="ttdef"><b>Definition</b> Shader.cppm:123</div></div>
 </div><!-- fragment --><p>Creating graphics pipeline: </p><div class="fragment"><div class="line">vk::raii::Pipeline pipeline { device, <span class="keyword">nullptr</span>, vk::GraphicsPipelineCreateInfo {</div>
 <div class="line">    {},</div>
 <div class="line">    vku::createPipelineStages(</div>
 <div class="line">        device,</div>
-<div class="line">        <a class="code hl_struct" href="structvku_1_1Shader.html">vku::Shader</a> { <span class="stringliteral">&quot;triangle.vert.spv&quot;</span>, vk::ShaderStageFlagBits::eVertex },</div>
-<div class="line">        <a class="code hl_struct" href="structvku_1_1Shader.html">vku::Shader</a> { <span class="stringliteral">&quot;triangle.frag.spv&quot;</span>, vk::ShaderStageFlagBits::eFragment }).get(),</div>
+<div class="line">        <a class="code hl_function" href="structvku_1_1Shader.html#a5089098c11057b7ba4b6e9f0ecdb03bc">vku::Shader::fromSpirvFile</a>(<span class="stringliteral">&quot;triangle.vert.spv&quot;</span>, vk::ShaderStageFlagBits::eVertex),</div>
+<div class="line">        <a class="code hl_function" href="structvku_1_1Shader.html#a5089098c11057b7ba4b6e9f0ecdb03bc">vku::Shader::fromSpirvFile</a>(<span class="stringliteral">&quot;triangle.frag.spv&quot;</span>, vk::ShaderStageFlagBits::eFragment)).get(),</div>
 <div class="line">    ... <span class="comment">// Remaining pipeline settings.</span></div>
 <div class="line">} };</div>
 </div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">device</td><td>Vulkan-Hpp RAII device that is used to create <code>vk::raii::ShaderModule</code>s. </td></tr>
-    <tr><td class="paramname">shaders</td><td>Variadic template parameters of <code><a class="el" href="structvku_1_1Shader.html">vku::Shader</a></code>s. This can be destroyed after the function call (because <code>vk::raii::ShaderModule</code> created from the <code>Shader</code>s will be stored in the <code>RefHolder</code>). </td></tr>
+    <tr><td class="paramname">shaders</td><td>Variadic template parameters of <code><a class="el" href="structvku_1_1Shader.html" title="A lightweight representation of SPIR-V shader code and additional information (stage,...">vku::Shader</a></code>s. This can be destroyed after the function call (because <code>vk::raii::ShaderModule</code> created from the <code>Shader</code>s will be stored in the <code>RefHolder</code>). </td></tr>
   </table>
   </dd>
 </dl>

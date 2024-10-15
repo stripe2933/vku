@@ -87,6 +87,7 @@ $(function(){ initResizable(false); });
 <div class="header">
   <div class="summary">
 <a href="#classes">Classes</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a> &#124;
 <a href="#files">Files</a>  </div>
@@ -145,6 +146,7 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvku_1_1DescriptorSet.html">vku::DescriptorSet&lt; Layout &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structvku_1_1Shader.html">vku::Shader</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A lightweight representation of SPIR-V shader code and additional information (stage, specialization info, and entry point).  <a href="structvku_1_1Shader.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structvku_1_1PoolSizes.html">vku::PoolSizes</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -159,6 +161,13 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structvku_1_1AllocatedImage.html">vku::AllocatedImage</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Owning image handle with memory allocation.  <a href="structvku_1_1AllocatedImage.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:ab9986da6e47250c6acd3f2155a4804a6" id="r_ab9986da6e47250c6acd3f2155a4804a6"><td class="memTemplParams" colspan="2"><a id="ab9986da6e47250c6acd3f2155a4804a6" name="ab9986da6e47250c6acd3f2155a4804a6"></a>
+template&lt;typename T , std::size_t &gt; </td></tr>
+<tr class="memitem:ab9986da6e47250c6acd3f2155a4804a6"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><b>type_tag</b> = T</td></tr>
+<tr class="separator:ab9986da6e47250c6acd3f2155a4804a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -221,12 +230,18 @@ AllocatedBuffer &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>oper
 <tr class="memitem:ab001c5feb202c4af70a726be14399094" id="r_ab001c5feb202c4af70a726be14399094"><td class="memItemLeft" align="right" valign="top">constexpr vk::Extent2D&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_2mod_8cppm.html#ab001c5feb202c4af70a726be14399094">vku::toExtent2D</a> (const vk::Offset2D &amp;offset) noexcept</td></tr>
 <tr class="memdesc:ab001c5feb202c4af70a726be14399094"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert <code>vk::Offset2D</code> to <code>vk::Extent2D</code>.  <br /></td></tr>
 <tr class="separator:ab001c5feb202c4af70a726be14399094"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31a184c23d633b0c7de3d4c802dc5741" id="r_a31a184c23d633b0c7de3d4c802dc5741"><td class="memItemLeft" align="right" valign="top">constexpr vk::Extent3D&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_2mod_8cppm.html#a31a184c23d633b0c7de3d4c802dc5741">vku::toExtent3D</a> (const vk::Offset3D &amp;offset) noexcept</td></tr>
+<tr class="memdesc:a31a184c23d633b0c7de3d4c802dc5741"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert <code>vk::Offset3D</code> to <code>vk::Extent3D</code>.  <br /></td></tr>
+<tr class="separator:a31a184c23d633b0c7de3d4c802dc5741"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3ee19a144f8b949b075c62298a5a6b6" id="r_ad3ee19a144f8b949b075c62298a5a6b6"><td class="memItemLeft" align="right" valign="top">constexpr vk::Offset2D&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_2mod_8cppm.html#ad3ee19a144f8b949b075c62298a5a6b6">vku::toOffset2D</a> (const vk::Offset3D &amp;offset) noexcept</td></tr>
 <tr class="memdesc:ad3ee19a144f8b949b075c62298a5a6b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert <code>vk::Offset3D</code> to <code>vk::Offset2D</code>.  <br /></td></tr>
 <tr class="separator:ad3ee19a144f8b949b075c62298a5a6b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a49eeca9c359188486f42f856f94ede" id="r_a9a49eeca9c359188486f42f856f94ede"><td class="memItemLeft" align="right" valign="top">constexpr vk::Offset2D&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_2mod_8cppm.html#a9a49eeca9c359188486f42f856f94ede">vku::toOffset2D</a> (const vk::Extent2D &amp;extent) noexcept</td></tr>
 <tr class="memdesc:a9a49eeca9c359188486f42f856f94ede"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert <code>vk::Extent2D</code> to <code>vk::Offset2D</code>.  <br /></td></tr>
 <tr class="separator:a9a49eeca9c359188486f42f856f94ede"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abab2b68fe3aeb64d9caaf2c9b7a50648" id="r_abab2b68fe3aeb64d9caaf2c9b7a50648"><td class="memItemLeft" align="right" valign="top">constexpr vk::Offset3D&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_2mod_8cppm.html#abab2b68fe3aeb64d9caaf2c9b7a50648">vku::toOffset3D</a> (const vk::Extent3D &amp;extent) noexcept</td></tr>
+<tr class="memdesc:abab2b68fe3aeb64d9caaf2c9b7a50648"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert <code>vk::Extent3D</code> to <code>vk::Offset3D</code>.  <br /></td></tr>
+<tr class="separator:abab2b68fe3aeb64d9caaf2c9b7a50648"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a29e841ddac56506300072b6e3aeaedf6" id="r_a29e841ddac56506300072b6e3aeaedf6"><td class="memItemLeft" align="right" valign="top">constexpr vk::Viewport&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_2mod_8cppm.html#a29e841ddac56506300072b6e3aeaedf6">vku::toViewport</a> (const vk::Extent2D &amp;extent, bool negativeHeight=false) noexcept</td></tr>
 <tr class="memdesc:a29e841ddac56506300072b6e3aeaedf6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert <code>vk::Extent2D</code> to <code>vk::Viewport</code>, with depth=0..1.  <br /></td></tr>
 <tr class="separator:a29e841ddac56506300072b6e3aeaedf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -380,14 +395,6 @@ auto&#160;</td><td class="memItemRight" valign="bottom"><b>getRenderingInfo</b> 
 template&lt;details::derived_from_value_specialization_of&lt; DescriptorSetLayout &gt;... Layouts&gt; </td></tr>
 <tr class="memitem:a39637c143ab41396e7eaba31612a855a"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>vku::allocateDescriptorSets</b> (vk::Device device, vk::DescriptorPool pool, const std::tuple&lt; Layouts... &gt; &amp;layouts) -&gt; std::tuple&lt; DescriptorSet&lt; std::remove_cvref_t&lt; Layouts &gt; &gt;... &gt;</td></tr>
 <tr class="separator:a39637c143ab41396e7eaba31612a855a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8298c26d414a90e3d8b89e5dc375b028" id="r_a8298c26d414a90e3d8b89e5dc375b028"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structvku_1_1Shader.html#a8298c26d414a90e3d8b89e5dc375b028">Shader</a> (std::vector&lt; std::uint32_t &gt; code, vk::ShaderStageFlagBits stage, const char *entryPoint=&quot;main&quot;)</td></tr>
-<tr class="separator:a8298c26d414a90e3d8b89e5dc375b028"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ce4b7fb04cabe1459914839802c84cd" id="r_a8ce4b7fb04cabe1459914839802c84cd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structvku_1_1Shader.html#a8ce4b7fb04cabe1459914839802c84cd">Shader</a> (std::vector&lt; std::uint32_t &gt; code, vk::ShaderStageFlagBits stage, const vk::SpecializationInfo &amp;specializationInfo, const char *entryPoint=&quot;main&quot;)</td></tr>
-<tr class="separator:a8ce4b7fb04cabe1459914839802c84cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad1b2a0eb20125719224acc3e9d939514" id="r_ad1b2a0eb20125719224acc3e9d939514"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structvku_1_1Shader.html#ad1b2a0eb20125719224acc3e9d939514">Shader</a> (const std::filesystem::path &amp;path, vk::ShaderStageFlagBits stage, const char *entryPoint=&quot;main&quot;)</td></tr>
-<tr class="separator:ad1b2a0eb20125719224acc3e9d939514"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56e72a00ab94d208399629341e0c5085" id="r_a56e72a00ab94d208399629341e0c5085"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structvku_1_1Shader.html#a56e72a00ab94d208399629341e0c5085">Shader</a> (const std::filesystem::path &amp;path, vk::ShaderStageFlagBits stage, const vk::SpecializationInfo &amp;specializationInfo, const char *entryPoint=&quot;main&quot;)</td></tr>
-<tr class="separator:a56e72a00ab94d208399629341e0c5085"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afceb421ea8f6f0dc97ff3ace8ab1b41d" id="r_afceb421ea8f6f0dc97ff3ace8ab1b41d"><td class="memItemLeft" align="right" valign="top"><a id="afceb421ea8f6f0dc97ff3ace8ab1b41d" name="afceb421ea8f6f0dc97ff3ace8ab1b41d"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>PoolSizes</b> (const PoolSizes &amp;) noexcept=default</td></tr>
 <tr class="separator:afceb421ea8f6f0dc97ff3ace8ab1b41d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -447,9 +454,9 @@ AllocatedImage &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>opera
 <tr class="memitem:a110cb8b0882c6d1b33c4d45a5ece4b3d" id="r_a110cb8b0882c6d1b33c4d45a5ece4b3d"><td class="memItemLeft" align="right" valign="top"><a id="a110cb8b0882c6d1b33c4d45a5ece4b3d" name="a110cb8b0882c6d1b33c4d45a5ece4b3d"></a>
 AllocatedImage &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (AllocatedImage &amp;&amp;src) noexcept</td></tr>
 <tr class="separator:a110cb8b0882c6d1b33c4d45a5ece4b3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad87de5c8533012b059e21c80a61a3c76" id="r_ad87de5c8533012b059e21c80a61a3c76"><td class="memTemplParams" colspan="2">template&lt;std::convertible_to&lt; Shader &gt;... Shaders&gt; </td></tr>
-<tr class="memitem:ad87de5c8533012b059e21c80a61a3c76"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="pipelines_2mod_8cppm.html#ad87de5c8533012b059e21c80a61a3c76">vku::createPipelineStages</a> (const vk::raii::Device &amp;device, const Shaders &amp;...shaders)</td></tr>
-<tr class="separator:ad87de5c8533012b059e21c80a61a3c76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b563274d5f28c5da2ce0e3eb57e9aae" id="r_a6b563274d5f28c5da2ce0e3eb57e9aae"><td class="memTemplParams" colspan="2">template&lt;typename... Shaders&gt; </td></tr>
+<tr class="memitem:a6b563274d5f28c5da2ce0e3eb57e9aae"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="pipelines_2mod_8cppm.html#a6b563274d5f28c5da2ce0e3eb57e9aae">vku::createPipelineStages</a> (const vk::raii::Device &amp;device, const Shaders &amp;...shaders) -&gt; RefHolder&lt; std::array&lt; vk::PipelineShaderStageCreateInfo, sizeof...(Shaders)&gt;, std::array&lt; vk::raii::ShaderModule, sizeof...(Shaders)&gt; &gt;</td></tr>
+<tr class="separator:a6b563274d5f28c5da2ce0e3eb57e9aae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a73425e127dde79a67b49f29c40b9b13b" id="r_a73425e127dde79a67b49f29c40b9b13b"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pipelines_2mod_8cppm.html#a73425e127dde79a67b49f29c40b9b13b">vku::getDefaultGraphicsPipelineCreateInfo</a> (vk::ArrayProxyNoTemporaries&lt; const vk::PipelineShaderStageCreateInfo &gt; stages, vk::PipelineLayout layout, std::uint32_t colorAttachmentCount=0, bool hasDepthStencilAttachment=false, vk::SampleCountFlagBits multisample=vk::SampleCountFlagBits::e1) -&gt; vk::GraphicsPipelineCreateInfo</td></tr>
 <tr class="separator:a73425e127dde79a67b49f29c40b9b13b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -473,8 +480,12 @@ vk::DeviceSize&#160;</td><td class="memItemRight" valign="bottom"><b>size</b></t
 <tr class="separator:a30d459a783e4bd037553e7a627900a33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e4a5e99a9a4b684ce5a159cb42476fa" id="r_a2e4a5e99a9a4b684ce5a159cb42476fa"><td class="memItemLeft" align="right" valign="top">constexpr vma::AllocationCreateInfo&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="constants_8cppm.html#a2e4a5e99a9a4b684ce5a159cb42476fa">vku::allocation::hostWrite</a></td></tr>
 <tr class="separator:a2e4a5e99a9a4b684ce5a159cb42476fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2edefc2221497983da59153685e35bb7" id="r_a2edefc2221497983da59153685e35bb7"><td class="memItemLeft" align="right" valign="top">constexpr vma::AllocationCreateInfo&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="constants_8cppm.html#a2edefc2221497983da59153685e35bb7">vku::allocation::hostTransferWrite</a></td></tr>
+<tr class="separator:a2edefc2221497983da59153685e35bb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ba2b52262af85e8c70e68c092c2f497" id="r_a3ba2b52262af85e8c70e68c092c2f497"><td class="memItemLeft" align="right" valign="top">constexpr vma::AllocationCreateInfo&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="constants_8cppm.html#a3ba2b52262af85e8c70e68c092c2f497">vku::allocation::hostRead</a></td></tr>
 <tr class="separator:a3ba2b52262af85e8c70e68c092c2f497"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a438b49c1edb2390180df26f6c34c46f5" id="r_a438b49c1edb2390180df26f6c34c46f5"><td class="memItemLeft" align="right" valign="top">constexpr vma::AllocationCreateInfo&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="constants_8cppm.html#a438b49c1edb2390180df26f6c34c46f5">vku::allocation::hostTransferRead</a></td></tr>
+<tr class="separator:a438b49c1edb2390180df26f6c34c46f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac5fe73cb546d36454f840f3613df5deb" id="r_ac5fe73cb546d36454f840f3613df5deb"><td class="memItemLeft" align="right" valign="top">constexpr vma::AllocationCreateInfo&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="constants_8cppm.html#ac5fe73cb546d36454f840f3613df5deb">vku::allocation::deviceLocal</a></td></tr>
 <tr class="separator:ac5fe73cb546d36454f840f3613df5deb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaa873e89d5c7d9b0696a7571a90811d3" id="r_aaa873e89d5c7d9b0696a7571a90811d3"><td class="memItemLeft" align="right" valign="top">constexpr vma::AllocationCreateInfo&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="constants_8cppm.html#aaa873e89d5c7d9b0696a7571a90811d3">vku::allocation::deviceLocalDedicated</a></td></tr>
@@ -558,18 +569,6 @@ vk::raii::ImageView&#160;</td><td class="memItemRight" valign="bottom"><b>view</
 <tr class="memitem:a36ccf19ccfc93d97ffb33abb8490b184" id="r_a36ccf19ccfc93d97ffb33abb8490b184"><td class="memItemLeft" align="right" valign="top"><a id="a36ccf19ccfc93d97ffb33abb8490b184" name="a36ccf19ccfc93d97ffb33abb8490b184"></a>
 std::vector&lt; vk::raii::ImageView &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>resolveViews</b></td></tr>
 <tr class="separator:a36ccf19ccfc93d97ffb33abb8490b184"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a695fed921d5976393348d074a3eef090" id="r_a695fed921d5976393348d074a3eef090"><td class="memItemLeft" align="right" valign="top"><a id="a695fed921d5976393348d074a3eef090" name="a695fed921d5976393348d074a3eef090"></a>
-std::vector&lt; std::uint32_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>code</b></td></tr>
-<tr class="separator:a695fed921d5976393348d074a3eef090"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a702ebccd60274d9dc1dfdecc24ce0286" id="r_a702ebccd60274d9dc1dfdecc24ce0286"><td class="memItemLeft" align="right" valign="top"><a id="a702ebccd60274d9dc1dfdecc24ce0286" name="a702ebccd60274d9dc1dfdecc24ce0286"></a>
-vk::ShaderStageFlagBits&#160;</td><td class="memItemRight" valign="bottom"><b>stage</b></td></tr>
-<tr class="separator:a702ebccd60274d9dc1dfdecc24ce0286"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c8a884754eeef69d085cbfcdc0b7c01" id="r_a3c8a884754eeef69d085cbfcdc0b7c01"><td class="memItemLeft" align="right" valign="top"><a id="a3c8a884754eeef69d085cbfcdc0b7c01" name="a3c8a884754eeef69d085cbfcdc0b7c01"></a>
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>entryPoint</b></td></tr>
-<tr class="separator:a3c8a884754eeef69d085cbfcdc0b7c01"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a44a46a996b138669d062309fd6418e19" id="r_a44a46a996b138669d062309fd6418e19"><td class="memItemLeft" align="right" valign="top"><a id="a44a46a996b138669d062309fd6418e19" name="a44a46a996b138669d062309fd6418e19"></a>
-std::optional&lt; vk::SpecializationInfo &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>specializationInfo</b></td></tr>
-<tr class="separator:a44a46a996b138669d062309fd6418e19"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb01b014a8491388096c2991bb43cf6d" id="r_afb01b014a8491388096c2991bb43cf6d"><td class="memItemLeft" align="right" valign="top"><a id="afb01b014a8491388096c2991bb43cf6d" name="afb01b014a8491388096c2991bb43cf6d"></a>
 std::uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>setCount</b></td></tr>
 <tr class="separator:afb01b014a8491388096c2991bb43cf6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
