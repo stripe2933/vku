@@ -179,6 +179,20 @@ namespace vku {
     }
 
     /**
+     * @brief Convert <tt>vk::Offset3D</tt> to <tt>vk::Extent3D</tt>.
+     *
+     * Negative component is converted to the least unsigned integer congruent to the source integer.
+     *
+     * @param offset Offset to convert.
+     * @return Converted extent.
+     * @note Negative component will be cast to unsigned int, with C++ standard conversion rule.
+     */
+    export
+    [[nodiscard]] constexpr VULKAN_HPP_NAMESPACE::Extent3D toExtent3D(const VULKAN_HPP_NAMESPACE::Offset3D &offset) noexcept {
+        return { static_cast<std::uint32_t>(offset.x), static_cast<std::uint32_t>(offset.y), static_cast<std::uint32_t>(offset.z) };
+    }
+
+    /**
      * @brief Convert <tt>vk::Offset3D</tt> to <tt>vk::Offset2D</tt>.
      *
      * The z component is discarded.
@@ -201,6 +215,19 @@ namespace vku {
         assert(std::in_range<std::int32_t>(extent.width) && "Overflowing width.");
         assert(std::in_range<std::int32_t>(extent.height) && "Overflowing height.");
         return { static_cast<std::int32_t>(extent.width), static_cast<std::int32_t>(extent.height) };
+    }
+
+    /**
+     * @brief Convert <tt>vk::Extent3D</tt> to <tt>vk::Offset3D</tt>.
+     * @param extent Extent to convert. Its width, height and depth must be less than or equal to <tt>2^31 - 1</tt>.
+     * @return Converted offset.
+     */
+    export
+    [[nodiscard]] constexpr VULKAN_HPP_NAMESPACE::Offset3D toOffset3D(const VULKAN_HPP_NAMESPACE::Extent3D &extent) NOEXCEPT_IF_RELEASE {
+        assert(std::in_range<std::int32_t>(extent.width) && "Overflowing width.");
+        assert(std::in_range<std::int32_t>(extent.height) && "Overflowing height.");
+        assert(std::in_range<std::int32_t>(extent.depth) && "Overflowing depth.");
+        return { static_cast<std::int32_t>(extent.width), static_cast<std::int32_t>(extent.height), static_cast<std::int32_t>(extent.depth) };
     }
 
     /**

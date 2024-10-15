@@ -3,6 +3,7 @@
 
 module;
 
+#include <cassert>
 #include <cerrno>
 #ifndef VKU_USE_STD_MODULE
 #include <cstdint>
@@ -11,20 +12,19 @@ module;
 #include <format>
 #include <fstream>
 #include <ios>
-#include <optional>
-#include <ranges>
-#include <source_location>
+#include <span>
 #include <stdexcept>
-#include <string>
-#include <string_view>
 #include <utility>
 #include <vector>
 #endif
 
 #ifdef VKU_USE_SHADERC
+#include <ranges>
+#include <source_location>
+#include <string_view>
+
 #include <shaderc/shaderc.hpp>
 #endif
-
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 export module vku:pipelines.Shader;
@@ -33,120 +33,20 @@ export module vku:pipelines.Shader;
 import std;
 #endif
 export import vulkan_hpp;
-import :details.to_string;
-
-namespace vku {
-    export struct Shader {
-        std::vector<std::uint32_t> code;
-        VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage;
-        const char *entryPoint;
-        std::optional<VULKAN_HPP_NAMESPACE::SpecializationInfo> specializationInfo;
-
-        // --------------------
-        // Constructors.
-        // --------------------
-
-        /**
-         * Construct <tt>Shader</tt> from existing SPIR-V shader code vector.
-         * @param code SPIR-V shader code. This will be moved to the struct.
-         * @param stage Shader stage.
-         * @param entryPoint Entry point function name (default: "main").
-         */
-        Shader(std::vector<std::uint32_t> code, VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage, const char *entryPoint = "main");
-
-        /**
-         * Construct <tt>Shader</tt> from existing SPIR-V shader code vector.
-         * @param code SPIR-V shader code. This will be moved to the struct.
-         * @param stage Shader stage.
-         * @param specializationInfo Specialization info that are used for specialization constants.
-         * @param entryPoint Entry point function name (default: "main").
-         * @note \p specializationInfo entries must live longer than the destination pipeline creation finish.
-         */
-        Shader(
-            std::vector<std::uint32_t> code, 
-            VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage, 
-            const VULKAN_HPP_NAMESPACE::SpecializationInfo &specializationInfo [[clang::lifetimebound]], 
-            const char *entryPoint = "main"
-        ) : Shader { std::move(code), stage, entryPoint } {
-            this->specializationInfo.emplace(specializationInfo);
-        }
-
-        /**
-         * Construct <tt>Shader</tt> from compiled SPIR-V file.
-         * @param path Path to the compiled SPIR-V file.
-         * @param stage Shader stage.
-         * @param entryPoint Entry point function name (default: "main").
-         */
-        Shader(const std::filesystem::path &path, VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage, const char *entryPoint = "main");
-
-        /**
-         * Construct <tt>Shader</tt> from compiled SPIR-V file.
-         * @param path Path to the compiled SPIR-V file.
-         * @param stage Shader stage.
-         * @param specializationInfo Specialization info that are used for specialization constants.
-         * @param entryPoint Entry point function name (default: "main").
-         * @note \p specializationInfo entries must live longer than the destination pipeline creation finish.
-         */
-        Shader(
-            const std::filesystem::path &path, 
-            VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage, 
-            const VULKAN_HPP_NAMESPACE::SpecializationInfo &specializationInfo [[clang::lifetimebound]], 
-            const char *entryPoint = "main"
-        ) : Shader { path, stage, entryPoint } {
-            this->specializationInfo.emplace(specializationInfo);
-        }
-
+import :utils.RefHolder;
 #ifdef VKU_USE_SHADERC
-        /**
-         * Construct <tt>Shader</tt> from GLSL source code.
-         * @param compiler Shader compiler instance.
-         * @param glsl GLSL source code.
-         * @param stage Shader stage. Only vertex/tessellation control/tessellation evaluation/geometry/fragment/compute shaders are supported.
-         * @param entryPoint Entry point function name (default: "main").
-         * @param identifier Identifier for the shader (default: current source location).
-         * @throw std::runtime_error If \p stage is unsupported.
-         * @throw std::runtime_error If shader compilation failed.
-         */
-        Shader(
-            const shaderc::Compiler &compiler, 
-            std::string_view glsl, 
-            VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage, 
-            const char *entryPoint = "main", 
-            const char *identifier = details::to_string(std::source_location::current()).c_str());
-        
-        /**
-         * Construct <tt>Shader</tt> from GLSL source code.
-         * @param compiler Shader compiler instance.
-         * @param glsl GLSL source code.
-         * @param stage Shader stage. Only vertex/tessellation control/tessellation evaluation/geometry/fragment/compute shaders are supported.
-         * @param specializationInfo Specialization info that are used for specialization constants.
-         * @param entryPoint Entry point function name (default: "main").
-         * @param identifier Identifier for the shader (default: current source location).
-         * @throw std::runtime_error If \p stage is unsupported.
-         * @throw std::runtime_error If shader compilation failed.
-         * @note \p specializationInfo entries must live longer than the destination pipeline creation finish.
-         */
-        Shader(
-            const shaderc::Compiler &compiler, 
-            std::string_view glsl, 
-            VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage, 
-            const VULKAN_HPP_NAMESPACE::SpecializationInfo &specializationInfo [[clang::lifetimebound]], 
-            const char *entryPoint = "main", 
-            const char *identifier = details::to_string(std::source_location::current()).c_str()
-        ) : Shader { compiler, glsl, stage, entryPoint, identifier } {
-            this->specializationInfo.emplace(specializationInfo);
-        }
+import :details.to_string;
 #endif
-    };
-}
 
-// --------------------
-// Implementations.
-// --------------------
+#ifdef _MSC_VER
+#define PATH_C_STR(...) (__VA_ARGS__).string().c_str()
+#else
+#define PATH_C_STR(...) (__VA_ARGS__).c_str()
+#endif
 
 [[nodiscard]] auto loadFileAsBinary(
     const std::filesystem::path &path
-) -> std::vector<std::uint32_t> {
+) -> std::vector<std::byte> {
     std::ifstream file { path, std::ios::binary };
     if (!file) {
         throw std::runtime_error { std::format("Failed to open file: {} (error code={})", std::strerror(errno), errno) };
@@ -156,32 +56,20 @@ namespace vku {
     const auto fileSize = file.tellg();
     file.seekg(0, std::ios::beg);
 
-    std::vector<std::uint32_t> result(fileSize / sizeof(std::uint32_t));
+    std::vector<std::byte> result(fileSize);
     file.read(reinterpret_cast<char*>(result.data()), fileSize);
 
     return result;
 }
 
-vku::Shader::Shader(
-    std::vector<std::uint32_t> code,
-    VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage,
-    const char *entryPoint
-) : code { std::move(code) },
-    stage { stage },
-    entryPoint { entryPoint } { }
-
-vku::Shader::Shader(
-    const std::filesystem::path &path,
-    VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage,
-    const char *entryPoint
-) : code { loadFileAsBinary(path) },
-    stage { stage },
-    entryPoint { entryPoint } { }
+template <typename T, typename U>
+[[nodiscard]] constexpr auto as(std::span<U> span) noexcept -> std::span<T> {
+    assert(span.size_bytes() % sizeof(T) == 0 && "Size of span must be a multiple of the size of T");
+    return { reinterpret_cast<T*>(span.data()), span.size_bytes() / sizeof(T) };
+}
 
 #ifdef VKU_USE_SHADERC
-[[nodiscard]] constexpr auto getShaderKind(
-    VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage
-) -> shaderc_shader_kind {
+[[nodiscard]] constexpr auto getShaderKind(VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage) -> shaderc_shader_kind {
     switch (stage) {
         case VULKAN_HPP_NAMESPACE::ShaderStageFlagBits::eVertex:
             return shaderc_glsl_vertex_shader;
@@ -196,33 +84,74 @@ vku::Shader::Shader(
         case VULKAN_HPP_NAMESPACE::ShaderStageFlagBits::eCompute:
             return shaderc_glsl_compute_shader;
         default:
-            throw std::runtime_error { std::format("Unsupported shader stage: {}", details::to_string(stage)) };
+            throw std::runtime_error { std::format("Unsupported shader stage: {}", to_string(stage)) };
     }
 }
-
-vku::Shader::Shader(
-    const shaderc::Compiler &compiler,
-    std::string_view glsl,
-    VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage,
-    const char *entryPoint,
-    const char *identifier
-) : stage { stage },
-    entryPoint { entryPoint } {
-    shaderc::CompileOptions compileOptions;
-    // TODO: parameter option for selecting Vulkan version?
-    compileOptions.SetTargetEnvironment(shaderc_target_env_vulkan, shaderc_env_version_vulkan_1_2);
-#ifdef NDEBUG
-    compileOptions.SetOptimizationLevel(shaderc_optimization_level_performance);
 #endif
 
-    const auto result = compiler.CompileGlslToSpv(
-        glsl.data(), glsl.size(),
-        getShaderKind(stage),
-        entryPoint, identifier, compileOptions);
-    if (result.GetCompilationStatus() != shaderc_compilation_status_success) {
-        throw std::runtime_error { std::format("Failed to compile shader: {}", result.GetErrorMessage()) };
-    }
+namespace vku {
+    export struct Shader {
+        std::span<const std::uint32_t> code;
+        VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage;
+        const VULKAN_HPP_NAMESPACE::SpecializationInfo *pSpecializationInfo;
+        const char *entryPoint = "main";
 
-    code = result | std::ranges::to<std::vector>();
+        [[nodiscard]] static auto fromSpirvFile(
+            const std::filesystem::path &path,
+            VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage,
+            const VULKAN_HPP_NAMESPACE::SpecializationInfo *pSpecializationInfo [[clang::lifetimebound]] = nullptr,
+            const char *entryPoint = "main"
+        ) -> RefHolder<Shader, std::vector<std::byte>> {
+            return {
+                [=](std::span<const std::byte> code) {
+                    return Shader { as<const std::uint32_t>(code), stage, pSpecializationInfo, entryPoint };
+                },
+                loadFileAsBinary(path),
+            };
+        }
+
+#ifdef VKU_USE_SHADERC
+        [[nodiscard]] static auto fromGLSLString(
+            shaderc::Compiler compiler,
+            std::string_view glsl,
+            VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage,
+            const shaderc::CompileOptions &compileOptions,
+            const VULKAN_HPP_NAMESPACE::SpecializationInfo *pSpecializationInfo [[clang::lifetimebound]] = nullptr,
+            const char *identifier = details::to_string(std::source_location::current()).c_str()
+        ) -> RefHolder<Shader, std::vector<std::uint32_t>> {
+            const auto compilationResult = compiler.CompileGlslToSpv(glsl.data(), glsl.size(), getShaderKind(stage), identifier, "main", compileOptions);
+            if (compilationResult.GetCompilationStatus() != shaderc_compilation_status_success) {
+                throw std::runtime_error { std::format("Failed to compile shader: {}", compilationResult.GetErrorMessage()) };
+            }
+
+            return {
+                [=](std::span<const std::uint32_t> code) {
+                    return Shader { code, stage, pSpecializationInfo };
+                },
+                compilationResult | std::ranges::to<std::vector>(),
+            };
+        }
+
+        [[nodiscard]] static auto fromGLSLFile(
+            shaderc::Compiler compiler,
+            const std::filesystem::path &glslPath,
+            VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage,
+            const shaderc::CompileOptions &compileOptions,
+            const VULKAN_HPP_NAMESPACE::SpecializationInfo *pSpecializationInfo [[clang::lifetimebound]] = nullptr
+        ) -> RefHolder<Shader, std::vector<std::uint32_t>> {
+            const std::vector glsl = loadFileAsBinary(glslPath);
+            const auto compilationResult = compiler.CompileGlslToSpv(reinterpret_cast<const char*>(glsl.data()), glsl.size(), getShaderKind(stage), PATH_C_STR(glslPath), "main", compileOptions);
+            if (compilationResult.GetCompilationStatus() != shaderc_compilation_status_success) {
+                throw std::runtime_error { std::format("Failed to compile shader: {}", compilationResult.GetErrorMessage()) };
+            }
+
+            return {
+                [=](std::span<const std::uint32_t> code) {
+                    return Shader { code, stage, pSpecializationInfo };
+                },
+                compilationResult | std::ranges::to<std::vector>(),
+            };
+        }
+#endif
+    };
 }
-#endif

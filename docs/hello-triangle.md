@@ -775,8 +775,8 @@ int main() {
         vku::getDefaultGraphicsPipelineCreateInfo(
             vku::createPipelineStages(
                 gpu.device,
-                vku::Shader { COMPILED_SHADER_DIR "/triangle.vert.spv" /* path */, vk::ShaderStageFlagBits::eVertex },
-                vku::Shader { COMPILED_SHADER_DIR "/triangle.frag.spv" /* path */, vk::ShaderStageFlagBits::eFragment }).get(),
+                vku::Shader::fromSpirvFile(COMPILED_SHADER_DIR "/triangle.vert.spv" /* path */, vk::ShaderStageFlagBits::eVertex),
+                vku::Shader::fromSpirvFile(COMPILED_SHADER_DIR "/triangle.frag.spv" /* path */, vk::ShaderStageFlagBits::eFragment)).get(),
             *pipelineLayout, 1 /* colorAttachmentCount */) // stages
             .setPRasterizationState(vku::unsafeAddress(vk::PipelineRasterizationStateCreateInfo {
                 {},
@@ -839,7 +839,7 @@ What happened? Let's see the explanation:
    ```
    Each parameter represents:
    - `device`: The Vulkan device which creates the shader modules.
-   - `shaders`: The `vku::Shader` objects that represent the shader codes and their infos, such like shader stage (`vk::ShaderStageFlagBits`) and entry point (`"main"` by default). You can construct the struct by either the shader path (`std::filesystem::path`), existing SPIR-V binary (`std::vector<std::uint32_t>`), or raw GLSL string (`shaderc::Compiler` and `std::string_view`).
+   - `shaders`: The `vku::Shader` objects that represent the shader codes and their infos, such like shader stage (`vk::ShaderStageFlagBits`), specialization constants (`nullptr` by default) and entry point (`"main"` by default). You can construct the struct by existing SPIR-V binary (any contiguous range of `std::uint32_t`s that can be convertible to `std::span<const std::uint32_t>`), or you may use a convenient functions like `vku::Shader::fromSpirvFile` (load SPIR-V compiled binary from the file directly) or 
 
    And since the result is `vku::RefHolder` of the `vk::PipelineShaderStageCreateInfo` array, you can finally get the lvalue reference of inner stage create infos by calling the `get()` method.
 
@@ -875,8 +875,8 @@ What happened? Let's see the explanation:
    vku::getGraphicsPipelineCreateInfo(
        vku::createPipelineStages(
            gpu.device,
-           vku::Shader { compiler, vertexShaderCode, vk::ShaderStageFlagBits::eVertex },
-           vku::Shader { compiler, fragmentShaderCode, vk::ShaderStageFlagBits::eFragment }
+           vku::Shader::fromSpirvFile(compiler, vertexShaderCode, vk::ShaderStageFlagBits::eVertex),
+           vku::Shader::fromSpirvFile(compiler, fragmentShaderCode, vk::ShaderStageFlagBits::eFragment)
        ).get(),
        *pipelineLayout, 1)
       ... // Other pipeline settings
@@ -1439,8 +1439,8 @@ int main() {
         vku::getDefaultGraphicsPipelineCreateInfo(
             vku::createPipelineStages(
                 gpu.device,
-                vku::Shader { COMPILED_SHADER_DIR "/triangle.vert.spv", vk::ShaderStageFlagBits::eVertex },
-                vku::Shader { COMPILED_SHADER_DIR "/triangle.frag.spv", vk::ShaderStageFlagBits::eFragment }).get(),
+                vku::Shader::fromSpirvFile(COMPILED_SHADER_DIR "/triangle.vert.spv", vk::ShaderStageFlagBits::eVertex),
+                vku::Shader::fromSpirvFile(COMPILED_SHADER_DIR "/triangle.frag.spv", vk::ShaderStageFlagBits::eFragment)).get(),
             *pipelineLayout, 1)
             .setPRasterizationState(vku::unsafeAddress(vk::PipelineRasterizationStateCreateInfo {
                 {},
