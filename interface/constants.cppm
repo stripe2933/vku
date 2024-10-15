@@ -29,8 +29,18 @@ namespace vku::allocation {
         VMA_HPP_NAMESPACE::MemoryUsage::eAuto,
     };
 
+    export constexpr VMA_HPP_NAMESPACE::AllocationCreateInfo hostTransferWrite {
+        VMA_HPP_NAMESPACE::AllocationCreateFlagBits::eHostAccessSequentialWrite | VMA_HPP_NAMESPACE::AllocationCreateFlagBits::eHostAccessAllowTransferInstead | VMA_HPP_NAMESPACE::AllocationCreateFlagBits::eMapped,
+        VMA_HPP_NAMESPACE::MemoryUsage::eAuto,
+    };
+
     export constexpr VMA_HPP_NAMESPACE::AllocationCreateInfo hostRead {
         VMA_HPP_NAMESPACE::AllocationCreateFlagBits::eHostAccessRandom | VMA_HPP_NAMESPACE::AllocationCreateFlagBits::eMapped,
+        VMA_HPP_NAMESPACE::MemoryUsage::eAuto,
+    };
+
+    export constexpr VMA_HPP_NAMESPACE::AllocationCreateInfo hostTransferRead {
+        VMA_HPP_NAMESPACE::AllocationCreateFlagBits::eHostAccessRandom | VMA_HPP_NAMESPACE::AllocationCreateFlagBits::eHostAccessAllowTransferInstead | VMA_HPP_NAMESPACE::AllocationCreateFlagBits::eMapped,
         VMA_HPP_NAMESPACE::MemoryUsage::eAuto,
     };
 
