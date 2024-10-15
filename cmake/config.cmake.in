@@ -4,7 +4,7 @@ include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
 
 include(CMakeFindDependencyMacro)
 find_dependency(Vulkan 1.3.256)
-if (VKU_USE_SHADERC)
+if (@VKU_USE_SHADERC@)
     find_dependency(Vulkan COMPONENTS shaderc_combined)
 endif()
 find_dependency(VulkanMemoryAllocator)
