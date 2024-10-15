@@ -76,17 +76,16 @@ struct BufferFillComputer {
             {},
             createPipelineStages(
                 device,
-                vku::Shader {
+                vku::Shader::fromSpirvFile(
                     COMPILED_SHADER_DIR "/buffer_fill.comp.spv",
                     vk::ShaderStageFlagBits::eCompute,
                     // --------------------
                     // MAIN CODE TO TEST!
                     // --------------------
-                    vk::SpecializationInfo {
+                    vku::unsafeAddress(vk::SpecializationInfo {
                         vku::unsafeProxy(vk::SpecializationMapEntry { 0, 0, sizeof(value) }),
                         vku::unsafeProxy(value),
-                    },
-                }).get()[0],
+                    }))).get()[0],
             *pipelineLayout,
         } } { }
 };

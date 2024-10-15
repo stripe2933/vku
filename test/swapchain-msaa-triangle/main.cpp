@@ -150,8 +150,8 @@ int main(){
         vku::getDefaultGraphicsPipelineCreateInfo(
             createPipelineStages(
                 gpu.device,
-                vku::Shader { COMPILED_SHADER_DIR "/triangle.vert.spv", vk::ShaderStageFlagBits::eVertex },
-                vku::Shader { COMPILED_SHADER_DIR "/triangle.frag.spv", vk::ShaderStageFlagBits::eFragment }).get(),
+                vku::Shader::fromSpirvFile(COMPILED_SHADER_DIR "/triangle.vert.spv", vk::ShaderStageFlagBits::eVertex),
+                vku::Shader::fromSpirvFile(COMPILED_SHADER_DIR "/triangle.frag.spv", vk::ShaderStageFlagBits::eFragment)).get(),
             *pipelineLayout, 1, true, vk::SampleCountFlagBits::e4),
         // Specify the attachment formats for dynamic rendering.
         vk::PipelineRenderingCreateInfo {

@@ -96,7 +96,9 @@ struct ColorCheckComputer {
         } }
         , pipeline { device, nullptr, vk::ComputePipelineCreateInfo {
             {},
-            createPipelineStages(device, vku::Shader { COMPILED_SHADER_DIR "/color_check.comp.spv", vk::ShaderStageFlagBits::eCompute }).get()[0],
+            createPipelineStages(
+                device,
+                vku::Shader::fromSpirvFile(COMPILED_SHADER_DIR "/color_check.comp.spv", vk::ShaderStageFlagBits::eCompute)).get()[0],
             *pipelineLayout,
         } } { }
 };

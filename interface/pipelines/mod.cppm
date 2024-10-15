@@ -25,6 +25,9 @@ import std;
 #endif
 import :utils.RefHolder;
 
+template <typename T, std::size_t>
+using type_tag = T;
+
 namespace vku {
     /**
      * Create array of <tt>vk::PipelineShaderStageCreateInfos</tt> from <tt>vku::Shader</tt>s.
@@ -38,7 +41,7 @@ namespace vku {
      *     // vku::RefHolder<...>::get() to explicitly get the array, and access the first element.
      *     vku::createPipelineStages(
      *         device,
-     *         vku::Shader { "shader.comp.spv", vk::ShaderStageFlagBits::eCompute }).get()[0],
+     *         vku::Shader::fromSpirvFile("shader.comp.spv", vk::ShaderStageFlagBits::eCompute)).get()[0],
      *     *pipelineLayout,
      * } }; // vk::raii::ShaderModules that are stored in the vku::createPipelineStages's return value will be destroyed here.
      * @endcode
@@ -49,8 +52,8 @@ namespace vku {
      *     {},
      *     vku::createPipelineStages(
      *         device,
-     *         vku::Shader { "triangle.vert.spv", vk::ShaderStageFlagBits::eVertex },
-     *         vku::Shader { "triangle.frag.spv", vk::ShaderStageFlagBits::eFragment }).get(),
+     *         vku::Shader::fromSpirvFile("triangle.vert.spv", vk::ShaderStageFlagBits::eVertex),
+     *         vku::Shader::fromSpirvFile("triangle.frag.spv", vk::ShaderStageFlagBits::eFragment)).get(),
      *     ... // Remaining pipeline settings.
      * } };
      * @endcode
@@ -62,33 +65,40 @@ namespace vku {
      * be contextually converted to <tt>std::array<vk::PipelineShaderStageCreateInfo, sizeof...(shaders)></tt>. Each
      * create infos' corresponding <tt>vk::raii::ShaderModule</tt> will be stored in the return value.
      */
-    export template <std::convertible_to<Shader>... Shaders>
-    [[nodiscard]] auto createPipelineStages(const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device, const Shaders &...shaders)
-#ifdef _MSC_VER
-        -> RefHolder<std::array<VULKAN_HPP_NAMESPACE::PipelineShaderStageCreateInfo, sizeof...(Shaders)>, std::array<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ShaderModule, sizeof...(Shaders)>>
-#endif
-    {
-        return RefHolder {
-            [&](const auto &shaderModules) {
-                return std::apply([&](const auto &...shaderModule) {
-                    return std::array {
-                        VULKAN_HPP_NAMESPACE::PipelineShaderStageCreateInfo {
-                            {},
-                            shaders.stage,
-                            *shaderModule,
-                            shaders.entryPoint,
-                            shaders.specializationInfo.transform([](const auto &x) { return &x; }).value_or(nullptr),
-                        }...
-                    };
-                }, shaderModules);
-            },
-            std::array {
-                VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ShaderModule { device, VULKAN_HPP_NAMESPACE::ShaderModuleCreateInfo {
-                    {},
-                    shaders.code,
-                } }...
-            },
+    export template <typename... Shaders>
+    [[nodiscard]] auto createPipelineStages(
+        const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
+        const Shaders &...shaders
+    ) -> RefHolder<std::array<VULKAN_HPP_NAMESPACE::PipelineShaderStageCreateInfo, sizeof...(Shaders)>, std::array<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ShaderModule, sizeof...(Shaders)>> {
+        constexpr auto impl = []<std::size_t... Is>(
+            std::index_sequence<Is...>,
+            const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
+            const type_tag<Shader, Is> &...shaders
+        ) -> RefHolder<std::array<VULKAN_HPP_NAMESPACE::PipelineShaderStageCreateInfo, sizeof...(Shaders)>, std::array<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ShaderModule, sizeof...(Shaders)>> {
+            return {
+                [&](const auto &shaderModules) {
+                    return std::apply([&](const auto &...shaderModule) {
+                        return std::array {
+                            VULKAN_HPP_NAMESPACE::PipelineShaderStageCreateInfo {
+                                {},
+                                shaders.stage,
+                                *shaderModule,
+                                shaders.entryPoint,
+                                shaders.pSpecializationInfo,
+                            }...
+                        };
+                    }, shaderModules);
+                },
+                std::array {
+                    VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ShaderModule { device, VULKAN_HPP_NAMESPACE::ShaderModuleCreateInfo {
+                        {},
+                        shaders.code,
+                    } }...
+                },
+            };
         };
+
+        return impl(std::make_index_sequence<sizeof...(shaders)>{}, device, shaders...);
     }
 
     /**
