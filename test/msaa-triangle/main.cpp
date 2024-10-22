@@ -150,14 +150,14 @@ int main(){
                     vk::PipelineStageFlagBits2::eColorAttachmentOutput, vk::AccessFlagBits2::eColorAttachmentRead | vk::AccessFlagBits2::eColorAttachmentWrite,
                     {}, vk::ImageLayout::eAttachmentOptimal,
                     vk::QueueFamilyIgnored, vk::QueueFamilyIgnored,
-                    attachmentGroup.getColorAttachment(0).image, vku::fullSubresourceRange(),
+                    attachmentGroup.getColorAttachment(0).multisampleImage, vku::fullSubresourceRange(),
                 },
                 vk::ImageMemoryBarrier2 {
                     {}, {},
                     vk::PipelineStageFlagBits2::eColorAttachmentOutput, vk::AccessFlagBits2::eColorAttachmentRead | vk::AccessFlagBits2::eColorAttachmentWrite,
                     {}, vk::ImageLayout::eAttachmentOptimal,
                     vk::QueueFamilyIgnored, vk::QueueFamilyIgnored,
-                    attachmentGroup.getColorAttachment(0).resolveImage, vku::fullSubresourceRange(),
+                    attachmentGroup.getColorAttachment(0).image, vku::fullSubresourceRange(),
                 },
                 vk::ImageMemoryBarrier2 {
                     {}, {},

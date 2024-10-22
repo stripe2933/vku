@@ -64,38 +64,38 @@ namespace vku {
 
         auto addColorAttachment(
             const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
+            const Image &multisampleImage,
             const Image &image,
-            const Image &resolveImage,
             VULKAN_HPP_NAMESPACE::Format viewFormat = {}
         ) -> const MsaaAttachment&;
         auto addColorAttachment(
             const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
+            const Image &multisampleImage,
             const Image &image,
-            const Image &resolveImage,
-            const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &viewCreateInfo,
-            const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &resolveViewCreateInfo
+            const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &multisampleViewCreateInfo,
+            const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &viewCreateInfo
         ) -> const MsaaAttachment&;
         auto addSwapchainAttachment(
             const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
-            const Image &image,
+            const Image &multisampleImage,
             std::span<const VULKAN_HPP_NAMESPACE::Image> swapchainImages,
             VULKAN_HPP_NAMESPACE::Format viewFormat = {}
         ) -> const SwapchainMsaaAttachment&;
         auto addSwapchainAttachment(
             const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
-            const Image &image,
+            const Image &multisampleImage,
             std::span<const VULKAN_HPP_NAMESPACE::Image> swapchainImages,
-            const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &viewCreateInfo
+            const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &multisampleViewCreateInfo
         ) -> const SwapchainMsaaAttachment&;
         auto setDepthStencilAttachment(
             const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
-            const Image &image,
+            const Image &multisampleImage,
             VULKAN_HPP_NAMESPACE::Format viewFormat = {}
         ) -> const Attachment&;
         auto setDepthStencilAttachment(
             const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
-            const Image &image,
-            const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &viewCreateInfo
+            const Image &multisampleImage,
+            const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &multisampleViewCreateInfo
             ) -> const Attachment&;
 
         /**
@@ -179,27 +179,27 @@ vku::MsaaAttachmentGroup::MsaaAttachmentGroup(
 
 auto vku::MsaaAttachmentGroup::addColorAttachment(
     const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
+    const Image &multisampleImage,
     const Image &image,
-    const Image &resolveImage,
     VULKAN_HPP_NAMESPACE::Format viewFormat
 ) -> const MsaaAttachment& {
     return addColorAttachment(
         device,
+        multisampleImage,
         image,
-        resolveImage,
         VULKAN_HPP_NAMESPACE::ImageViewCreateInfo {
             {},
-            image,
+            multisampleImage,
             VULKAN_HPP_NAMESPACE::ImageViewType::e2D,
-            viewFormat == VULKAN_HPP_NAMESPACE::Format::eUndefined ? image.format : viewFormat,
+            viewFormat == VULKAN_HPP_NAMESPACE::Format::eUndefined ? multisampleImage.format : viewFormat,
             {},
             { VULKAN_HPP_NAMESPACE::ImageAspectFlagBits::eColor, 0, 1, 0, 1 },
         },
         VULKAN_HPP_NAMESPACE::ImageViewCreateInfo {
             {},
-            resolveImage,
+            image,
             VULKAN_HPP_NAMESPACE::ImageViewType::e2D,
-            viewFormat == VULKAN_HPP_NAMESPACE::Format::eUndefined ? resolveImage.format : viewFormat,
+            viewFormat == VULKAN_HPP_NAMESPACE::Format::eUndefined ? image.format : viewFormat,
             {},
             { VULKAN_HPP_NAMESPACE::ImageAspectFlagBits::eColor, 0, 1, 0, 1 },
         });
@@ -207,34 +207,34 @@ auto vku::MsaaAttachmentGroup::addColorAttachment(
 
 auto vku::MsaaAttachmentGroup::addColorAttachment(
     const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
+    const Image &multisampleImage,
     const Image &image,
-    const Image &resolveImage,
-    const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &viewCreateInfo,
-    const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &resolveViewCreateInfo
+    const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &multisampleViewCreateInfo,
+    const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &viewCreateInfo
 ) -> const MsaaAttachment & {
     return *get_if<MsaaAttachment>(&colorAttachments.emplace_back(
         std::in_place_type<MsaaAttachment>,
+        multisampleImage,
+        VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView { device, multisampleViewCreateInfo },
         image,
-        VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView { device, viewCreateInfo },
-        resolveImage,
-        VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView { device, resolveViewCreateInfo }));
+        VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView { device, viewCreateInfo }));
 }
 
 auto vku::MsaaAttachmentGroup::addSwapchainAttachment(
     const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
-    const Image &image,
+    const Image &multisampleImage,
     std::span<const VULKAN_HPP_NAMESPACE::Image> swapchainImages,
     VULKAN_HPP_NAMESPACE::Format viewFormat
 ) -> const SwapchainMsaaAttachment& {
     return addSwapchainAttachment(
         device,
-        image,
+        multisampleImage,
         swapchainImages,
         VULKAN_HPP_NAMESPACE::ImageViewCreateInfo {
             {},
-            image,
+            multisampleImage,
             VULKAN_HPP_NAMESPACE::ImageViewType::e2D,
-            viewFormat == VULKAN_HPP_NAMESPACE::Format::eUndefined ? image.format : viewFormat,
+            viewFormat == VULKAN_HPP_NAMESPACE::Format::eUndefined ? multisampleImage.format : viewFormat,
             {},
             { VULKAN_HPP_NAMESPACE::ImageAspectFlagBits::eColor, 0, 1, 0, 1 },
         });
@@ -242,9 +242,9 @@ auto vku::MsaaAttachmentGroup::addSwapchainAttachment(
 
 auto vku::MsaaAttachmentGroup::addSwapchainAttachment(
     const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
-    const Image &image,
+    const Image &multisampleImage,
     std::span<const VULKAN_HPP_NAMESPACE::Image> swapchainImages,
-    const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &viewCreateInfo
+    const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &multisampleViewCreateInfo
 ) -> const SwapchainMsaaAttachment& {
     std::vector<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView> resolveViews;
     resolveViews.reserve(swapchainImages.size());
@@ -253,7 +253,7 @@ auto vku::MsaaAttachmentGroup::addSwapchainAttachment(
             {},
             swapchainImage,
             VULKAN_HPP_NAMESPACE::ImageViewType::e2D,
-            viewCreateInfo.format,
+            multisampleViewCreateInfo.format,
             {},
             { VULKAN_HPP_NAMESPACE::ImageAspectFlagBits::eColor, 0, 1, 0, 1 },
         });
@@ -261,22 +261,22 @@ auto vku::MsaaAttachmentGroup::addSwapchainAttachment(
 
     return *get_if<SwapchainMsaaAttachment>(&colorAttachments.emplace_back(
         std::in_place_type<SwapchainMsaaAttachment>,
-        image,
-        VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView { device, viewCreateInfo },
+        multisampleImage,
+        VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView { device, multisampleViewCreateInfo },
         std::move(resolveViews)));
 }
 
 auto vku::MsaaAttachmentGroup::setDepthStencilAttachment(
     const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
-    const Image &image,
+    const Image &multisampleImage,
     VULKAN_HPP_NAMESPACE::Format viewFormat
 ) -> const Attachment& {
     if (viewFormat == VULKAN_HPP_NAMESPACE::Format::eUndefined) {
-        viewFormat = image.format;
+        viewFormat = multisampleImage.format;
     }
-    return setDepthStencilAttachment(device, image, VULKAN_HPP_NAMESPACE::ImageViewCreateInfo {
+    return setDepthStencilAttachment(device, multisampleImage, VULKAN_HPP_NAMESPACE::ImageViewCreateInfo {
         {},
-        image,
+        multisampleImage,
         VULKAN_HPP_NAMESPACE::ImageViewType::e2D,
         viewFormat,
         {},
@@ -286,10 +286,10 @@ auto vku::MsaaAttachmentGroup::setDepthStencilAttachment(
 
 auto vku::MsaaAttachmentGroup::setDepthStencilAttachment(
     const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
-    const Image &image,
-    const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &viewCreateInfo
+    const Image &multisampleImage,
+    const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &multisampleViewCreateInfo
 ) -> const Attachment & {
-    return depthStencilAttachment.emplace(image, VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView { device, viewCreateInfo });
+    return depthStencilAttachment.emplace(multisampleImage, VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView { device, multisampleViewCreateInfo });
 }
 
 auto vku::MsaaAttachmentGroup::createColorImage(
@@ -336,8 +336,8 @@ auto vku::MsaaAttachmentGroup::getRenderingInfo(
         auto *const pMsaaAttachment = get_if<MsaaAttachment>(&attachment);
         assert(pMsaaAttachment && "More than one SwapchainMsaaAttachment in the attachment group.");
         renderingAttachmentInfos.push_back({
-            *pMsaaAttachment->view, VULKAN_HPP_NAMESPACE::ImageLayout::eColorAttachmentOptimal,
-            info.resolveMode, *pMsaaAttachment->resolveView, VULKAN_HPP_NAMESPACE::ImageLayout::eColorAttachmentOptimal,
+            *pMsaaAttachment->multisampleView, VULKAN_HPP_NAMESPACE::ImageLayout::eColorAttachmentOptimal,
+            info.resolveMode, *pMsaaAttachment->view, VULKAN_HPP_NAMESPACE::ImageLayout::eColorAttachmentOptimal,
             info.loadOp, info.storeOp, info.clearValue,
         });
     }
@@ -374,16 +374,16 @@ auto vku::MsaaAttachmentGroup::getRenderingInfo(
             if (swapchainAttachmentPushed) {
                 auto *pMsaaAttachment = get_if<MsaaAttachment>(&attachment);
                 assert(pMsaaAttachment && "More than one SwapchainMsaaAttachment in the attachment group.");
-                return std::pair { *pMsaaAttachment->view, *pMsaaAttachment->resolveView };
+                return std::pair { *pMsaaAttachment->multisampleView, *pMsaaAttachment->view };
             }
 
             return visit(details::multilambda {
-                [](const MsaaAttachment &msaaAttachment) {
-                    return std::pair { *msaaAttachment.view, *msaaAttachment.resolveView };
+                [](const MsaaAttachment &multisampleAttachment) {
+                    return std::pair { *multisampleAttachment.multisampleView, *multisampleAttachment.view };
                 },
                 [&](const SwapchainMsaaAttachment &swapchainMsaaAttachment) {
                     swapchainAttachmentPushed = true;
-                    return std::pair { *swapchainMsaaAttachment.view, *swapchainMsaaAttachment.resolveViews[swapchainImageIndex] };
+                    return std::pair { *swapchainMsaaAttachment.multisampleView, *swapchainMsaaAttachment.views[swapchainImageIndex] };
                 },
             }, attachment);
         }();
@@ -422,8 +422,8 @@ auto vku::MsaaAttachmentGroup::getRenderingInfo(
         auto *const pMsaaAttachment = get_if<MsaaAttachment>(&attachment);
         assert(pMsaaAttachment && "More than one SwapchainMsaaAttachment in the attachment group.");
         renderingAttachmentInfos.push_back({
-            *pMsaaAttachment->view, VULKAN_HPP_NAMESPACE::ImageLayout::eColorAttachmentOptimal,
-            info.resolveMode, *pMsaaAttachment->resolveView, VULKAN_HPP_NAMESPACE::ImageLayout::eColorAttachmentOptimal,
+            *pMsaaAttachment->multisampleView, VULKAN_HPP_NAMESPACE::ImageLayout::eColorAttachmentOptimal,
+            info.resolveMode, *pMsaaAttachment->view, VULKAN_HPP_NAMESPACE::ImageLayout::eColorAttachmentOptimal,
             info.loadOp, info.storeOp, info.clearValue,
         });
     }
@@ -467,16 +467,16 @@ auto vku::MsaaAttachmentGroup::getRenderingInfo(
             if (swapchainAttachmentPushed) {
                 auto *pMsaaAttachment = get_if<MsaaAttachment>(&attachment);
                 assert(pMsaaAttachment && "More than one SwapchainMsaaAttachment in the attachment group.");
-                return std::pair { *pMsaaAttachment->view, *pMsaaAttachment->resolveView };
+                return std::pair { *pMsaaAttachment->multisampleView, *pMsaaAttachment->view };
             }
 
             return visit(details::multilambda {
-                [](const MsaaAttachment &msaaAttachment) {
-                    return std::pair { *msaaAttachment.view, *msaaAttachment.resolveView };
+                [](const MsaaAttachment &multisampleAttachment) {
+                    return std::pair { *multisampleAttachment.multisampleView, *multisampleAttachment.view };
                 },
                 [&](const SwapchainMsaaAttachment &swapchainMsaaAttachment) {
                     swapchainAttachmentPushed = true;
-                    return std::pair { *swapchainMsaaAttachment.view, *swapchainMsaaAttachment.resolveViews[swapchainImageIndex] };
+                    return std::pair { *swapchainMsaaAttachment.multisampleView, *swapchainMsaaAttachment.views[swapchainImageIndex] };
                 },
             }, attachment);
         }();
