@@ -77,8 +77,8 @@ target_sources(vku PUBLIC
         interface/rendering/Attachment.cppm
         interface/rendering/AttachmentGroup.cppm
         interface/rendering/AttachmentGroupBase.cppm
-        interface/rendering/MsaaAttachment.cppm
-        interface/rendering/MsaaAttachmentGroup.cppm
+        interface/rendering/MultisampleAttachment.cppm
+        interface/rendering/MultisampleAttachmentGroup.cppm
         interface/utils/mod.cppm
         interface/utils/RefHolder.cppm
 )

@@ -1,4 +1,4 @@
-/** @file rendering/MsaaAttachment.cppm
+/** @file rendering/MultisampleAttachment.cppm
  */
 
 module;
@@ -12,7 +12,7 @@ module;
 
 #include <vulkan/vulkan_hpp_macros.hpp>
 
-export module vku:rendering.MsaaAttachment;
+export module vku:rendering.MultisampleAttachment;
 
 #ifdef VKU_USE_STD_MODULE
 import std;
@@ -20,14 +20,14 @@ import std;
 export import :images.Image;
 
 namespace vku {
-    export struct MsaaAttachment {
+    export struct MultisampleAttachment {
         Image multisampleImage;
         VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView multisampleView;
         Image image;
         VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView view;
     };
 
-    export struct SwapchainMsaaAttachment {
+    export struct SwapchainMultisampleAttachment {
         Image multisampleImage;
         VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView multisampleView;
         std::vector<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView> views;

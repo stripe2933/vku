@@ -135,7 +135,7 @@ int main(){
     } };
     const std::vector swapchainImages = (*gpu.device).getSwapchainImagesKHR(*swapchain);
 
-    vku::MsaaAttachmentGroup attachmentGroup { { 512, 512 }, vk::SampleCountFlagBits::e4 };
+    vku::MultisampleAttachmentGroup attachmentGroup { { 512, 512 }, vk::SampleCountFlagBits::e4 };
     attachmentGroup.addSwapchainAttachment(
         gpu.device,
         attachmentGroup.storeImage(attachmentGroup.createColorImage(gpu.allocator, vk::Format::eB8G8R8A8Srgb)),
@@ -231,8 +231,8 @@ int main(){
 
         // Begin dynamic rendering with clearing the color attachment by (0, 0, 0, 0) (transparent).
         commandBuffer.beginRenderingKHR(attachmentGroup.getRenderingInfo(
-            vku::MsaaAttachmentGroup::ColorAttachmentInfo { vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore, { 0.f, 0.f, 0.f, 0.f } },
-            vku::MsaaAttachmentGroup::DepthStencilAttachmentInfo { vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore, { 1.f, 0U } },
+            vku::MultisampleAttachmentGroup::ColorAttachmentInfo { vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore, { 0.f, 0.f, 0.f, 0.f } },
+            vku::MultisampleAttachmentGroup::DepthStencilAttachmentInfo { vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore, { 1.f, 0U } },
             swapchainImageIndex) DEVICE_DISPATCHER_PARAM_OPT(gpu.device));
 
         commandBuffer.setViewport(0, vku::toViewport(attachmentGroup.extent));

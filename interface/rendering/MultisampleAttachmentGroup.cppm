@@ -1,4 +1,4 @@
-/** @file rendering/MsaaAttachmentGroup.cppm
+/** @file rendering/MultisampleAttachmentGroup.cppm
  */
 
 module;
@@ -20,7 +20,7 @@ module;
 
 #include <vulkan/vulkan_hpp_macros.hpp>
 
-export module vku:rendering.MsaaAttachmentGroup;
+export module vku:rendering.MultisampleAttachmentGroup;
 
 #ifdef VKU_USE_STD_MODULE
 import std;
@@ -28,7 +28,7 @@ import std;
 import :details.functional;
 export import :rendering.Attachment;
 import :rendering.AttachmentGroupBase;
-export import :rendering.MsaaAttachment;
+export import :rendering.MultisampleAttachment;
 import :utils.RefHolder;
 
 // #define VMA_HPP_NAMESPACE to vma, if not defined.
@@ -37,7 +37,7 @@ import :utils.RefHolder;
 #endif
 
 namespace vku {
-    export struct MsaaAttachmentGroup : AttachmentGroupBase {
+    export struct MultisampleAttachmentGroup : AttachmentGroupBase {
         struct ColorAttachmentInfo {
             VULKAN_HPP_NAMESPACE::AttachmentLoadOp loadOp;
             VULKAN_HPP_NAMESPACE::AttachmentStoreOp storeOp;
@@ -52,41 +52,41 @@ namespace vku {
         };
 
         VULKAN_HPP_NAMESPACE::SampleCountFlagBits sampleCount;
-        std::vector<std::variant<MsaaAttachment, SwapchainMsaaAttachment>> colorAttachments;
+        std::vector<std::variant<MultisampleAttachment, SwapchainMultisampleAttachment>> colorAttachments;
         std::optional<Attachment> depthStencilAttachment;
 
-        explicit MsaaAttachmentGroup(const VULKAN_HPP_NAMESPACE::Extent2D &extent, VULKAN_HPP_NAMESPACE::SampleCountFlagBits sampleCount);
-        MsaaAttachmentGroup(const MsaaAttachmentGroup&) = delete;
-        MsaaAttachmentGroup(MsaaAttachmentGroup&&) noexcept = default;
-        auto operator=(const MsaaAttachmentGroup&) -> MsaaAttachmentGroup& = delete;
-        auto operator=(MsaaAttachmentGroup&&) noexcept -> MsaaAttachmentGroup& = default;
-        ~MsaaAttachmentGroup() override = default;
+        explicit MultisampleAttachmentGroup(const VULKAN_HPP_NAMESPACE::Extent2D &extent, VULKAN_HPP_NAMESPACE::SampleCountFlagBits sampleCount);
+        MultisampleAttachmentGroup(const MultisampleAttachmentGroup&) = delete;
+        MultisampleAttachmentGroup(MultisampleAttachmentGroup&&) noexcept = default;
+        auto operator=(const MultisampleAttachmentGroup&) -> MultisampleAttachmentGroup& = delete;
+        auto operator=(MultisampleAttachmentGroup&&) noexcept -> MultisampleAttachmentGroup& = default;
+        ~MultisampleAttachmentGroup() override = default;
 
         auto addColorAttachment(
             const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
             const Image &multisampleImage,
             const Image &image,
             VULKAN_HPP_NAMESPACE::Format viewFormat = {}
-        ) -> const MsaaAttachment&;
+        ) -> const MultisampleAttachment&;
         auto addColorAttachment(
             const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
             const Image &multisampleImage,
             const Image &image,
             const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &multisampleViewCreateInfo,
             const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &viewCreateInfo
-        ) -> const MsaaAttachment&;
+        ) -> const MultisampleAttachment&;
         auto addSwapchainAttachment(
             const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
             const Image &multisampleImage,
             std::span<const VULKAN_HPP_NAMESPACE::Image> swapchainImages,
             VULKAN_HPP_NAMESPACE::Format viewFormat = {}
-        ) -> const SwapchainMsaaAttachment&;
+        ) -> const SwapchainMultisampleAttachment&;
         auto addSwapchainAttachment(
             const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
             const Image &multisampleImage,
             std::span<const VULKAN_HPP_NAMESPACE::Image> swapchainImages,
             const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &multisampleViewCreateInfo
-        ) -> const SwapchainMsaaAttachment&;
+        ) -> const SwapchainMultisampleAttachment&;
         auto setDepthStencilAttachment(
             const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
             const Image &multisampleImage,
@@ -103,12 +103,12 @@ namespace vku {
          * @param index The index of the color attachment.
          * @return The const reference of the color attachment.
          * @note This function is designed to make it easier for users to access elements from <tt>attachmentGroup.colorAttachments[i]</tt>
-         * without needing to use the more cumbersome <tt>get<vku::MsaaAttachment>(...)</tt> call.
-         * @note This function is considered "unsafe" because if the element at the specified index isn't a <tt>vku::MsaaAttachment</tt>,
+         * without needing to use the more cumbersome <tt>get<vku::MultisampleAttachment>(...)</tt> call.
+         * @note This function is considered "unsafe" because if the element at the specified index isn't a <tt>vku::MultisampleAttachment</tt>,
          * it can lead to undefined behavior.
          */
-        [[nodiscard]] auto getColorAttachment(std::size_t index) const noexcept -> const MsaaAttachment& {
-            return *get_if<MsaaAttachment>(&colorAttachments[index]);
+        [[nodiscard]] auto getColorAttachment(std::size_t index) const noexcept -> const MultisampleAttachment& {
+            return *get_if<MultisampleAttachment>(&colorAttachments[index]);
         }
 
         /**
@@ -116,12 +116,12 @@ namespace vku {
          * @param index The index of the swapchain attachment.
          * @return The const reference of the swapchain attachment.
          * @note This function is designed to make it easier for users to access elements from <tt>attachmentGroup.colorAttachments[i]</tt>
-         * without needing to use the more cumbersome <tt>get<vku::SwapchainMsaaAttachment>(...)</tt> call.
-         * @note This function is considered "unsafe" because if the element at the specified index isn't a <tt>vku::SwapchainMsaaAttachment</tt>,
+         * without needing to use the more cumbersome <tt>get<vku::SwapchainMultisampleAttachment>(...)</tt> call.
+         * @note This function is considered "unsafe" because if the element at the specified index isn't a <tt>vku::SwapchainMultisampleAttachment</tt>,
          * it can lead to undefined behavior.
          */
-        [[nodiscard]] auto getSwapchainAttachment(std::size_t index) const noexcept -> const SwapchainMsaaAttachment& {
-            return *get_if<SwapchainMsaaAttachment>(&colorAttachments[index]);
+        [[nodiscard]] auto getSwapchainAttachment(std::size_t index) const noexcept -> const SwapchainMultisampleAttachment& {
+            return *get_if<SwapchainMultisampleAttachment>(&colorAttachments[index]);
         }
 
         [[nodiscard]] auto createColorImage(
@@ -171,18 +171,18 @@ namespace vku {
 // Implementations.
 // --------------------
 
-vku::MsaaAttachmentGroup::MsaaAttachmentGroup(
+vku::MultisampleAttachmentGroup::MultisampleAttachmentGroup(
     const VULKAN_HPP_NAMESPACE::Extent2D &extent,
     VULKAN_HPP_NAMESPACE::SampleCountFlagBits sampleCount
 ) : AttachmentGroupBase { extent },
     sampleCount { sampleCount } { }
 
-auto vku::MsaaAttachmentGroup::addColorAttachment(
+auto vku::MultisampleAttachmentGroup::addColorAttachment(
     const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
     const Image &multisampleImage,
     const Image &image,
     VULKAN_HPP_NAMESPACE::Format viewFormat
-) -> const MsaaAttachment& {
+) -> const MultisampleAttachment& {
     return addColorAttachment(
         device,
         multisampleImage,
@@ -205,27 +205,27 @@ auto vku::MsaaAttachmentGroup::addColorAttachment(
         });
 }
 
-auto vku::MsaaAttachmentGroup::addColorAttachment(
+auto vku::MultisampleAttachmentGroup::addColorAttachment(
     const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
     const Image &multisampleImage,
     const Image &image,
     const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &multisampleViewCreateInfo,
     const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &viewCreateInfo
-) -> const MsaaAttachment & {
-    return *get_if<MsaaAttachment>(&colorAttachments.emplace_back(
-        std::in_place_type<MsaaAttachment>,
+) -> const MultisampleAttachment & {
+    return *get_if<MultisampleAttachment>(&colorAttachments.emplace_back(
+        std::in_place_type<MultisampleAttachment>,
         multisampleImage,
         VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView { device, multisampleViewCreateInfo },
         image,
         VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView { device, viewCreateInfo }));
 }
 
-auto vku::MsaaAttachmentGroup::addSwapchainAttachment(
+auto vku::MultisampleAttachmentGroup::addSwapchainAttachment(
     const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
     const Image &multisampleImage,
     std::span<const VULKAN_HPP_NAMESPACE::Image> swapchainImages,
     VULKAN_HPP_NAMESPACE::Format viewFormat
-) -> const SwapchainMsaaAttachment& {
+) -> const SwapchainMultisampleAttachment& {
     return addSwapchainAttachment(
         device,
         multisampleImage,
@@ -240,12 +240,12 @@ auto vku::MsaaAttachmentGroup::addSwapchainAttachment(
         });
 }
 
-auto vku::MsaaAttachmentGroup::addSwapchainAttachment(
+auto vku::MultisampleAttachmentGroup::addSwapchainAttachment(
     const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
     const Image &multisampleImage,
     std::span<const VULKAN_HPP_NAMESPACE::Image> swapchainImages,
     const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &multisampleViewCreateInfo
-) -> const SwapchainMsaaAttachment& {
+) -> const SwapchainMultisampleAttachment& {
     std::vector<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView> resolveViews;
     resolveViews.reserve(swapchainImages.size());
     for (VULKAN_HPP_NAMESPACE::Image swapchainImage : swapchainImages) {
@@ -259,14 +259,14 @@ auto vku::MsaaAttachmentGroup::addSwapchainAttachment(
         });
     }
 
-    return *get_if<SwapchainMsaaAttachment>(&colorAttachments.emplace_back(
-        std::in_place_type<SwapchainMsaaAttachment>,
+    return *get_if<SwapchainMultisampleAttachment>(&colorAttachments.emplace_back(
+        std::in_place_type<SwapchainMultisampleAttachment>,
         multisampleImage,
         VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView { device, multisampleViewCreateInfo },
         std::move(resolveViews)));
 }
 
-auto vku::MsaaAttachmentGroup::setDepthStencilAttachment(
+auto vku::MultisampleAttachmentGroup::setDepthStencilAttachment(
     const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
     const Image &multisampleImage,
     VULKAN_HPP_NAMESPACE::Format viewFormat
@@ -284,7 +284,7 @@ auto vku::MsaaAttachmentGroup::setDepthStencilAttachment(
     });
 }
 
-auto vku::MsaaAttachmentGroup::setDepthStencilAttachment(
+auto vku::MultisampleAttachmentGroup::setDepthStencilAttachment(
     const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
     const Image &multisampleImage,
     const VULKAN_HPP_NAMESPACE::ImageViewCreateInfo &multisampleViewCreateInfo
@@ -292,7 +292,7 @@ auto vku::MsaaAttachmentGroup::setDepthStencilAttachment(
     return depthStencilAttachment.emplace(multisampleImage, VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView { device, multisampleViewCreateInfo });
 }
 
-auto vku::MsaaAttachmentGroup::createColorImage(
+auto vku::MultisampleAttachmentGroup::createColorImage(
     VMA_HPP_NAMESPACE::Allocator allocator,
     VULKAN_HPP_NAMESPACE::Format format,
     VULKAN_HPP_NAMESPACE::ImageUsageFlags usage,
@@ -301,7 +301,7 @@ auto vku::MsaaAttachmentGroup::createColorImage(
     return createAttachmentImage(allocator, format, sampleCount, usage, allocationCreateInfo);
 }
 
-auto vku::MsaaAttachmentGroup::createResolveImage(
+auto vku::MultisampleAttachmentGroup::createResolveImage(
     VMA_HPP_NAMESPACE::Allocator allocator,
     VULKAN_HPP_NAMESPACE::Format viewFormat,
     VULKAN_HPP_NAMESPACE::ImageUsageFlags usage,
@@ -310,7 +310,7 @@ auto vku::MsaaAttachmentGroup::createResolveImage(
     return createAttachmentImage(allocator, viewFormat, VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1, usage, allocationCreateInfo);
 }
 
-auto vku::MsaaAttachmentGroup::createDepthStencilImage(
+auto vku::MultisampleAttachmentGroup::createDepthStencilImage(
     VMA_HPP_NAMESPACE::Allocator allocator,
     VULKAN_HPP_NAMESPACE::Format format,
     VULKAN_HPP_NAMESPACE::ImageUsageFlags usage,
@@ -324,7 +324,7 @@ auto vku::MsaaAttachmentGroup::createDepthStencilImage(
         allocationCreateInfo);
 }
 
-auto vku::MsaaAttachmentGroup::getRenderingInfo(
+auto vku::MultisampleAttachmentGroup::getRenderingInfo(
     VULKAN_HPP_NAMESPACE::ArrayProxy<const ColorAttachmentInfo> colorAttachmentInfos
 ) const -> RefHolder<VULKAN_HPP_NAMESPACE::RenderingInfo, std::vector<VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo>> {
     assert(colorAttachments.size() == colorAttachmentInfos.size() && "Color attachment info count mismatch");
@@ -333,11 +333,11 @@ auto vku::MsaaAttachmentGroup::getRenderingInfo(
     std::vector<VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo> renderingAttachmentInfos;
     renderingAttachmentInfos.reserve(colorAttachmentInfos.size());
     for (const auto &[attachment, info] : std::views::zip(colorAttachments, colorAttachmentInfos)) {
-        auto *const pMsaaAttachment = get_if<MsaaAttachment>(&attachment);
-        assert(pMsaaAttachment && "More than one SwapchainMsaaAttachment in the attachment group.");
+        auto *const pMultisampleAttachment = get_if<MultisampleAttachment>(&attachment);
+        assert(pMultisampleAttachment && "More than one SwapchainMultisampleAttachment in the attachment group.");
         renderingAttachmentInfos.push_back({
-            *pMsaaAttachment->multisampleView, VULKAN_HPP_NAMESPACE::ImageLayout::eColorAttachmentOptimal,
-            info.resolveMode, *pMsaaAttachment->view, VULKAN_HPP_NAMESPACE::ImageLayout::eColorAttachmentOptimal,
+            *pMultisampleAttachment->multisampleView, VULKAN_HPP_NAMESPACE::ImageLayout::eColorAttachmentOptimal,
+            info.resolveMode, *pMultisampleAttachment->view, VULKAN_HPP_NAMESPACE::ImageLayout::eColorAttachmentOptimal,
             info.loadOp, info.storeOp, info.clearValue,
         });
     }
@@ -356,7 +356,7 @@ auto vku::MsaaAttachmentGroup::getRenderingInfo(
     };
 }
 
-auto vku::MsaaAttachmentGroup::getRenderingInfo(
+auto vku::MultisampleAttachmentGroup::getRenderingInfo(
     VULKAN_HPP_NAMESPACE::ArrayProxy<const ColorAttachmentInfo> colorAttachmentInfos,
     std::uint32_t swapchainImageIndex
 ) const -> RefHolder<VULKAN_HPP_NAMESPACE::RenderingInfo, std::vector<VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo>> {
@@ -366,24 +366,24 @@ auto vku::MsaaAttachmentGroup::getRenderingInfo(
     std::vector<VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo> renderingAttachmentInfos;
     renderingAttachmentInfos.reserve(colorAttachmentInfos.size());
 
-    // SwapchainMsaaAttachment can only appear once in the attachment group. Therefore, if a SwapchainMsaaAttachment
+    // SwapchainMultisampleAttachment can only appear once in the attachment group. Therefore, if a SwapchainMultisampleAttachment
     // already push_backed into renderingAttachmentInfos, explicit std::visit call for the rest variants is not necessary.
     bool swapchainAttachmentPushed = false;
     for (const auto &[attachment, info] : std::views::zip(colorAttachments, colorAttachmentInfos)) {
         const auto [view, resolveView] = [&]() {
             if (swapchainAttachmentPushed) {
-                auto *pMsaaAttachment = get_if<MsaaAttachment>(&attachment);
-                assert(pMsaaAttachment && "More than one SwapchainMsaaAttachment in the attachment group.");
-                return std::pair { *pMsaaAttachment->multisampleView, *pMsaaAttachment->view };
+                auto *pMultisampleAttachment = get_if<MultisampleAttachment>(&attachment);
+                assert(pMultisampleAttachment && "More than one SwapchainMultisampleAttachment in the attachment group.");
+                return std::pair { *pMultisampleAttachment->multisampleView, *pMultisampleAttachment->view };
             }
 
             return visit(details::multilambda {
-                [](const MsaaAttachment &multisampleAttachment) {
+                [](const MultisampleAttachment &multisampleAttachment) {
                     return std::pair { *multisampleAttachment.multisampleView, *multisampleAttachment.view };
                 },
-                [&](const SwapchainMsaaAttachment &swapchainMsaaAttachment) {
+                [&](const SwapchainMultisampleAttachment &swapchainMultisampleAttachment) {
                     swapchainAttachmentPushed = true;
-                    return std::pair { *swapchainMsaaAttachment.multisampleView, *swapchainMsaaAttachment.views[swapchainImageIndex] };
+                    return std::pair { *swapchainMultisampleAttachment.multisampleView, *swapchainMultisampleAttachment.views[swapchainImageIndex] };
                 },
             }, attachment);
         }();
@@ -409,7 +409,7 @@ auto vku::MsaaAttachmentGroup::getRenderingInfo(
     };
 }
 
-auto vku::MsaaAttachmentGroup::getRenderingInfo(
+auto vku::MultisampleAttachmentGroup::getRenderingInfo(
     VULKAN_HPP_NAMESPACE::ArrayProxy<const ColorAttachmentInfo> colorAttachmentInfos,
     const DepthStencilAttachmentInfo &depthStencilAttachmentInfo
 ) const -> RefHolder<VULKAN_HPP_NAMESPACE::RenderingInfo, std::vector<VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo>> {
@@ -419,11 +419,11 @@ auto vku::MsaaAttachmentGroup::getRenderingInfo(
     std::vector<VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo> renderingAttachmentInfos;
     renderingAttachmentInfos.reserve(colorAttachmentInfos.size() + 1);
     for (const auto &[attachment, info] : std::views::zip(colorAttachments, colorAttachmentInfos)) {
-        auto *const pMsaaAttachment = get_if<MsaaAttachment>(&attachment);
-        assert(pMsaaAttachment && "More than one SwapchainMsaaAttachment in the attachment group.");
+        auto *const pMultisampleAttachment = get_if<MultisampleAttachment>(&attachment);
+        assert(pMultisampleAttachment && "More than one SwapchainMultisampleAttachment in the attachment group.");
         renderingAttachmentInfos.push_back({
-            *pMsaaAttachment->multisampleView, VULKAN_HPP_NAMESPACE::ImageLayout::eColorAttachmentOptimal,
-            info.resolveMode, *pMsaaAttachment->view, VULKAN_HPP_NAMESPACE::ImageLayout::eColorAttachmentOptimal,
+            *pMultisampleAttachment->multisampleView, VULKAN_HPP_NAMESPACE::ImageLayout::eColorAttachmentOptimal,
+            info.resolveMode, *pMultisampleAttachment->view, VULKAN_HPP_NAMESPACE::ImageLayout::eColorAttachmentOptimal,
             info.loadOp, info.storeOp, info.clearValue,
         });
     }
@@ -448,7 +448,7 @@ auto vku::MsaaAttachmentGroup::getRenderingInfo(
     };
 }
 
-auto vku::MsaaAttachmentGroup::getRenderingInfo(
+auto vku::MultisampleAttachmentGroup::getRenderingInfo(
     VULKAN_HPP_NAMESPACE::ArrayProxy<const ColorAttachmentInfo> colorAttachmentInfos,
     const DepthStencilAttachmentInfo &depthStencilAttachmentInfo,
     std::uint32_t swapchainImageIndex
@@ -459,24 +459,24 @@ auto vku::MsaaAttachmentGroup::getRenderingInfo(
     std::vector<VULKAN_HPP_NAMESPACE::RenderingAttachmentInfo> renderingAttachmentInfos;
     renderingAttachmentInfos.reserve(colorAttachmentInfos.size() + 1);
 
-    // SwapchainMsaaAttachment can only appear once in the attachment group. Therefore, if a SwapchainMsaaAttachment
+    // SwapchainMultisampleAttachment can only appear once in the attachment group. Therefore, if a SwapchainMultisampleAttachment
     // already push_backed into renderingAttachmentInfos, explicit std::visit call for the rest variants is not necessary.
     bool swapchainAttachmentPushed = false;
     for (const auto &[attachment, info] : std::views::zip(colorAttachments, colorAttachmentInfos)) {
         const auto [view, resolveView] = [&]() {
             if (swapchainAttachmentPushed) {
-                auto *pMsaaAttachment = get_if<MsaaAttachment>(&attachment);
-                assert(pMsaaAttachment && "More than one SwapchainMsaaAttachment in the attachment group.");
-                return std::pair { *pMsaaAttachment->multisampleView, *pMsaaAttachment->view };
+                auto *pMultisampleAttachment = get_if<MultisampleAttachment>(&attachment);
+                assert(pMultisampleAttachment && "More than one SwapchainMultisampleAttachment in the attachment group.");
+                return std::pair { *pMultisampleAttachment->multisampleView, *pMultisampleAttachment->view };
             }
 
             return visit(details::multilambda {
-                [](const MsaaAttachment &multisampleAttachment) {
+                [](const MultisampleAttachment &multisampleAttachment) {
                     return std::pair { *multisampleAttachment.multisampleView, *multisampleAttachment.view };
                 },
-                [&](const SwapchainMsaaAttachment &swapchainMsaaAttachment) {
+                [&](const SwapchainMultisampleAttachment &swapchainMultisampleAttachment) {
                     swapchainAttachmentPushed = true;
-                    return std::pair { *swapchainMsaaAttachment.multisampleView, *swapchainMsaaAttachment.views[swapchainImageIndex] };
+                    return std::pair { *swapchainMultisampleAttachment.multisampleView, *swapchainMultisampleAttachment.views[swapchainImageIndex] };
                 },
             }, attachment);
         }();

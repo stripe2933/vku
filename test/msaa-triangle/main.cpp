@@ -107,7 +107,7 @@ int main(){
 
     const Gpu gpu { instance };
 
-    vku::MsaaAttachmentGroup attachmentGroup { { 512, 512 }, vk::SampleCountFlagBits::e4 };
+    vku::MultisampleAttachmentGroup attachmentGroup { { 512, 512 }, vk::SampleCountFlagBits::e4 };
     attachmentGroup.addColorAttachment(
         gpu.device,
         attachmentGroup.storeImage(attachmentGroup.createColorImage(gpu.allocator, vk::Format::eR8G8B8A8Unorm)),
@@ -171,8 +171,8 @@ int main(){
 
         // Begin dynamic rendering with clearing the color attachment by (0, 0, 0, 0) (transparent).
         cb.beginRenderingKHR(attachmentGroup.getRenderingInfo(
-            vku::MsaaAttachmentGroup::ColorAttachmentInfo { vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore, { 0.f, 0.f, 0.f, 0.f } },
-            vku::MsaaAttachmentGroup::DepthStencilAttachmentInfo { vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore, { 1.f, 0U } })
+            vku::MultisampleAttachmentGroup::ColorAttachmentInfo { vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore, { 0.f, 0.f, 0.f, 0.f } },
+            vku::MultisampleAttachmentGroup::DepthStencilAttachmentInfo { vk::AttachmentLoadOp::eClear, vk::AttachmentStoreOp::eStore, { 1.f, 0U } })
             DEVICE_DISPATCHER_PARAM_OPT(gpu.device));
 
         cb.setViewport(0, vku::toViewport(attachmentGroup.extent));
