@@ -53,6 +53,13 @@ namespace vku {
      */
     export template <VULKAN_HPP_NAMESPACE::DescriptorType... BindingTypes>
     struct DescriptorSetLayout : VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DescriptorSetLayout {
+        template <VULKAN_HPP_NAMESPACE::DescriptorType BindingType>
+        struct BindingInfo {
+            std::uint32_t descriptorCount;
+            VULKAN_HPP_NAMESPACE::ShaderStageFlags stageFlags;
+            const VULKAN_HPP_NAMESPACE::Sampler *pImmutableSamplers;
+        };
+
         /**
          * @brief Number of bindings.
          */
@@ -81,6 +88,36 @@ namespace vku {
             INDEX_SEQ(Is, bindingCount, {
                 assert(((createInfo.pBindings[Is].descriptorType == BindingTypes) && ...) && "The descriptor types must match the template parameter.");
                 ((descriptorCounts[Is] = createInfo.pBindings[Is].descriptorCount), ...);
+            });
+        }
+
+        /**
+         * @brief Create binding array with only descriptor count and stage (and immutable samplers if specified). Binding indices and types are used from the template parameters.
+         *
+         * @code{.cpp}
+         * struct MyDescriptorSetLayout : vku::DescriptorSetLayout<vk::DescriptorType::eUniformBuffer, vk::DescriptorType::eCombinedImageSampler> {
+         *     explicit MyDescriptorSetLayout(const vk::raii::Device &device)
+         *         : DescriptorSetLayout { device, vk::DescriptorSetLayoutCreateInfo {
+         *             {},
+         *             vku::unsafeProxy(getBindings({ 1, vk::ShaderStageFlagBits::eVertex }, { 3, vk::ShaderStageFlagBits::eFragment })),
+         *         } { }
+         * };
+         * @endcode
+         *
+         * @param bindingInfos Binding infos for each binding. These will be applied with index starts from zero.
+         * @return Array of vk::DescriptorSetLayoutBinding with the specified binding infos.
+         */
+        [[nodiscard]] static constexpr std::array<VULKAN_HPP_NAMESPACE::DescriptorSetLayoutBinding, bindingCount> getBindings(
+            const BindingInfo<BindingTypes> &...bindingInfos
+        ) noexcept {
+            return INDEX_SEQ(Is, bindingCount, {
+                return std::array { VULKAN_HPP_NAMESPACE::DescriptorSetLayoutBinding {
+                    Is,
+                    BindingTypes,
+                    bindingInfos.descriptorCount,
+                    bindingInfos.stageFlags,
+                    bindingInfos.pImmutableSamplers,
+                }... };
             });
         }
 

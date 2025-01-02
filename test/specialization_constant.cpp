@@ -66,7 +66,7 @@ struct BufferFillComputer {
     explicit BufferFillComputer(const vk::raii::Device &device [[clang::lifetimebound]], std::uint32_t value)
         : descriptorSetLayout { device, {
             {},
-            vku::unsafeProxy(vk::DescriptorSetLayoutBinding { 0, vk::DescriptorType::eStorageBuffer, 1, vk::ShaderStageFlagBits::eCompute }),
+            vku::unsafeProxy(decltype(descriptorSetLayout)::getBindings({ 1, vk::ShaderStageFlagBits::eCompute })),
         } }
         , pipelineLayout { device, vk::PipelineLayoutCreateInfo {
             {},

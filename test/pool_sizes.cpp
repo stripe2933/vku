@@ -95,14 +95,13 @@ int main() {
         vk::DescriptorType::eUniformBuffer,
         vk::DescriptorType::eStorageBuffer> allDescriptorSetLayout { gpu.device, vk::DescriptorSetLayoutCreateInfo {
         {},
-        vku::unsafeProxy({
-            vk::DescriptorSetLayoutBinding { 0, vk::DescriptorType::eSampler, 1, vk::ShaderStageFlagBits::eCompute },
-            vk::DescriptorSetLayoutBinding { 1, vk::DescriptorType::eCombinedImageSampler, 2, vk::ShaderStageFlagBits::eCompute },
-            vk::DescriptorSetLayoutBinding { 2, vk::DescriptorType::eSampledImage, 3, vk::ShaderStageFlagBits::eCompute },
-            vk::DescriptorSetLayoutBinding { 3, vk::DescriptorType::eStorageImage, 1, vk::ShaderStageFlagBits::eCompute },
-            vk::DescriptorSetLayoutBinding { 4, vk::DescriptorType::eUniformBuffer, 2, vk::ShaderStageFlagBits::eCompute },
-            vk::DescriptorSetLayoutBinding { 5, vk::DescriptorType::eStorageBuffer, 3, vk::ShaderStageFlagBits::eCompute },
-        }),
+        vku::unsafeProxy(decltype(allDescriptorSetLayout)::getBindings(
+            { 1, vk::ShaderStageFlagBits::eCompute },
+            { 2, vk::ShaderStageFlagBits::eCompute },
+            { 3, vk::ShaderStageFlagBits::eCompute },
+            { 1, vk::ShaderStageFlagBits::eCompute },
+            { 2, vk::ShaderStageFlagBits::eCompute },
+            { 3, vk::ShaderStageFlagBits::eCompute })),
     } };
     const std::tuple singleDescriptorSetLayouts {
         vku::DescriptorSetLayout<vk::DescriptorType::eSampler> { gpu.device, vk::DescriptorSetLayoutCreateInfo {

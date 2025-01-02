@@ -81,10 +81,9 @@ struct ColorCheckComputer {
     explicit ColorCheckComputer(const vk::raii::Device &device [[clang::lifetimebound]], std::uint32_t mipLevels)
         : descriptorSetLayout { device, {
             {},
-            vku::unsafeProxy({
-                vk::DescriptorSetLayoutBinding { 0, vk::DescriptorType::eSampledImage, mipLevels, vk::ShaderStageFlagBits::eCompute },
-                vk::DescriptorSetLayoutBinding { 1, vk::DescriptorType::eStorageBuffer, 1, vk::ShaderStageFlagBits::eCompute },
-            }),
+            vku::unsafeProxy(decltype(descriptorSetLayout)::getBindings(
+                { mipLevels, vk::ShaderStageFlagBits::eCompute },
+                { 1, vk::ShaderStageFlagBits::eCompute })),
         } }
         , pipelineLayout { device, vk::PipelineLayoutCreateInfo {
             {},
