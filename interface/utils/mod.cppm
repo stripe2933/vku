@@ -36,6 +36,13 @@ export import vulkan_hpp;
 #define FWD(...) static_cast<decltype(__VA_ARGS__) &&>(__VA_ARGS__)
 
 namespace vku {
+    struct unsafe_t { explicit unsafe_t() = default; };
+
+    /**
+     * @brief A tag type that indicates the operation is not safe; user should be aware of what internal behavior is.
+     */
+    export constexpr unsafe_t unsafe;
+
     /**
      * @brief Take a temporary value and return its address.
      *

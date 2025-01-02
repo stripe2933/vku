@@ -45,9 +45,10 @@ template <VULKAN_HPP_NAMESPACE::DescriptorType Type> using WriteDescriptorInfo_t
 
 namespace vku {
     export template <details::derived_from_value_specialization_of<DescriptorSetLayout> Layout>
-    class DescriptorSet : public VULKAN_HPP_NAMESPACE::DescriptorSet {
-    public:
+    struct DescriptorSet : VULKAN_HPP_NAMESPACE::DescriptorSet {
         DescriptorSet() noexcept = default;
+        explicit DescriptorSet(unsafe_t, VULKAN_HPP_NAMESPACE::DescriptorSet descriptorSet) noexcept
+            : VULKAN_HPP_NAMESPACE::DescriptorSet { descriptorSet } {}
         DescriptorSet(const DescriptorSet&) noexcept = default;
         DescriptorSet(DescriptorSet&&) noexcept = default;
         DescriptorSet& operator=(const DescriptorSet&) noexcept = default;
@@ -110,9 +111,6 @@ namespace vku {
 
         template <details::derived_from_value_specialization_of<DescriptorSetLayout>... Layouts>
         friend auto allocateDescriptorSets(VULKAN_HPP_NAMESPACE::Device, VULKAN_HPP_NAMESPACE::DescriptorPool, const std::tuple<Layouts...> &layouts) -> std::tuple<DescriptorSet<std::remove_cvref_t<Layouts>>...>;
-
-    private:
-        explicit DescriptorSet(VULKAN_HPP_NAMESPACE::DescriptorSet descriptorSet) noexcept : VULKAN_HPP_NAMESPACE::DescriptorSet { descriptorSet } {}
     };
 
     export template <details::derived_from_value_specialization_of<DescriptorSetLayout>... Layouts>
@@ -126,7 +124,7 @@ namespace vku {
         }, layouts);
         const std::vector rawDescriptorSets = device.allocateDescriptorSets({ pool, rawDescriptorSetLayouts });
         return INDEX_SEQ(Is, sizeof...(Layouts), {
-            return std::tuple { DescriptorSet<std::remove_cvref_t<Layouts>> { rawDescriptorSets[Is] }... };
+            return std::tuple { DescriptorSet<std::remove_cvref_t<Layouts>> { unsafe, rawDescriptorSets[Is] }... };
         });
     }
 }
