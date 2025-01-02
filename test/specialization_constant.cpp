@@ -84,7 +84,7 @@ struct BufferFillComputer {
                     // --------------------
                     vku::unsafeAddress(vk::SpecializationInfo {
                         vku::unsafeProxy(vk::SpecializationMapEntry { 0, 0, sizeof(value) }),
-                        vku::unsafeProxy(value),
+                        vk::ArrayProxyNoTemporaries<const std::uint32_t> { value },
                     }))).get()[0],
             *pipelineLayout,
         } } { }

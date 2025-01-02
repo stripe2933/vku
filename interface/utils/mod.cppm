@@ -71,7 +71,7 @@ namespace vku {
      * @warning The result address is only valid until the end of the expression, which contains the temporary value.
      */
     export template <typename T>
-    [[nodiscard]] const T* unsafeAddress(const T &value [[clang::lifetimebound]]) noexcept {
+    [[nodiscard]] const T* unsafeAddress(const T &&value [[clang::lifetimebound]]) noexcept {
         return &value;
     }
 
@@ -93,8 +93,8 @@ namespace vku {
      * @warning The result is only valid until the end of the expression, which contains the temporary value.
      */
     export template <typename T>
-    [[nodiscard]] VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const T> unsafeProxy(const T &value [[clang::lifetimebound]]) noexcept {
-        return value;
+    [[nodiscard]] VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const T> unsafeProxy(const T &&value [[clang::lifetimebound]]) noexcept {
+        return static_cast<const T&>(value);
     }
 
     /**
@@ -105,8 +105,8 @@ namespace vku {
      * @warning The result is only valid until the end of the expression, which contains the temporary range.
      */
     export template <std::ranges::contiguous_range R>
-    [[nodiscard]] VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const std::ranges::range_value_t<R>> unsafeProxy(const R &range [[clang::lifetimebound]]) noexcept {
-        return range;
+    [[nodiscard]] VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const std::ranges::range_value_t<R>> unsafeProxy(const R &&range [[clang::lifetimebound]]) noexcept {
+        return static_cast<const R&>(range);
     }
 
     /**
@@ -131,7 +131,7 @@ namespace vku {
      */
     export template <typename T>
     [[nodiscard]] VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const T> unsafeProxy(const std::initializer_list<T> &list [[clang::lifetimebound]]) noexcept {
-        return list;
+        return static_cast<const std::initializer_list<T>&>(list);
     }
 
     /**
