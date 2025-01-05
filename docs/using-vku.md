@@ -104,7 +104,6 @@ You can pass these CMake configuration parameters via either CLI or your own `CM
     "configurePresets": [
       {
         "name": "clang",
-        "displayName": "Clang",
         "inherits": "vcpkg",
         "cacheVariables": {
           "CMAKE_C_COMPILER": "/opt/homebrew/opt/llvm/bin/clang",
@@ -163,36 +162,38 @@ In future CMake project, you can use `find_package(vku CONFIG REQUIRED)` to use 
 
 Most of the compiler specific setup would be same as the above. You have to set the proper compilers for *vku*'s requirement.
 
-If you're using vcpkg, since *vku* does not officially in the vcpkg ports, you have to set some ports overlay and triplet settings.
-
-> [!NOTE]
-> I'm currently working for make *vku* to be available with vcpkg official ports.
-
 ### 4.1. Using vcpkg
 
 #### 4.1.1. Add vku to your overlay ports
 
-Download [this overlay port declaration](https://github.com/stripe2933/vk-deferred/tree/main/overlays/vku) into `overlays` folder in your project.
+Since *vku* does not officially in the vcpkg ports, you have to add the custom registry to `vcpkg-configurations.json` file.
 
-Then, pass `VCPKG_OVERLAY_PORTS=${sourceDir}/overlays` to your vcpkg command. For example:
+> [!NOTE]
+> I'm currently working for make *vku* to be available with vcpkg official ports.
 
-`CMakePresets.json`
+`vcpkg-configurations.json`
 ```json
 {
-  "version": 6,
-  "configurePresets": [
+  "default-registry": {
+    "kind": "git",
+    "baseline": "1a66c32c6f90c2f646529975c3c076ed3dbdae0c",
+    "repository": "https://github.com/microsoft/vcpkg"
+  },
+  "registries": [
     {
-      "name": "vcpkg",
-      "displayName": "vcpkg-based dependency management",
-      "inherits": "default",
-      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-      "cacheVariables": {
-        "VCPKG_OVERLAY_PORTS": "${sourceDir}/overlays"
-      }
+      "kind": "git",
+      "baseline": "23dc743e35900a8f14d73aabb8546e8cc4229f9f",
+      "reference": "main",
+      "repository": "https://github.com/stripe2933/vcpkg-registry",
+      "packages": [
+        "vku"
+      ]
     }
   ]
 }
 ```
+
+If you're not familiar with [vcpkg's private registry concept](https://learn.microsoft.com/en-us/vcpkg/consume/git-registries), read the linked document can help you to what's going on.
 
 #### 4.1.2. Set the Proper Triplet and Chainload Toolchain
 
@@ -215,7 +216,7 @@ set(CMAKE_CXX_FLAGS "-stdlib=libc++")
 set(CMAKE_EXE_LINKER_FLAGS "-stdlib=libc++ -lc++abi")
 ```
 
-After setting custom triplets and toolchain file, make `VCPKG_OVERLAY_TRIPLETS` and `VCPKG_TARGET_TRIPLET` point to your triplet file and target triplet.
+After setting custom triplets and toolchain file, set `VCPKG_TARGET_TRIPLET` point to your custom triplet name.
 
 `CMakePresets.json`
 ```json
@@ -224,16 +225,24 @@ After setting custom triplets and toolchain file, make `VCPKG_OVERLAY_TRIPLETS` 
   "configurePresets": [
     {
       "name": "vcpkg",
-      "displayName": "vcpkg-based dependency management",
       "inherits": "default",
       "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
       "cacheVariables": {
-        "VCPKG_OVERLAY_PORTS": "${sourceDir}/overlays",
-        "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/triplets",
         "VCPKG_TARGET_TRIPLET": "x64-linux-clang"
       }
     }
   ]
+}
+```
+
+Also, your custom triplet file must be added to the `overlay-triplets` list.
+
+`vcpkg-configurations.json`
+```json
+{
+  "default-registry": { ... },
+  "registries": [ ... ],
+  "overlay-triplets": [ "triplets" ]
 }
 ```
 
