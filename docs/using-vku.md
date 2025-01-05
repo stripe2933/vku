@@ -89,7 +89,7 @@ You can pass these CMake configuration parameters via either CLI or your own `CM
 - Passing CLI parameters:
     ```sh
     cmake --preset=vcpkg \
-        -DCMAKE_C_COMPILER="/opt/homebrew/opt/llvm/bin/clang-18" \
+        -DCMAKE_C_COMPILER="/opt/homebrew/opt/llvm/bin/clang" \
         -DCMAKE_CXX_COMPILER="/opt/homebrew/opt/llvm/bin/clang++" \
         -DCMAKE_CXX_FLAGS="-nostdinc++ -nostdlib++ -isystem /opt/homebrew/opt/llvm/include/c++/v1" \
         -DCMAKE_EXE_LINKER_FLAGS="-L /opt/homebrew/opt/llvm/lib/c++ -Wl,-rpath,/opt/homebrew/opt/llvm/lib/c++ -lc++" # Configure
@@ -107,7 +107,7 @@ You can pass these CMake configuration parameters via either CLI or your own `CM
         "displayName": "Clang",
         "inherits": "vcpkg",
         "cacheVariables": {
-          "CMAKE_C_COMPILER": "/opt/homebrew/opt/llvm/bin/clang-18",
+          "CMAKE_C_COMPILER": "/opt/homebrew/opt/llvm/bin/clang",
           "CMAKE_CXX_COMPILER": "/opt/homebrew/opt/llvm/bin/clang++",
           "CMAKE_CXX_FLAGS": "-nostdinc++ -nostdlib++ -isystem /opt/homebrew/opt/llvm/include/c++/v1",
           "CMAKE_EXE_LINKER_FLAGS": "-L /opt/homebrew/opt/llvm/lib/c++ -Wl,-rpath,/opt/homebrew/opt/llvm/lib/c++ -lc++"
@@ -135,8 +135,8 @@ For Linux, you'll use Clang and you can choose either libc++ or libstdc++ for ST
 
 ```sh
 cmake --preset=vcpkg \
-  -DCMAKE_C_COMPILER=/usr/bin/clang-18 \
-  -DCMAKE_CXX_COMPILER=/usr/bin/clang++-18 # Configure
+  -DCMAKE_C_COMPILER=/usr/bin/clang \
+  -DCMAKE_CXX_COMPILER=/usr/bin/clang++ # Configure
 cmake --build build --target install # Build and install
 ```
 
@@ -146,8 +146,8 @@ You have to specify `-stdlib=libc++` flag to your compiler.
 
 ```sh
 cmake --preset=vcpkg \
-  -DCMAKE_C_COMPILER=/usr/bin/clang-18 \
-  -DCMAKE_CXX_COMPILER=/usr/bin/clang++-18 \
+  -DCMAKE_C_COMPILER=/usr/bin/clang \
+  -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
   -DCMAKE_CXX_FLAGS="-stdlib=libc++" \
   -DCMAKE_EXE_LINKER_FLAGS="-stdlib=libc++ -lc++abi" # Configure
 cmake --build build --target install # Build and install
@@ -209,8 +209,8 @@ set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE ${CMAKE_CURRENT_LIST_DIR}/../clang-toolchain.
 
 `clang-toolchain.cmake`
 ```cmake
-set(CMAKE_C_COMPILER /usr/bin/clang-18) # your clang path
-set(CMAKE_CXX_COMPILER /usr/bin/clang++-18) # your clang++ path
+set(CMAKE_C_COMPILER /usr/bin/clang) # your clang path
+set(CMAKE_CXX_COMPILER /usr/bin/clang++) # your clang++ path
 set(CMAKE_CXX_FLAGS "-stdlib=libc++")
 set(CMAKE_EXE_LINKER_FLAGS "-stdlib=libc++ -lc++abi")
 ```
