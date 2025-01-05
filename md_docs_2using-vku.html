@@ -156,7 +156,7 @@ $(function(){ initResizable(false); });
 <p>You can pass these CMake configuration parameters via either CLI or your own <code>CMakeUserPresets.json</code>.</p>
 <ul>
 <li>Passing CLI parameters: <div class="fragment"><div class="line">cmake --preset=vcpkg \</div>
-<div class="line">    -DCMAKE_C_COMPILER=&quot;/opt/homebrew/opt/llvm/bin/clang-18&quot; \</div>
+<div class="line">    -DCMAKE_C_COMPILER=&quot;/opt/homebrew/opt/llvm/bin/clang&quot; \</div>
 <div class="line">    -DCMAKE_CXX_COMPILER=&quot;/opt/homebrew/opt/llvm/bin/clang++&quot; \</div>
 <div class="line">    -DCMAKE_CXX_FLAGS=&quot;-nostdinc++ -nostdlib++ -isystem /opt/homebrew/opt/llvm/include/c++/v1&quot; \</div>
 <div class="line">    -DCMAKE_EXE_LINKER_FLAGS=&quot;-L /opt/homebrew/opt/llvm/lib/c++ -Wl,-rpath,/opt/homebrew/opt/llvm/lib/c++ -lc++&quot; # Configure</div>
@@ -168,10 +168,9 @@ $(function(){ initResizable(false); });
 <div class="line">  &quot;configurePresets&quot;: [</div>
 <div class="line">    {</div>
 <div class="line">      &quot;name&quot;: &quot;clang&quot;,</div>
-<div class="line">      &quot;displayName&quot;: &quot;Clang&quot;,</div>
 <div class="line">      &quot;inherits&quot;: &quot;vcpkg&quot;,</div>
 <div class="line">      &quot;cacheVariables&quot;: {</div>
-<div class="line">        &quot;CMAKE_C_COMPILER&quot;: &quot;/opt/homebrew/opt/llvm/bin/clang-18&quot;,</div>
+<div class="line">        &quot;CMAKE_C_COMPILER&quot;: &quot;/opt/homebrew/opt/llvm/bin/clang&quot;,</div>
 <div class="line">        &quot;CMAKE_CXX_COMPILER&quot;: &quot;/opt/homebrew/opt/llvm/bin/clang++&quot;,</div>
 <div class="line">        &quot;CMAKE_CXX_FLAGS&quot;: &quot;-nostdinc++ -nostdlib++ -isystem /opt/homebrew/opt/llvm/include/c++/v1&quot;,</div>
 <div class="line">        &quot;CMAKE_EXE_LINKER_FLAGS&quot;: &quot;-L /opt/homebrew/opt/llvm/lib/c++ -Wl,-rpath,/opt/homebrew/opt/llvm/lib/c++ -lc++&quot;</div>
@@ -192,15 +191,15 @@ $(function(){ initResizable(false); });
 Using libstdc++</h3>
 <p><em>vku</em> provides you <code>CMakePresets.json</code> file for this configuration. Use <code>vcpkg</code> preset if you're managing dependencies with vcpkg, otherwise use <code>default</code> preset.</p>
 <div class="fragment"><div class="line">cmake --preset=vcpkg \</div>
-<div class="line">  -DCMAKE_C_COMPILER=/usr/bin/clang-18 \</div>
-<div class="line">  -DCMAKE_CXX_COMPILER=/usr/bin/clang++-18 # Configure</div>
+<div class="line">  -DCMAKE_C_COMPILER=/usr/bin/clang \</div>
+<div class="line">  -DCMAKE_CXX_COMPILER=/usr/bin/clang++ # Configure</div>
 <div class="line">cmake --build build --target install # Build and install</div>
 </div><!-- fragment --><h3><a class="anchor" id="autotoc_md39"></a>
 Using libc++</h3>
 <p>You have to specify <code>-stdlib=libc++</code> flag to your compiler.</p>
 <div class="fragment"><div class="line">cmake --preset=vcpkg \</div>
-<div class="line">  -DCMAKE_C_COMPILER=/usr/bin/clang-18 \</div>
-<div class="line">  -DCMAKE_CXX_COMPILER=/usr/bin/clang++-18 \</div>
+<div class="line">  -DCMAKE_C_COMPILER=/usr/bin/clang \</div>
+<div class="line">  -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \</div>
 <div class="line">  -DCMAKE_CXX_FLAGS=&quot;-stdlib=libc++&quot; \</div>
 <div class="line">  -DCMAKE_EXE_LINKER_FLAGS=&quot;-stdlib=libc++ -lc++abi&quot; # Configure</div>
 <div class="line">cmake --build build --target install # Build and install</div>
@@ -210,29 +209,32 @@ Using libc++</h3>
 <h1><a class="anchor" id="autotoc_md40"></a>
 4. Directly use <em>vku</em> in Your CMake Project</h1>
 <p>Most of the compiler specific setup would be same as the above. You have to set the proper compilers for <em>vku</em>'s requirement.</p>
-<p>If you're using vcpkg, since <em>vku</em> does not officially in the vcpkg ports, you have to set some ports overlay and triplet settings.</p>
-<dl class="section note"><dt>Note</dt><dd>I'm currently working for make <em>vku</em> to be available with vcpkg official ports.</dd></dl>
 <h2><a class="anchor" id="autotoc_md41"></a>
 4.1. Using vcpkg</h2>
 <h3><a class="anchor" id="autotoc_md42"></a>
 4.1.1. Add vku to your overlay ports</h3>
-<p>Download <a href="https://github.com/stripe2933/vk-deferred/tree/main/overlays/vku">this overlay port declaration</a> into <code>overlays</code> folder in your project.</p>
-<p>Then, pass <code>VCPKG_OVERLAY_PORTS=${sourceDir}/overlays</code> to your vcpkg command. For example:</p>
-<p><code>CMakePresets.json</code> </p><div class="fragment"><div class="line">{</div>
-<div class="line">  &quot;version&quot;: 6,</div>
-<div class="line">  &quot;configurePresets&quot;: [</div>
+<p>Since <em>vku</em> does not officially in the vcpkg ports, you have to add the custom registry to <code>vcpkg-configurations.json</code> file.</p>
+<dl class="section note"><dt>Note</dt><dd>I'm currently working for make <em>vku</em> to be available with vcpkg official ports.</dd></dl>
+<p><code>vcpkg-configurations.json</code> </p><div class="fragment"><div class="line">{</div>
+<div class="line">  &quot;default-registry&quot;: {</div>
+<div class="line">    &quot;kind&quot;: &quot;git&quot;,</div>
+<div class="line">    &quot;baseline&quot;: &quot;1a66c32c6f90c2f646529975c3c076ed3dbdae0c&quot;,</div>
+<div class="line">    &quot;repository&quot;: &quot;https://github.com/microsoft/vcpkg&quot;</div>
+<div class="line">  },</div>
+<div class="line">  &quot;registries&quot;: [</div>
 <div class="line">    {</div>
-<div class="line">      &quot;name&quot;: &quot;vcpkg&quot;,</div>
-<div class="line">      &quot;displayName&quot;: &quot;vcpkg-based dependency management&quot;,</div>
-<div class="line">      &quot;inherits&quot;: &quot;default&quot;,</div>
-<div class="line">      &quot;toolchainFile&quot;: &quot;$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake&quot;,</div>
-<div class="line">      &quot;cacheVariables&quot;: {</div>
-<div class="line">        &quot;VCPKG_OVERLAY_PORTS&quot;: &quot;${sourceDir}/overlays&quot;</div>
-<div class="line">      }</div>
+<div class="line">      &quot;kind&quot;: &quot;git&quot;,</div>
+<div class="line">      &quot;baseline&quot;: &quot;23dc743e35900a8f14d73aabb8546e8cc4229f9f&quot;,</div>
+<div class="line">      &quot;reference&quot;: &quot;main&quot;,</div>
+<div class="line">      &quot;repository&quot;: &quot;https://github.com/stripe2933/vcpkg-registry&quot;,</div>
+<div class="line">      &quot;packages&quot;: [</div>
+<div class="line">        &quot;vku&quot;</div>
+<div class="line">      ]</div>
 <div class="line">    }</div>
 <div class="line">  ]</div>
 <div class="line">}</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md43"></a>
+</div><!-- fragment --><p>If you're not familiar with <a href="https://learn.microsoft.com/en-us/vcpkg/consume/git-registries">vcpkg's private registry concept</a>, read the linked document can help you to what's going on.</p>
+<h3><a class="anchor" id="autotoc_md43"></a>
 4.1.2. Set the Proper Triplet and Chainload Toolchain</h3>
 <p>If your system default compiler does not support C++20 module, this step is mandatory. Here's the example for x64 Linux + libc++.</p>
 <p><code>triplets/x64-linux-clang.cmake</code> </p><div class="fragment"><div class="line">set(VCPKG_TARGET_ARCHITECTURE x64) # your target architecture</div>
@@ -240,26 +242,29 @@ Using libc++</h3>
 <div class="line">set(VCPKG_LIBRARY_LINKAGE static)</div>
 <div class="line">set(VCPKG_CMAKE_SYSTEM_NAME Linux) # your target system name</div>
 <div class="line">set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE ${CMAKE_CURRENT_LIST_DIR}/../clang-toolchain.cmake)</div>
-</div><!-- fragment --><p><code>clang-toolchain.cmake</code> </p><div class="fragment"><div class="line">set(CMAKE_C_COMPILER /usr/bin/clang-18) # your clang path</div>
-<div class="line">set(CMAKE_CXX_COMPILER /usr/bin/clang++-18) # your clang++ path</div>
+</div><!-- fragment --><p><code>clang-toolchain.cmake</code> </p><div class="fragment"><div class="line">set(CMAKE_C_COMPILER /usr/bin/clang) # your clang path</div>
+<div class="line">set(CMAKE_CXX_COMPILER /usr/bin/clang++) # your clang++ path</div>
 <div class="line">set(CMAKE_CXX_FLAGS &quot;-stdlib=libc++&quot;)</div>
 <div class="line">set(CMAKE_EXE_LINKER_FLAGS &quot;-stdlib=libc++ -lc++abi&quot;)</div>
-</div><!-- fragment --><p>After setting custom triplets and toolchain file, make <code>VCPKG_OVERLAY_TRIPLETS</code> and <code>VCPKG_TARGET_TRIPLET</code> point to your triplet file and target triplet.</p>
+</div><!-- fragment --><p>After setting custom triplets and toolchain file, set <code>VCPKG_TARGET_TRIPLET</code> point to your custom triplet name.</p>
 <p><code>CMakePresets.json</code> </p><div class="fragment"><div class="line">{</div>
 <div class="line">  &quot;version&quot;: 6,</div>
 <div class="line">  &quot;configurePresets&quot;: [</div>
 <div class="line">    {</div>
 <div class="line">      &quot;name&quot;: &quot;vcpkg&quot;,</div>
-<div class="line">      &quot;displayName&quot;: &quot;vcpkg-based dependency management&quot;,</div>
 <div class="line">      &quot;inherits&quot;: &quot;default&quot;,</div>
 <div class="line">      &quot;toolchainFile&quot;: &quot;$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake&quot;,</div>
 <div class="line">      &quot;cacheVariables&quot;: {</div>
-<div class="line">        &quot;VCPKG_OVERLAY_PORTS&quot;: &quot;${sourceDir}/overlays&quot;,</div>
-<div class="line">        &quot;VCPKG_OVERLAY_TRIPLETS&quot;: &quot;${sourceDir}/triplets&quot;,</div>
 <div class="line">        &quot;VCPKG_TARGET_TRIPLET&quot;: &quot;x64-linux-clang&quot;</div>
 <div class="line">      }</div>
 <div class="line">    }</div>
 <div class="line">  ]</div>
+<div class="line">}</div>
+</div><!-- fragment --><p>Also, your custom triplet file must be added to the <code>overlay-triplets</code> list.</p>
+<p><code>vcpkg-configurations.json</code> </p><div class="fragment"><div class="line">{</div>
+<div class="line">  &quot;default-registry&quot;: { ... },</div>
+<div class="line">  &quot;registries&quot;: [ ... ],</div>
+<div class="line">  &quot;overlay-triplets&quot;: [ &quot;triplets&quot; ]</div>
 <div class="line">}</div>
 </div><!-- fragment --><p>All done! Now configuring your project with <code>--preset=vcpkg</code> would automatically build <em>vku</em>, and you can use it as <code>find_package(vku CONFIG REQUIRED)</code>.</p>
 <h2><a class="anchor" id="autotoc_md44"></a>

@@ -12,5 +12,5 @@ var searchData=
   ['steps_9',['Build Steps',['../index.html#autotoc_md4',1,'']]],
   ['submitting_20the_20rendering_20commands_20into_20the_20queue_10',['5. Recording the Command Buffer and Submitting the Rendering Commands into the Queue',['../md_docs_2hello-triangle.html#autotoc_md22',1,'']]],
   ['swapchainattachment_11',['SwapchainAttachment',['../structvku_1_1SwapchainAttachment.html',1,'vku']]],
-  ['swapchainmsaaattachment_12',['SwapchainMsaaAttachment',['../structvku_1_1SwapchainMsaaAttachment.html',1,'vku']]]
+  ['swapchainmultisampleattachment_12',['SwapchainMultisampleAttachment',['../structvku_1_1SwapchainMultisampleAttachment.html',1,'vku']]]
 ];

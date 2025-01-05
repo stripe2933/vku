@@ -90,7 +90,9 @@ $(function(){ initResizable(false); });
 <div id="doc-content">
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="structvku_1_1DescriptorSetLayout-members.html">List of all members</a>  </div>
@@ -107,6 +109,11 @@ Inheritance diagram for vku::DescriptorSetLayout&lt; BindingTypes &gt;:</div>
   <img src="structvku_1_1DescriptorSetLayout.png" alt=""/>
  </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structvku_1_1DescriptorSetLayout_1_1BindingInfo.html">BindingInfo</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ad61c2c0248dee1bdcffd8d24225ed495" id="r_ad61c2c0248dee1bdcffd8d24225ed495"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad61c2c0248dee1bdcffd8d24225ed495">DescriptorSetLayout</a> (const vk::raii::Device &amp;device, const vk::DescriptorSetLayoutCreateInfo &amp;createInfo)</td></tr>
@@ -115,6 +122,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6e1476ab74589077d09fd18f1605dbb4" id="r_a6e1476ab74589077d09fd18f1605dbb4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structvku_1_1PoolSizes.html">PoolSizes</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6e1476ab74589077d09fd18f1605dbb4">getPoolSize</a> () const noexcept</td></tr>
 <tr class="memdesc:a6e1476ab74589077d09fd18f1605dbb4"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structvku_1_1PoolSizes.html">PoolSizes</a> that allocating a single descriptor set with this layout requires.  <br /></td></tr>
 <tr class="separator:a6e1476ab74589077d09fd18f1605dbb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a24a301081102e1c6a443915721ee545f" id="r_a24a301081102e1c6a443915721ee545f"><td class="memItemLeft" align="right" valign="top">static constexpr std::array&lt; vk::DescriptorSetLayoutBinding, <a class="el" href="#ae9a824f743ffc283db67dfb53bf24210">bindingCount</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a24a301081102e1c6a443915721ee545f">getBindings</a> (const <a class="el" href="structvku_1_1DescriptorSetLayout_1_1BindingInfo.html">BindingInfo</a>&lt; BindingTypes &gt; &amp;...bindingInfos) noexcept</td></tr>
+<tr class="memdesc:a24a301081102e1c6a443915721ee545f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create binding array with only descriptor count and stage (and immutable samplers if specified). Binding indices and types are used from the template parameters.  <br /></td></tr>
+<tr class="separator:a24a301081102e1c6a443915721ee545f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -203,6 +216,50 @@ template&lt;vk::DescriptorType... BindingTypes&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a24a301081102e1c6a443915721ee545f" name="a24a301081102e1c6a443915721ee545f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24a301081102e1c6a443915721ee545f">&#9670;&#160;</a></span>getBindings()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;vk::DescriptorType... BindingTypes&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static constexpr std::array&lt; vk::DescriptorSetLayoutBinding, <a class="el" href="#ae9a824f743ffc283db67dfb53bf24210">bindingCount</a> &gt; <a class="el" href="structvku_1_1DescriptorSetLayout.html">vku::DescriptorSetLayout</a>&lt; BindingTypes &gt;::getBindings </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structvku_1_1DescriptorSetLayout_1_1BindingInfo.html">BindingInfo</a>&lt; BindingTypes &gt; &amp;...</td>          <td class="paramname"><span class="paramname"><em>bindingInfos</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">nodiscard</span><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Create binding array with only descriptor count and stage (and immutable samplers if specified). Binding indices and types are used from the template parameters. </p>
+<div class="fragment"><div class="line"><span class="keyword">struct </span>MyDescriptorSetLayout : <a class="code hl_struct" href="structvku_1_1DescriptorSetLayout.html">vku::DescriptorSetLayout</a>&lt;vk::DescriptorType::eUniformBuffer, vk::DescriptorType::eCombinedImageSampler&gt; {</div>
+<div class="line">    <span class="keyword">explicit</span> MyDescriptorSetLayout(<span class="keyword">const</span> vk::raii::Device &amp;device)</div>
+<div class="line">        : <a class="code hl_struct" href="structvku_1_1DescriptorSetLayout.html">DescriptorSetLayout</a> { device, vk::DescriptorSetLayoutCreateInfo {</div>
+<div class="line">            {},</div>
+<div class="line">            vku::unsafeProxy(<a class="code hl_function" href="#a24a301081102e1c6a443915721ee545f">getBindings</a>({ 1, vk::ShaderStageFlagBits::eVertex }, { 3, vk::ShaderStageFlagBits::eFragment })),</div>
+<div class="line">        } { }</div>
+<div class="line">};</div>
+<div class="ttc" id="astructvku_1_1DescriptorSetLayout_html_a24a301081102e1c6a443915721ee545f"><div class="ttname"><a href="#a24a301081102e1c6a443915721ee545f">vku::DescriptorSetLayout::getBindings</a></div><div class="ttdeci">static constexpr std::array&lt; vk::DescriptorSetLayoutBinding, bindingCount &gt; getBindings(const BindingInfo&lt; BindingTypes &gt; &amp;...bindingInfos) noexcept</div><div class="ttdoc">Create binding array with only descriptor count and stage (and immutable samplers if specified)....</div><div class="ttdef"><b>Definition</b> DescriptorSetLayout.cppm:110</div></div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">bindingInfos</td><td>Binding infos for each binding. These will be applied with index starts from zero. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Array of vk::DescriptorSetLayoutBinding with the specified binding infos. </dd></dl>
+
+</div>
+</div>
 <a id="a6e1476ab74589077d09fd18f1605dbb4" name="a6e1476ab74589077d09fd18f1605dbb4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6e1476ab74589077d09fd18f1605dbb4">&#9670;&#160;</a></span>getPoolSize()</h2>
 

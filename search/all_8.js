@@ -9,7 +9,7 @@ var searchData=
   ['cmake_20s_20tt_20fetchcontent_20tt_20or_20tt_20cpm_20cmake_20tt_6',['4.2. Using CMake&apos;s &lt;tt&gt;FetchContent&lt;/tt&gt; or &lt;tt&gt;CPM.cmake&lt;/tt&gt;',['../md_docs_2using-vku.html#autotoc_md44',1,'']]],
   ['cmake_20tt_7',['4.2. Using CMake&apos;s &lt;tt&gt;FetchContent&lt;/tt&gt; or &lt;tt&gt;CPM.cmake&lt;/tt&gt;',['../md_docs_2using-vku.html#autotoc_md44',1,'']]],
   ['code_8',['code',['../structvku_1_1Shader.html#ac28de1579bef1eb2c5442f7c8f6cfedd',1,'vku::Shader']]],
-  ['colorattachmentinfo_9',['ColorAttachmentInfo',['../structvku_1_1AttachmentGroup_1_1ColorAttachmentInfo.html',1,'vku::AttachmentGroup::ColorAttachmentInfo'],['../structvku_1_1MsaaAttachmentGroup_1_1ColorAttachmentInfo.html',1,'vku::MsaaAttachmentGroup::ColorAttachmentInfo']]],
+  ['colorattachmentinfo_9',['ColorAttachmentInfo',['../structvku_1_1AttachmentGroup_1_1ColorAttachmentInfo.html',1,'vku::AttachmentGroup::ColorAttachmentInfo'],['../structvku_1_1MultisampleAttachmentGroup_1_1ColorAttachmentInfo.html',1,'vku::MultisampleAttachmentGroup::ColorAttachmentInfo']]],
   ['command_20buffer_20and_20submitting_20the_20rendering_20commands_20into_20the_20queue_10',['5. Recording the Command Buffer and Submitting the Rendering Commands into the Queue',['../md_docs_2hello-triangle.html#autotoc_md22',1,'']]],
   ['commands_20into_20the_20queue_11',['5. Recording the Command Buffer and Submitting the Rendering Commands into the Queue',['../md_docs_2hello-triangle.html#autotoc_md22',1,'']]],
   ['commands_2ecppm_12',['commands.cppm',['../commands_8cppm.html',1,'']]],

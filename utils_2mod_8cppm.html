@@ -90,8 +90,10 @@ $(function(){ initResizable(false); });
 <div id="doc-content">
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#define-members">Macros</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">mod.cppm File Reference<div class="ingroups">module <a class="el" href="module__vku.html">vku</a></div></div></div>
 </div><!--header-->
 <div class="contents">
@@ -101,6 +103,11 @@ $(function(){ initResizable(false); });
 <code>import std;</code><br />
 <code>import <a class="el" href="mod_8cppm.html">vku:utils.RefHolder</a>;</code><br />
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structvku_1_1unsafe__t.html">vku::unsafe_t</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a8bd3eacc2889e4012d3c861e275436ad" id="r_a8bd3eacc2889e4012d3c861e275436ad"><td class="memItemLeft" align="right" valign="top"><a id="a8bd3eacc2889e4012d3c861e275436ad" name="a8bd3eacc2889e4012d3c861e275436ad"></a>
@@ -111,18 +118,18 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a933ea645ad8992925f5f20f7d13fcdb9" id="r_a933ea645ad8992925f5f20f7d13fcdb9"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a933ea645ad8992925f5f20f7d13fcdb9"><td class="memTemplItemLeft" align="right" valign="top">const T *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a933ea645ad8992925f5f20f7d13fcdb9">vku::unsafeAddress</a> (const T &amp;value) noexcept</td></tr>
-<tr class="memdesc:a933ea645ad8992925f5f20f7d13fcdb9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Take a temporary value and return its address.  <br /></td></tr>
-<tr class="separator:a933ea645ad8992925f5f20f7d13fcdb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae912235590cb30ea98ecd0563438db82" id="r_ae912235590cb30ea98ecd0563438db82"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ae912235590cb30ea98ecd0563438db82"><td class="memTemplItemLeft" align="right" valign="top">vk::ArrayProxyNoTemporaries&lt; const T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ae912235590cb30ea98ecd0563438db82">vku::unsafeProxy</a> (const T &amp;value) noexcept</td></tr>
-<tr class="memdesc:ae912235590cb30ea98ecd0563438db82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Take a temporary value and return <code>vk::ArrayProxyNoTemporaries</code> of it.  <br /></td></tr>
-<tr class="separator:ae912235590cb30ea98ecd0563438db82"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ce17e6bb7037de7b704fd02a29e7142" id="r_a6ce17e6bb7037de7b704fd02a29e7142"><td class="memTemplParams" colspan="2">template&lt;std::ranges::contiguous_range R&gt; </td></tr>
-<tr class="memitem:a6ce17e6bb7037de7b704fd02a29e7142"><td class="memTemplItemLeft" align="right" valign="top">vk::ArrayProxyNoTemporaries&lt; const std::ranges::range_value_t&lt; R &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a6ce17e6bb7037de7b704fd02a29e7142">vku::unsafeProxy</a> (const R &amp;range) noexcept</td></tr>
-<tr class="memdesc:a6ce17e6bb7037de7b704fd02a29e7142"><td class="mdescLeft">&#160;</td><td class="mdescRight">Take a temporary contiguous range and return <code>vk::ArrayProxyNoTemporaries</code> of it.  <br /></td></tr>
-<tr class="separator:a6ce17e6bb7037de7b704fd02a29e7142"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7867bca9d0b9bc845d3ac826ae016a39" id="r_a7867bca9d0b9bc845d3ac826ae016a39"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a7867bca9d0b9bc845d3ac826ae016a39"><td class="memTemplItemLeft" align="right" valign="top">const T *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a7867bca9d0b9bc845d3ac826ae016a39">vku::unsafeAddress</a> (const T &amp;&amp;value) noexcept</td></tr>
+<tr class="memdesc:a7867bca9d0b9bc845d3ac826ae016a39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Take a temporary value and return its address.  <br /></td></tr>
+<tr class="separator:a7867bca9d0b9bc845d3ac826ae016a39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af46360d8f5c2b70254b855f6eb6b89a5" id="r_af46360d8f5c2b70254b855f6eb6b89a5"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:af46360d8f5c2b70254b855f6eb6b89a5"><td class="memTemplItemLeft" align="right" valign="top">vk::ArrayProxyNoTemporaries&lt; const T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#af46360d8f5c2b70254b855f6eb6b89a5">vku::unsafeProxy</a> (const T &amp;&amp;value) noexcept</td></tr>
+<tr class="memdesc:af46360d8f5c2b70254b855f6eb6b89a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Take a temporary value and return <code>vk::ArrayProxyNoTemporaries</code> of it.  <br /></td></tr>
+<tr class="separator:af46360d8f5c2b70254b855f6eb6b89a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4acf135ce7635ec2035f499424e82296" id="r_a4acf135ce7635ec2035f499424e82296"><td class="memTemplParams" colspan="2">template&lt;std::ranges::contiguous_range R&gt; </td></tr>
+<tr class="memitem:a4acf135ce7635ec2035f499424e82296"><td class="memTemplItemLeft" align="right" valign="top">vk::ArrayProxyNoTemporaries&lt; const std::ranges::range_value_t&lt; R &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a4acf135ce7635ec2035f499424e82296">vku::unsafeProxy</a> (const R &amp;&amp;range) noexcept</td></tr>
+<tr class="memdesc:a4acf135ce7635ec2035f499424e82296"><td class="mdescLeft">&#160;</td><td class="mdescRight">Take a temporary contiguous range and return <code>vk::ArrayProxyNoTemporaries</code> of it.  <br /></td></tr>
+<tr class="separator:a4acf135ce7635ec2035f499424e82296"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a571b2bc0dd5aceb1fd7959e6b7e8f6b8" id="r_a571b2bc0dd5aceb1fd7959e6b7e8f6b8"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a571b2bc0dd5aceb1fd7959e6b7e8f6b8"><td class="memTemplItemLeft" align="right" valign="top">vk::ArrayProxyNoTemporaries&lt; const T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a571b2bc0dd5aceb1fd7959e6b7e8f6b8">vku::unsafeProxy</a> (const std::initializer_list&lt; T &gt; &amp;list) noexcept</td></tr>
 <tr class="memdesc:a571b2bc0dd5aceb1fd7959e6b7e8f6b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Take a temporary initializer list and return <code>vk::ArrayProxyNoTemporaries</code> of it.  <br /></td></tr>
@@ -168,6 +175,13 @@ Functions</h2></td></tr>
 <tr class="memitem:a50c9e156362594605590a38ece7b9d46"><td class="memTemplItemLeft" align="right" valign="top">constexpr T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a50c9e156362594605590a38ece7b9d46">vku::aspect</a> (const vk::Extent2D &amp;extent) noexcept</td></tr>
 <tr class="memdesc:a50c9e156362594605590a38ece7b9d46"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get aspect ratio (width / height) of the 2-dimensional extent.  <br /></td></tr>
 <tr class="separator:a50c9e156362594605590a38ece7b9d46"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:ab6444d6d81e27a861cf93565251e3273" id="r_ab6444d6d81e27a861cf93565251e3273"><td class="memItemLeft" align="right" valign="top"><a id="ab6444d6d81e27a861cf93565251e3273" name="ab6444d6d81e27a861cf93565251e3273"></a>
+constexpr <a class="el" href="structvku_1_1unsafe__t.html">unsafe_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>vku::unsafe</b></td></tr>
+<tr class="memdesc:ab6444d6d81e27a861cf93565251e3273"><td class="mdescLeft">&#160;</td><td class="mdescRight">A tag type that indicates the operation is not safe; user should be aware of what internal behavior is. <br /></td></tr>
+<tr class="separator:ab6444d6d81e27a861cf93565251e3273"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a8dfff7147f0fdff4642a6667a375ae29" name="a8dfff7147f0fdff4642a6667a375ae29"></a>
@@ -661,8 +675,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a933ea645ad8992925f5f20f7d13fcdb9" name="a933ea645ad8992925f5f20f7d13fcdb9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a933ea645ad8992925f5f20f7d13fcdb9">&#9670;&#160;</a></span>unsafeAddress()</h2>
+<a id="a7867bca9d0b9bc845d3ac826ae016a39" name="a7867bca9d0b9bc845d3ac826ae016a39"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7867bca9d0b9bc845d3ac826ae016a39">&#9670;&#160;</a></span>unsafeAddress()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -675,7 +689,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="memname">const T * vku::unsafeAddress </td>
           <td>(</td>
-          <td class="paramtype">const T &amp;</td>          <td class="paramname"><span class="paramname"><em>value</em></span></td><td>)</td>
+          <td class="paramtype">const T &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>value</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -707,8 +721,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a6ce17e6bb7037de7b704fd02a29e7142" name="a6ce17e6bb7037de7b704fd02a29e7142"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6ce17e6bb7037de7b704fd02a29e7142">&#9670;&#160;</a></span>unsafeProxy() <span class="overload">[1/3]</span></h2>
+<a id="a4acf135ce7635ec2035f499424e82296" name="a4acf135ce7635ec2035f499424e82296"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4acf135ce7635ec2035f499424e82296">&#9670;&#160;</a></span>unsafeProxy() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -721,7 +735,7 @@ template&lt;std::ranges::contiguous_range R&gt; </div>
         <tr>
           <td class="memname">vk::ArrayProxyNoTemporaries&lt; const std::ranges::range_value_t&lt; R &gt; &gt; vku::unsafeProxy </td>
           <td>(</td>
-          <td class="paramtype">const R &amp;</td>          <td class="paramname"><span class="paramname"><em>range</em></span></td><td>)</td>
+          <td class="paramtype">const R &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>range</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -792,8 +806,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="ae912235590cb30ea98ecd0563438db82" name="ae912235590cb30ea98ecd0563438db82"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae912235590cb30ea98ecd0563438db82">&#9670;&#160;</a></span>unsafeProxy() <span class="overload">[3/3]</span></h2>
+<a id="af46360d8f5c2b70254b855f6eb6b89a5" name="af46360d8f5c2b70254b855f6eb6b89a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af46360d8f5c2b70254b855f6eb6b89a5">&#9670;&#160;</a></span>unsafeProxy() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -806,7 +820,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="memname">vk::ArrayProxyNoTemporaries&lt; const T &gt; vku::unsafeProxy </td>
           <td>(</td>
-          <td class="paramtype">const T &amp;</td>          <td class="paramname"><span class="paramname"><em>value</em></span></td><td>)</td>
+          <td class="paramtype">const T &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>value</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>

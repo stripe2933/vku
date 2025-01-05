@@ -1,6 +1,6 @@
 var searchData=
 [
   ['mappedbuffer_0',['MappedBuffer',['../classvku_1_1MappedBuffer.html',1,'vku']]],
-  ['msaaattachment_1',['MsaaAttachment',['../structvku_1_1MsaaAttachment.html',1,'vku']]],
-  ['msaaattachmentgroup_2',['MsaaAttachmentGroup',['../structvku_1_1MsaaAttachmentGroup.html',1,'vku']]]
+  ['multisampleattachment_1',['MultisampleAttachment',['../structvku_1_1MultisampleAttachment.html',1,'vku']]],
+  ['multisampleattachmentgroup_2',['MultisampleAttachmentGroup',['../structvku_1_1MultisampleAttachmentGroup.html',1,'vku']]]
 ];
