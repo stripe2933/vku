@@ -20,7 +20,7 @@ jobs:
         build: [Debug, Release]
         use_std_module: [ON, OFF]
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -32,18 +32,11 @@ jobs:
           vulkan-use-cache: true
 
       - name: Install Ninja and build dependencies
-        run: |
-          sudo apt-get install ninja-build
+        run: sudo apt-get install ninja-build
 
       - name: Install libc++ if using standard library module
         if: matrix.use_std_module == 'ON'
         run: sudo apt-get install libc++-dev libc++abi-dev
-
-      - name: Install vcpkg
-        run: |
-          git clone https://github.com/microsoft/vcpkg.git
-          cd vcpkg && ./bootstrap-vcpkg.sh
-          echo "VCPKG_ROOT=${{ github.workspace }}/vcpkg" >> $GITHUB_ENV
 
       - name: Export GitHub Actions cache environment variables
         uses: actions/github-script@v7
@@ -63,4 +56,4 @@ jobs:
             -DVKU_USE_STD_MODULE=${{ matrix.use_std_module }}
 
       - name: Install
-        run: cmake --build --preset=${{ matrix.use_std_module == 'ON' && 'clang-libcxx' || 'clang' }} --target install
+        run: cmake --build build --target install

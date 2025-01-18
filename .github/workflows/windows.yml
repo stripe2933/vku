@@ -24,23 +24,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Enable Developer Command Prompt
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          toolset: 14.40
-
       - name: Install Vulkan SDK
         uses: humbletim/setup-vulkan-sdk@v1.2.0
         with:
           vulkan-query-version: 1.3.296.0
           vulkan-components: Vulkan-Headers, Vulkan-Loader
           vulkan-use-cache: true
-
-      - name: Install vcpkg
-        run: |
-          git clone https://github.com/microsoft/vcpkg.git
-          cd vcpkg && .\bootstrap-vcpkg.bat
-          echo "VCPKG_ROOT=${{ github.workspace }}/vcpkg" >> $GITHUB_ENV
 
       - name: Export GitHub Actions cache environment variables
         uses: actions/github-script@v7
@@ -52,6 +41,9 @@ jobs:
       - name: Apply patch for vcpkg-based dependency management
         run: git apply vcpkg-deps.patch .github/workflows/ci-fix.patch --whitespace=fix
 
+      - name: Enable Developer Command Prompt
+        uses: ilammy/msvc-dev-cmd@v1
+
       - name: Configure
         run: |
           mv .github\workflows\CMakeUserPresets.json .\
@@ -60,4 +52,4 @@ jobs:
             -DVKU_USE_STD_MODULE=${{ matrix.use_std_module }}
 
       - name: Install
-        run: cmake --build --preset=msvc --target install
+        run: cmake --build build --target install
