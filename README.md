@@ -5,6 +5,9 @@
 
 A set of Vulkan utilities based on RAII idiom and Modern C++ features.
 
+> [!WARNING]
+> The latest Vulkan SDK (1.4.304) is not compatible to this library, due to [the upstream provided module issue](https://github.com/KhronosGroup/Vulkan-Hpp/issues/2045). You need to use the previous version (1.3.296) for now.
+
 ## Features
 
 - Based on C++20 module and (optionally) C++23 standard library module: just single line `import vku;` will cover all. **Module support is mandatory! (No header file provided.)**
