@@ -84,12 +84,14 @@ target_link_libraries(vku PUBLIC
     VulkanMemoryAllocator-Hpp::VulkanMemoryAllocator-Hpp
     $<$<BOOL:${VKU_USE_SHADERC}>:Vulkan::shaderc_combined>
 )
-target_compile_definitions(vku PUBLIC
-    $<$<BOOL:${VKU_USE_STD_MODULE}>:VKU_USE_STD_MODULE>
-    $<$<BOOL:${VKU_USE_SHADERC}>:VKU_USE_SHADERC>
-    $<$<BOOL:${MSVC}>:VULKAN_HPP_NO_SMART_HANDLE VK_NO_PROTOTYPES> # See https://github.com/KhronosGroup/Vulkan-Hpp/blob/main/README.md#c20-named-module for the details.
-    $<$<PLATFORM_ID:Darwin>:VK_ENABLE_BETA_EXTENSIONS> # For VK_KHR_portability_subset availability.
-    $<$<BOOL:${VKU_DEFAULT_DYNAMIC_DISPATCHER}>:VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1 VMA_STATIC_VULKAN_FUNCTIONS=0 VMA_DYNAMIC_VULKAN_FUNCTIONS=1>
+target_compile_definitions(vku
+    PUBLIC
+        $<$<BOOL:${MSVC}>:VULKAN_HPP_NO_SMART_HANDLE VK_NO_PROTOTYPES> # See https://github.com/KhronosGroup/Vulkan-Hpp/blob/main/README.md#c20-named-module for the details.
+        $<$<PLATFORM_ID:Darwin>:VK_ENABLE_BETA_EXTENSIONS> # For VK_KHR_portability_subset availability.
+        $<$<BOOL:${VKU_DEFAULT_DYNAMIC_DISPATCHER}>:VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1 VMA_STATIC_VULKAN_FUNCTIONS=0 VMA_DYNAMIC_VULKAN_FUNCTIONS=1>
+    PRIVATE
+        $<$<BOOL:${VKU_USE_STD_MODULE}>:VKU_USE_STD_MODULE>
+        $<$<BOOL:${VKU_USE_SHADERC}>:VKU_USE_SHADERC>
 )
 if (VKU_USE_STD_MODULE)
     set_target_properties(vku PROPERTIES CXX_MODULE_STD 1)
