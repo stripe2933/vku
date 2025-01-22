@@ -10,24 +10,9 @@ export module vku:descriptors.DescriptorSet;
 import std;
 export import :descriptors.DescriptorSetLayout;
 import :details.concepts;
-import :details.functional;
 import :utils;
 
 #define INDEX_SEQ(Is, N, ...) [&]<std::size_t ...Is>(std::index_sequence<Is...>) __VA_ARGS__ (std::make_index_sequence<N>{})
-
-template <VULKAN_HPP_NAMESPACE::DescriptorType> struct WriteDescriptorInfo;
-template <> struct WriteDescriptorInfo<VULKAN_HPP_NAMESPACE::DescriptorType::eSampler> { using type = VULKAN_HPP_NAMESPACE::DescriptorImageInfo; };
-template <> struct WriteDescriptorInfo<VULKAN_HPP_NAMESPACE::DescriptorType::eCombinedImageSampler> { using type = VULKAN_HPP_NAMESPACE::DescriptorImageInfo; };
-template <> struct WriteDescriptorInfo<VULKAN_HPP_NAMESPACE::DescriptorType::eSampledImage> { using type = VULKAN_HPP_NAMESPACE::DescriptorImageInfo; };
-template <> struct WriteDescriptorInfo<VULKAN_HPP_NAMESPACE::DescriptorType::eStorageImage> { using type = VULKAN_HPP_NAMESPACE::DescriptorImageInfo; };
-template <> struct WriteDescriptorInfo<VULKAN_HPP_NAMESPACE::DescriptorType::eUniformTexelBuffer> { using type = VULKAN_HPP_NAMESPACE::BufferView; };
-template <> struct WriteDescriptorInfo<VULKAN_HPP_NAMESPACE::DescriptorType::eStorageTexelBuffer> { using type = VULKAN_HPP_NAMESPACE::BufferView; };
-template <> struct WriteDescriptorInfo<VULKAN_HPP_NAMESPACE::DescriptorType::eUniformBuffer> { using type = VULKAN_HPP_NAMESPACE::DescriptorBufferInfo; };
-template <> struct WriteDescriptorInfo<VULKAN_HPP_NAMESPACE::DescriptorType::eStorageBuffer> { using type = VULKAN_HPP_NAMESPACE::DescriptorBufferInfo; };
-template <> struct WriteDescriptorInfo<VULKAN_HPP_NAMESPACE::DescriptorType::eUniformBufferDynamic> { using type = VULKAN_HPP_NAMESPACE::DescriptorBufferInfo; };
-template <> struct WriteDescriptorInfo<VULKAN_HPP_NAMESPACE::DescriptorType::eStorageBufferDynamic> { using type = VULKAN_HPP_NAMESPACE::DescriptorBufferInfo; };
-template <> struct WriteDescriptorInfo<VULKAN_HPP_NAMESPACE::DescriptorType::eInputAttachment> { using type = VULKAN_HPP_NAMESPACE::DescriptorImageInfo; };
-template <VULKAN_HPP_NAMESPACE::DescriptorType Type> using WriteDescriptorInfo_t = typename WriteDescriptorInfo<Type>::type;
 
 namespace vku {
     export template <details::derived_from_value_specialization_of<DescriptorSetLayout> Layout>
@@ -41,38 +26,12 @@ namespace vku {
         DescriptorSet& operator=(DescriptorSet&&) noexcept = default;
 
         template <std::uint32_t Binding>
-        [[nodiscard]] auto getWrite(const VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const WriteDescriptorInfo_t<get<Binding>(Layout::bindingTypes)>> &descriptorInfos) const noexcept -> VULKAN_HPP_NAMESPACE::WriteDescriptorSet {
-            constexpr auto attachInfo = details::multilambda {
-                [](VULKAN_HPP_NAMESPACE::WriteDescriptorSet writeDescriptorSet, const VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const VULKAN_HPP_NAMESPACE::DescriptorImageInfo> &descriptorInfos) {
-#ifdef VULKAN_HPP_NO_SETTERS
-                    writeDescriptorSet.descriptorCount = static_cast<std::uint32_t>(descriptorInfos.size());
-                    writeDescriptorSet.pImageInfo = descriptorInfos.data();
-                    return writeDescriptorSet;
-#else
-                    return writeDescriptorSet.setImageInfo(descriptorInfos);
-#endif
-                },
-                [](VULKAN_HPP_NAMESPACE::WriteDescriptorSet writeDescriptorSet, const VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const VULKAN_HPP_NAMESPACE::BufferView> &descriptorInfos) {
-#ifdef VULKAN_HPP_NO_SETTERS
-                    writeDescriptorSet.descriptorCount = static_cast<std::uint32_t>(descriptorInfos.size());
-                    writeDescriptorSet.pTexelBufferView = descriptorInfos.data();
-                    return writeDescriptorSet;
-#else
-                    return writeDescriptorSet.setTexelBufferView(descriptorInfos);
-#endif
-                },
-                [](VULKAN_HPP_NAMESPACE::WriteDescriptorSet writeDescriptorSet, const VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const VULKAN_HPP_NAMESPACE::DescriptorBufferInfo> &descriptorInfos) {
-#ifdef VULKAN_HPP_NO_SETTERS
-                    writeDescriptorSet.descriptorCount = static_cast<std::uint32_t>(descriptorInfos.size());
-                    writeDescriptorSet.pBufferInfo = descriptorInfos.data();
-                    return writeDescriptorSet;
-#else
-                    return writeDescriptorSet.setBufferInfo(descriptorInfos);
-#endif
-                },
-            };
-
-            return attachInfo(VULKAN_HPP_NAMESPACE::WriteDescriptorSet { *this, Binding, 0, {}, get<Binding>(Layout::bindingTypes) }, descriptorInfos);
+        [[nodiscard]] VULKAN_HPP_NAMESPACE::WriteDescriptorSet getWrite(
+            const VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const WriteDescriptorInfo_t<get<Binding>(Layout::bindingTypes)>> &descriptorInfos
+        ) const noexcept {
+            VULKAN_HPP_NAMESPACE::WriteDescriptorSet writeDescriptorSet = Layout::template getWrite<Binding>(descriptorInfos);
+            writeDescriptorSet.dstSet = *this;
+            return writeDescriptorSet;
         }
 
         /**
@@ -86,12 +45,13 @@ namespace vku {
          * }, {});
          * @endcode
          * @tparam Binding Binding index to get the write descriptor.
-         * @param descriptorInfo Descriptor info to write. This is either <tt>vk::DescriptorBufferInfo</tt>,
-         * <tt>vk::DescriptorImageInfo</tt> or <tt>vk::BufferView</tt>, based on your descriptor type predefined by <tt>DescriptorSetLayout</tt>.
+         * @param descriptorInfo Descriptor info to write. This is either <tt>vk::DescriptorBufferInfo</tt>, <tt>vk::DescriptorImageInfo</tt> or <tt>vk::BufferView</tt>, based on your descriptor type predefined by <tt>DescriptorSetLayout</tt>.
          * @return <tt>vk::WriteDescriptorSet</tt> with given info.
          */
         template <std::uint32_t Binding>
-        [[nodiscard]] auto getWriteOne(const WriteDescriptorInfo_t<get<Binding>(Layout::bindingTypes)> &descriptorInfo [[clang::lifetimebound]]) const noexcept -> VULKAN_HPP_NAMESPACE::WriteDescriptorSet {
+        [[nodiscard]] VULKAN_HPP_NAMESPACE::WriteDescriptorSet getWriteOne(
+            const WriteDescriptorInfo_t<get<Binding>(Layout::bindingTypes)> &&descriptorInfo [[clang::lifetimebound]]
+        ) const noexcept {
             return getWrite<Binding>(descriptorInfo);
         }
 
