@@ -54,7 +54,7 @@ namespace vku {
                 }
                 catch (const std::runtime_error &e) {
                     if (verbose) {
-                        std::println(std::cerr, "Physical device \"{}\" rejected because it failed to get the request queue families: {}", deviceName, e.what());
+                        std::cerr << "Physical device \"" << deviceName << "\" rejected because it failed to get the request queue families: " << e.what() << '\n';
                     }
                     return 0;
                 }
@@ -80,19 +80,15 @@ namespace vku {
                     if (verbose) {
                         std::vector<std::string_view> unavailableExtensions;
                         std::ranges::set_difference(deviceExtensionNames, availableExtensionNames, std::back_inserter(unavailableExtensions));
-#if __cpp_lib_format_ranges >= 202207L
-                        std::println(std::cerr, "Physical device \"{}\" rejected because it lacks the following device extensions: {::s}", deviceName, unavailableExtensions);
-#else
-                        std::print(std::cerr, "Physical device \"{}\" rejected because it lacks the following device extensions: [", deviceName);
+                        std::cerr << "Physical device \"" << deviceName << "\" rejected because it lacks the following device extensions: [";
                         for (std::size_t i = 0; i < unavailableExtensions.size(); ++i) {
                             if (i == unavailableExtensions.size() - 1) {
-                                std::println(std::cerr, "{}]", unavailableExtensions[i]);
+                                std::cerr << unavailableExtensions[i] << "]\n";
                             }
                             else {
-                                std::print(std::cerr, "{}, ", unavailableExtensions[i]);
+                                std::cerr << unavailableExtensions[i] << ", ";
                             }
                         }
-#endif
                     }
                     return 0;
                 }
@@ -160,19 +156,15 @@ namespace vku {
 
                     if (!unavailableFeatures.empty()) {
                         if (verbose) {
-#if __cpp_lib_format_ranges >= 202207L
-                            std::println(std::cerr, "Physical device \"{}\" rejected because it lacks the following physical device features: {::s}", deviceName, unavailableFeatures);
-#else
-                            std::print(std::cerr, "Physical device \"{}\" rejected because it lacks the following physical device features: [", deviceName);
+                            std::cerr << "Physical device \"" << deviceName << "\" rejected because it lacks the following physical device features: [";
                             for (std::size_t i = 0; i < unavailableFeatures.size(); ++i) {
                                 if (i == unavailableFeatures.size() - 1) {
-                                    std::println(std::cerr, "{}]", unavailableFeatures[i]);
+                                    std::cerr << unavailableFeatures[i] << "]\n";
                                 }
                                 else {
-                                    std::print(std::cerr, "{}, ", unavailableFeatures[i]);
+                                    std::cerr << unavailableFeatures[i] << ", ";
                                 }
                             }
-#endif
                         }
                         return 0;
                     }
@@ -186,7 +178,7 @@ namespace vku {
                 score += properties.limits.maxImageDimension2D;
 
                 if (verbose) {
-                    std::println(std::cerr, "Physical device \"{}\" accepted (score={}).", deviceName, score);
+                    std::cerr << "Physical device \"" << deviceName << "\" accepted (score=" << score << ").\n";
                 }
                 return score;
             }
