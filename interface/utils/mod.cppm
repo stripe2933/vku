@@ -128,7 +128,12 @@ namespace vku {
      */
     export template <typename T>
     [[nodiscard]] constexpr bool contains(VULKAN_HPP_NAMESPACE::Flags<T> flags, T flag) noexcept {
-        return (flags & flag) == flag;
+        if constexpr (vk::FlagTraits<T>::isBitmask) {
+            return static_cast<bool>(flags & flag);
+        }
+        else {
+            return (flags & flag) == flag;
+        }
     }
 
     /**
