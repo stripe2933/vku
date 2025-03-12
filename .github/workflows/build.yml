@@ -18,6 +18,7 @@ jobs:
       matrix:
         os: [windows-latest, ubuntu-latest]
         build: [Debug, Release]
+        dynamic-dispatcher: [ON, OFF]
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -44,7 +45,7 @@ jobs:
       - name: Configure
         run: |
           mv .github/workflows/CMakeUserPresets.json .
-          cmake --preset=${{ matrix.os }} -DCMAKE_BUILD_TYPE=${{ matrix.build }}
+          cmake --preset=${{ matrix.os }} -DCMAKE_BUILD_TYPE=${{ matrix.build }} -DVKU_DEFAULT_DYNAMIC_DISPATCHER=${{ matrix.dynamic-dispatcher }}
 
       - name: Install
         run: cmake --build build --target install
