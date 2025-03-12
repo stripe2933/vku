@@ -42,13 +42,8 @@ Followings are the **minimum** requirement for building *vku*.
   - Clang 18.1.2 or later
   - MSVC 19.40 or later
 - Build tool
-  - CMake 3.28 or later
+  - CMake 3.30 or later
   - Ninja 1.11
-
-If you want to build *vku* with [C++23 standard library module](https://en.cppreference.com/w/cpp/standard_library#Importing_modules), you need:
-
-- Build tool
-  - CMake 3.30 or later (for experimental `import std;` support: see [here](https://www.kitware.com/import-std-in-cmake-3-30/) for the detail)
 
 ## 3. Building and Installing vku
 
@@ -126,22 +121,7 @@ In future CMake project, you can use `find_package(vku CONFIG REQUIRED)` to use 
 
 ### 3.3. Linux + Clang
 
-For Linux, you'll use Clang and you can choose either libc++ or libstdc++ for STL.
-
-#### Using libstdc++
-
-*vku* provides you `CMakePresets.json` file for this configuration. Use `vcpkg` preset if you're managing dependencies with vcpkg, otherwise use `default` preset.
-
-```sh
-cmake --preset=vcpkg \
-  -DCMAKE_C_COMPILER=/usr/bin/clang \
-  -DCMAKE_CXX_COMPILER=/usr/bin/clang++ # Configure
-cmake --build build --target install # Build and install
-```
-
-#### Using libc++
-
-You have to specify `-stdlib=libc++` flag to your compiler.
+For Linux, you'll use Clang and libc++. You have to specify `-stdlib=libc++` flag to your compiler.
 
 ```sh
 cmake --preset=vcpkg \
@@ -272,7 +252,6 @@ Here are some CMake configuration options. You can pass these options via either
 
 | Option                           | Description                                                  | Default |     vcpkg feature      |
 |----------------------------------|--------------------------------------------------------------|---------|:----------------------:|
-| `VKU_USE_STD_MODULE`             | Use the standard library module for compilation.             | `OFF`   |      `std-module`      |
 | `VKU_USE_SHADERC`                | Add runtime GLSL compilation feature by shaderc.             | `OFF`   |       `shaderc`        |
 | `VKU_DEFAULT_DYNAMIC_DISPATCHER` | Use the vk::DispatchLoaderDynamic as the default dispatcher. | `OFF`   |  `dynamic-dispatcher`  |
 | `VKU_ENABLE_TEST`                | Enable the test targets.                                     | `OFF`   |           -            |

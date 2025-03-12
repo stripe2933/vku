@@ -18,15 +18,5 @@
         "VCPKG_OVERLAY_PORTS": "${sourceDir}/overlays"
       }
     }
-  ],
-  "buildPresets": [
-    {
-      "name": "default",
-      "configurePreset": "default"
-    },
-    {
-      "name": "vcpkg",
-      "configurePreset": "vcpkg"
-    }
   ]
 }

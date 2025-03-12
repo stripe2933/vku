@@ -13,47 +13,16 @@
       "name": "clang",
       "inherits": "ci-test",
       "cacheVariables": {
-        "CMAKE_C_COMPILER": "/usr/bin/clang-18",
-        "CMAKE_CXX_COMPILER": "/usr/bin/clang++-18"
-      },
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Linux"
-      }
-    },
-    {
-      "name": "clang-libcxx",
-      "displayName": "Clang + libc++",
-      "inherits": "clang",
-      "cacheVariables": {
         "CMAKE_CXX_FLAGS": "-stdlib=libc++",
-        "CMAKE_EXE_LINKER_FLAGS": "-stdlib=libc++ -lc++abi"
+        "CMAKE_EXE_LINKER_FLAGS": "-stdlib=libc++ -lc++abi",
+        "CMAKE_C_COMPILER": "/usr/bin/clang",
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
       }
     },
     {
       "name": "msvc",
       "displayName": "MSVC",
-      "inherits": "ci-test",
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Windows"
-      }
-    }
-  ],
-  "buildPresets": [
-    {
-      "name": "clang",
-      "configurePreset": "clang"
-    },
-    {
-      "name": "clang-libcxx",
-      "configurePreset": "clang-libcxx"
-    },
-    {
-      "name": "msvc",
-      "configurePreset": "msvc"
+      "inherits": "ci-test"
     }
   ]
 }

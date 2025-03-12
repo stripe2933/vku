@@ -3,21 +3,11 @@
 
 module;
 
-#ifndef VKU_USE_STD_MODULE
-#include <tuple>
-#include <utility>
-#ifdef _MSC_VER
-#include <string_view>
-#endif
-#endif
-
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 export module vku:buffers.AllocatedBuffer;
 
-#ifdef VKU_USE_STD_MODULE
 import std;
-#endif
 export import vk_mem_alloc_hpp;
 export import :buffers.Buffer;
 

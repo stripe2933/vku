@@ -3,26 +3,12 @@
 
 module;
 
-#ifndef VKU_USE_STD_MODULE
-#include <cstdint>
-#include <array>
-#include <bit>
-#include <concepts>
-#include <stdexcept>
-#include <string_view>
-#include <tuple>
-#include <type_traits>
-#include <utility>
-#endif
-
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 export module vku:pipelines;
 export import :pipelines.Shader;
 
-#ifdef VKU_USE_STD_MODULE
 import std;
-#endif
 import :utils.RefHolder;
 
 template <typename T, std::size_t>

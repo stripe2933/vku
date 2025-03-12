@@ -4,30 +4,12 @@
 module;
 
 #include <version>
-#ifndef VKU_USE_STD_MODULE
-#include <cstdint>
-#include <algorithm>
-#include <concepts>
-#include <forward_list>
-#include <functional>
-#include <map>
-#include <optional>
-#include <ranges>
-#include <span>
-#include <tuple>
-#include <type_traits>
-#include <unordered_map>
-#include <utility>
-#include <vector>
-#endif
 
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 export module vku:commands;
 
-#ifdef VKU_USE_STD_MODULE
 import std;
-#endif
 export import vulkan_hpp;
 import :details.container.OnDemandCounterStorage;
 import :details.tuple;

@@ -3,17 +3,11 @@
 
 module;
 
-#if !defined(VKU_USE_STD_MODULE) && defined(_MSC_VER)
-#include <compare>
-#endif
-
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 export module vku:buffers.Buffer;
 
-#if defined(VKU_USE_STD_MODULE) && defined(_MSC_VER)
 import std;
-#endif
 export import vulkan_hpp;
 
 namespace vku {

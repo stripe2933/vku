@@ -1,24 +1,6 @@
-#ifndef VKU_USE_STD_MODULE
-#include <cstdint>
-#include <algorithm>
-#include <array>
-#include <format>
-#include <ranges>
-#include <stdexcept>
-#include <tuple>
-#include <variant>
-#include <vector>
-#ifdef _MSC_VER
-#include <forward_list>
-#include <string_view>
-#endif
-#endif
-
 #include <vulkan/vulkan_hpp_macros.hpp>
 
-#ifdef VKU_USE_STD_MODULE
 import std;
-#endif
 import vku;
 
 #if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1

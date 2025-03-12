@@ -1,21 +1,9 @@
 /** @file details/container/OnDemandCounterStorage.cppm
  */
 
-module;
-
-#ifndef VKU_USE_STD_MODULE
-#include <cstdint>
-#include <deque>
-#include <functional>
-#include <type_traits>
-#include <unordered_map>
-#endif
-
 export module vku:details.container.OnDemandCounterStorage;
 
-#ifdef VKU_USE_STD_MODULE
 import std;
-#endif
 
 #define FWD(...) static_cast<decltype(__VA_ARGS__)&&>(__VA_ARGS__)
 

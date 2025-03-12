@@ -4,32 +4,12 @@
 module;
 
 #include <version>
-#ifndef VKU_USE_STD_MODULE
-#include <cstdint>
-#include <algorithm>
-#include <concepts>
-#include <format>
-#include <functional>
-#include <iostream>
-#include <print>
-#include <ranges>
-#include <span>
-#include <stdexcept>
-#include <string_view>
-#include <tuple>
-#include <type_traits>
-#include <utility>
-#include <variant>
-#include <vector>
-#endif
 
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 export module vku:Gpu;
 
-#ifdef VKU_USE_STD_MODULE
 import std;
-#endif
 export import vk_mem_alloc_hpp;
 export import vulkan_hpp;
 import :details.concepts;

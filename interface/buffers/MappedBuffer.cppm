@@ -4,26 +4,12 @@
 module;
 
 #include <cassert>
-#ifndef VKU_USE_STD_MODULE
-#include <cstdint>
-#include <algorithm>
-#include <concepts>
-#include <ranges>
-#include <span>
-#include <tuple>
-#include <type_traits>
-#include <utility>
-#include <variant>
-#endif
 
-#include <span>
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 export module vku:buffers.MappedBuffer;
 
-#ifdef VKU_USE_STD_MODULE
 import std;
-#endif
 export import :buffers.AllocatedBuffer;
 import :utils;
 

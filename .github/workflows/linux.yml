@@ -18,9 +18,8 @@ jobs:
     strategy:
       matrix:
         build: [Debug, Release]
-        use_std_module: [ON, OFF]
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -31,13 +30,8 @@ jobs:
           vulkan-components: Vulkan-Headers, Vulkan-Loader
           vulkan-use-cache: true
 
-      - name: Install Ninja and build dependencies
-        run: |
-          sudo apt-get install ninja-build
-
-      - name: Install libc++ if using standard library module
-        if: matrix.use_std_module == 'ON'
-        run: sudo apt-get install libc++-dev libc++abi-dev
+      - name: Install build dependencies
+        run: sudo apt-get install ninja-build libc++-dev libc++abi-dev
 
       - name: Install vcpkg
         run: |
@@ -58,9 +52,7 @@ jobs:
       - name: Configure
         run: |
           mv .github/workflows/CMakeUserPresets.json .
-          cmake --preset=${{ matrix.use_std_module == 'ON' && 'clang-libcxx' || 'clang' }} \
-            -DCMAKE_BUILD_TYPE=${{ matrix.build }} \
-            -DVKU_USE_STD_MODULE=${{ matrix.use_std_module }}
+          cmake --preset=clang -DCMAKE_BUILD_TYPE=${{ matrix.build }}
 
       - name: Install
-        run: cmake --build --preset=${{ matrix.use_std_module == 'ON' && 'clang-libcxx' || 'clang' }} --target install
+        run: cmake --build build --target install

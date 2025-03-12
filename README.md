@@ -10,7 +10,7 @@ A set of Vulkan utilities based on RAII idiom and Modern C++ features.
 
 ## Features
 
-- Based on C++20 module and (optionally) C++23 standard library module: just single line `import vku;` will cover all. **Module support is mandatory! (No header file provided.)**
+- Based on C++20 module and C++23 standard library module: just single line `import vku;` will cover all. **Module support is mandatory! (No header file provided.)**
 - Can be easily integrated to your existing project by vcpkg.
 - RAII handle for buffer and image with Vulkan Memory Allocator (VMA), with rich set of information.
 - Bootstrapping for physical device, device and VMA allocator generation with fully customizable configurations and compile time safety.

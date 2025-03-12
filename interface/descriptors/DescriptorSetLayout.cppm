@@ -4,21 +4,12 @@
 module;
 
 #include <cassert>
-#ifndef VKU_USE_STD_MODULE
-#include <cstdint>
-#include <array>
-#ifdef _MSC_VER
-#include <compare>
-#endif
-#endif
 
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 export module vku:descriptors.DescriptorSetLayout;
 
-#ifdef VKU_USE_STD_MODULE
 import std;
-#endif
 export import vulkan_hpp;
 export import :descriptors.PoolSizes;
 import :details.concepts;

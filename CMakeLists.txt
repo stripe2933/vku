@@ -1,10 +1,7 @@
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.30)
 
-if (VKU_USE_STD_MODULE)
-    # Enable CMake's experimental standard library module support.
-    cmake_minimum_required(VERSION 3.30)
-    set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "0e5b6991-d74f-4b3d-a41c-cf096e0b2508")
-endif()
+# Enable CMake's experimental standard library module support.
+set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "0e5b6991-d74f-4b3d-a41c-cf096e0b2508")
 
 project(vku
     LANGUAGES CXX
@@ -13,15 +10,12 @@ project(vku
 )
 
 set(CMAKE_CXX_STANDARD 23)
-if (VKU_USE_STD_MODULE)
-    set(CMAKE_CXX_MODULE_STD 1)
-endif()
+set(CMAKE_CXX_MODULE_STD 1)
 
 # ----------------
 # Project options.
 # ----------------
 
-option(VKU_USE_STD_MODULE "Use the standard library module for compilation.")
 option(VKU_USE_SHADERC "Add runtime GLSL compilation feature by shaderc.")
 option(VKU_DEFAULT_DYNAMIC_DISPATCHER "Use the vk::DispatchLoaderDynamic as the default dispatcher.")
 option(VKU_ENABLE_TEST "Enable the test targets.")
@@ -90,7 +84,6 @@ target_link_libraries(vku PUBLIC
     $<$<BOOL:${VKU_USE_SHADERC}>:Vulkan::shaderc_combined>
 )
 target_compile_definitions(vku PUBLIC
-    $<$<BOOL:${VKU_USE_STD_MODULE}>:VKU_USE_STD_MODULE>
     $<$<BOOL:${VKU_USE_SHADERC}>:VKU_USE_SHADERC>
     $<$<BOOL:${MSVC}>:VULKAN_HPP_NO_SMART_HANDLE VK_NO_PROTOTYPES> # See https://github.com/KhronosGroup/Vulkan-Hpp/blob/main/README.md#c20-named-module for the details.
     $<$<PLATFORM_ID:Darwin>:VK_ENABLE_BETA_EXTENSIONS> # For VK_KHR_portability_subset availability.

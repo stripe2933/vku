@@ -3,17 +3,11 @@
 
 module;
 
-#ifndef VKU_USE_STD_MODULE
-#include <source_location>
-#endif
-
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 export module vku:debugging;
 
-#ifdef VKU_USE_STD_MODULE
 import std;
-#endif
 import :details.to_string;
 import :utils;
 

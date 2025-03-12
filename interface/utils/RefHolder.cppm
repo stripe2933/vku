@@ -1,20 +1,9 @@
 /** @file utils/RefHolder.cppm
  */
 
-module;
-
-#ifndef VKU_USE_STD_MODULE
-#include <concepts>
-#include <functional>
-#include <tuple>
-#include <type_traits>
-#endif
-
 export module vku:utils.RefHolder;
 
-#ifdef VKU_USE_STD_MODULE
 import std;
-#endif
 
 #define FWD(...) static_cast<decltype(__VA_ARGS__)&&>(__VA_ARGS__)
 

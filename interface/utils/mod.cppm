@@ -4,28 +4,13 @@
 module;
 
 #include <cassert>
-#ifndef VKU_USE_STD_MODULE
-#include <cstdint>
-#include <algorithm>
-#include <concepts>
-#include <functional>
-#include <initializer_list>
-#include <ranges>
-#include <utility>
-#include <vector>
-#ifdef _MSC_VER
-#include <compare>
-#endif
-#endif
 
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 export module vku:utils;
 export import :utils.RefHolder;
 
-#ifdef VKU_USE_STD_MODULE
 import std;
-#endif
 export import vulkan_hpp;
 
 #ifdef NDEBUG

@@ -3,25 +3,11 @@
 
 module;
 
-#ifndef VKU_USE_STD_MODULE
-#include <cstdint>
-#include <array>
-#include <tuple>
-#include <type_traits>
-#include <utility>
-#include <vector>
-#ifdef _MSC_VER
-#include <compare>
-#endif
-#endif
-
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 export module vku:descriptors.DescriptorSet;
 
-#ifdef VKU_USE_STD_MODULE
 import std;
-#endif
 export import :descriptors.DescriptorSetLayout;
 import :details.concepts;
 import :details.functional;

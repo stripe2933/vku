@@ -4,21 +4,12 @@
 module;
 
 #include <cassert>
-#ifndef VKU_USE_STD_MODULE
-#include <cstdint>
-#include <algorithm>
-#include <bit>
-#include <ranges>
-#include <utility>
-#endif
 
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 export module vku:images.Image;
 
-#ifdef VKU_USE_STD_MODULE
 import std;
-#endif
 export import vulkan_hpp;
 import :utils;
 
