@@ -24,7 +24,7 @@ option(VKU_ENABLE_TEST "Enable the test targets.")
 # External dependencies.
 # ----------------
 
-find_package(Vulkan 1.3.256 REQUIRED)
+find_package(Vulkan 1.4.304 REQUIRED)
 find_package(VulkanMemoryAllocator CONFIG REQUIRED)
 find_package(VulkanMemoryAllocator-Hpp CONFIG REQUIRED)
 
@@ -39,7 +39,6 @@ endif()
 add_library(vku)
 target_sources(vku PUBLIC
     FILE_SET CXX_MODULES
-    BASE_DIRS ${Vulkan_INCLUDE_DIRS} .
     FILES
         ${Vulkan_INCLUDE_DIRS}/vulkan/vulkan.cppm
         extlibs/module-ports/vk_mem_alloc.cppm
@@ -85,7 +84,7 @@ target_link_libraries(vku PUBLIC
 )
 target_compile_definitions(vku PUBLIC
     $<$<BOOL:${VKU_USE_SHADERC}>:VKU_USE_SHADERC>
-    $<$<BOOL:${MSVC}>:VULKAN_HPP_NO_SMART_HANDLE VK_NO_PROTOTYPES> # See https://github.com/KhronosGroup/Vulkan-Hpp/blob/main/README.md#c20-named-module for the details.
+    $<$<BOOL:${MSVC}>:VULKAN_HPP_NO_SMART_HANDLE> # See https://github.com/KhronosGroup/Vulkan-Hpp/blob/main/README.md#c20-named-module for the details.
     $<$<PLATFORM_ID:Darwin>:VK_ENABLE_BETA_EXTENSIONS> # For VK_KHR_portability_subset availability.
     $<$<BOOL:${VKU_DEFAULT_DYNAMIC_DISPATCHER}>:VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1 VMA_STATIC_VULKAN_FUNCTIONS=0 VMA_DYNAMIC_VULKAN_FUNCTIONS=1>
 )

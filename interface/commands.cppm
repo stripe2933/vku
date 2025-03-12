@@ -17,29 +17,6 @@ import :utils;
 
 #define FWD(...) static_cast<decltype(__VA_ARGS__)&&>(__VA_ARGS__)
 
-#ifdef _MSC_VER
-template <>
-struct std::hash<VULKAN_HPP_NAMESPACE::CommandPool> {
-    size_t operator()( VULKAN_HPP_NAMESPACE::CommandPool const & commandPool ) const VULKAN_HPP_NOEXCEPT {
-        return hash<VULKAN_HPP_NAMESPACE::CommandPool::CType>{}( vku::toCType(commandPool) );
-    }
-};
-
-template <>
-struct std::hash<VULKAN_HPP_NAMESPACE::Queue> {
-    size_t operator()( VULKAN_HPP_NAMESPACE::Queue const & queue ) const VULKAN_HPP_NOEXCEPT {
-        return hash<VULKAN_HPP_NAMESPACE::Queue::CType>{}( vku::toCType(queue) );
-    }
-};
-
-template <>
-struct std::hash<VULKAN_HPP_NAMESPACE::Semaphore> {
-    size_t operator()( VULKAN_HPP_NAMESPACE::Semaphore const & semaphore ) const VULKAN_HPP_NOEXCEPT {
-        return hash<VULKAN_HPP_NAMESPACE::Semaphore::CType>{}( vku::toCType(semaphore) );
-    }
-};
-#endif
-
 namespace vku {
     /**
      * @brief Allocate compile-time amount of command buffers from \p commandPool.

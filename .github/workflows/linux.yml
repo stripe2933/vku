@@ -23,15 +23,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Vulkan SDK
-        uses: humbletim/setup-vulkan-sdk@v1.2.0
-        with:
-          vulkan-query-version: 1.3.296.0
-          vulkan-components: Vulkan-Headers, Vulkan-Loader
-          vulkan-use-cache: true
-
       - name: Install build dependencies
-        run: sudo apt-get install ninja-build libc++-dev libc++abi-dev
+        run: sudo apt-get install libxrandr-dev ninja-build libc++-dev libc++abi-dev
 
       - name: Install vcpkg
         run: |
@@ -47,7 +40,7 @@ jobs:
             core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
       - name: Apply patch for vcpkg-based dependency management
-        run: git apply vcpkg-deps.patch .github/workflows/ci-fix.patch
+        run: git apply vcpkg-deps.patch
 
       - name: Configure
         run: |

@@ -158,7 +158,7 @@ int main() {
 
     const ColorCheckComputer colorCheckComputer { gpu.device, image.mipLevels };
 
-    const vk::raii::DescriptorPool descriptorPool { gpu.device, getPoolSizes(colorCheckComputer.descriptorSetLayout).getDescriptorPoolCreateInfo() };
+    const vk::raii::DescriptorPool descriptorPool { gpu.device, getPoolSizes(colorCheckComputer.descriptorSetLayout).getDescriptorPoolCreateInfo(vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet) };
     const auto [descriptorSet] = vku::allocateDescriptorSets(*gpu.device, *descriptorPool, std::tie(colorCheckComputer.descriptorSetLayout));
     gpu.device.updateDescriptorSets({
         descriptorSet.getWrite<0>(vku::unsafeProxy(imageViews | std::views::transform([](const auto &imageView) {
