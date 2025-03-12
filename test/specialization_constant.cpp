@@ -120,7 +120,7 @@ int main() {
 
     const BufferFillComputer bufferFillComputer { gpu.device, 0xC3C3C3C3 };
 
-    const vk::raii::DescriptorPool descriptorPool { gpu.device, getPoolSizes(bufferFillComputer.descriptorSetLayout).getDescriptorPoolCreateInfo() };
+    const vk::raii::DescriptorPool descriptorPool { gpu.device, getPoolSizes(bufferFillComputer.descriptorSetLayout).getDescriptorPoolCreateInfo(vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet) };
     const auto [descriptorSet] = vku::allocateDescriptorSets(*gpu.device, *descriptorPool, std::tie(bufferFillComputer.descriptorSetLayout));
     gpu.device.updateDescriptorSets(
         descriptorSet.getWriteOne<0>({ buffer, 0, vk::WholeSize }),

@@ -123,7 +123,7 @@ int main() {
         gpu.device,
         (allDescriptorSetLayout.getPoolSize() * 5
             + std::apply([](const auto &...layouts) { return getPoolSizes(layouts...); }, singleDescriptorSetLayouts))
-            .getDescriptorPoolCreateInfo(),
+            .getDescriptorPoolCreateInfo(vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet),
     };
     std::ignore = vku::allocateDescriptorSets(*gpu.device, *descriptorPool, std::tie(
         allDescriptorSetLayout, allDescriptorSetLayout, allDescriptorSetLayout));
