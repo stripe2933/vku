@@ -10,7 +10,7 @@
       }
     },
     {
-      "name": "clang",
+      "name": "ubuntu-latest",
       "inherits": "ci-test",
       "cacheVariables": {
         "CMAKE_CXX_FLAGS": "-stdlib=libc++",
@@ -23,8 +23,7 @@
       }
     },
     {
-      "name": "msvc",
-      "displayName": "MSVC",
+      "name": "windows-latest",
       "inherits": "ci-test"
     }
   ]

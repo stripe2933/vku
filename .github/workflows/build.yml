@@ -1,4 +1,4 @@
-name: Linux
+name: Build
 
 env:
   VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
@@ -10,21 +10,26 @@ on:
       - '!README.md'
       - '!LICENSE.txt'
       - '!docs/**'
-      - '!.github/workflows/*.yml'
-      - '.github/workflows/linux.yml'
 
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
+        os: [windows-latest, ubuntu-latest]
         build: [Debug, Release]
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Install build dependencies
+        if: ${{ runner.os == 'Linux' }}
         run: sudo apt-get install libxrandr-dev ninja-build libc++-dev libc++abi-dev
+
+      - name: Enable Developer Command Prompt
+        if: ${{ runner.os == 'Windows' }}
+        uses: ilammy/msvc-dev-cmd@v1
 
       - name: Export GitHub Actions cache environment variables
         uses: actions/github-script@v7
@@ -34,12 +39,12 @@ jobs:
             core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
       - name: Apply patch for vcpkg-based dependency management
-        run: git apply vcpkg-deps.patch
+        run: git apply vcpkg-deps.patch --whitespace=fix
 
       - name: Configure
         run: |
           mv .github/workflows/CMakeUserPresets.json .
-          cmake --preset=clang -DCMAKE_BUILD_TYPE=${{ matrix.build }}
+          cmake --preset=${{ matrix.os }} -DCMAKE_BUILD_TYPE=${{ matrix.build }}
 
       - name: Install
         run: cmake --build build --target install
