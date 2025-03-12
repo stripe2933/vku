@@ -359,7 +359,7 @@ template&lt;typename T &gt; </div>
 <div class="line">toCType&lt;vk::Image&gt;(image); <span class="comment">// VkImage struct. Image is first implicitly converted to vk::Image, and passed as the parameter.</span></div>
 <div class="line">vk::raii::ImageView imageView { device, image.getViewCreateInfo { ... } };</div>
 <div class="line">toCType(*imageView); <span class="comment">// VkImageView struct. Handle type is automatically inferred.</span></div>
-<div class="ttc" id="astructvku_1_1AllocatedImage_html"><div class="ttname"><a href="structvku_1_1AllocatedImage.html">vku::AllocatedImage</a></div><div class="ttdoc">Owning image handle with memory allocation.</div><div class="ttdef"><b>Definition</b> AllocatedImage.cppm:33</div></div>
+<div class="ttc" id="astructvku_1_1AllocatedImage_html"><div class="ttname"><a href="structvku_1_1AllocatedImage.html">vku::AllocatedImage</a></div><div class="ttdoc">Owning image handle with memory allocation.</div><div class="ttdef"><b>Definition</b> AllocatedImage.cppm:23</div></div>
 </div><!-- fragment --><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>Type of Vulkan handle. </td></tr>

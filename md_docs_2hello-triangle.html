@@ -349,9 +349,9 @@ Hello Triangle Screenshot</div></div>
 <div class="line">    <span class="comment">// gpu.queues (Queues)</span></div>
 <div class="line">    <span class="comment">// gpu.allocator (vma::Allocator)</span></div>
 <div class="line">}</div>
-<div class="ttc" id="aclassvku_1_1Gpu_html"><div class="ttname"><a href="classvku_1_1Gpu.html">vku::Gpu</a></div><div class="ttdoc">Bootstrapper for Vulkan RAII physical device, device, allocator creation.</div><div class="ttdef"><b>Definition</b> Gpu.cppm:55</div></div>
-<div class="ttc" id="aclassvku_1_1RefHolder_html"><div class="ttname"><a href="classvku_1_1RefHolder.html">vku::RefHolder</a></div><div class="ttdoc">A container type that can be contextually converted to a reference of type T, which has references fo...</div><div class="ttdef"><b>Definition</b> RefHolder.cppm:31</div></div>
-<div class="ttc" id="astructvku_1_1Gpu_1_1Config_html"><div class="ttname"><a href="structvku_1_1Gpu_1_1Config.html">vku::Gpu::Config</a></div><div class="ttdef"><b>Definition</b> Gpu.cppm:216</div></div>
+<div class="ttc" id="aclassvku_1_1Gpu_html"><div class="ttname"><a href="classvku_1_1Gpu.html">vku::Gpu</a></div><div class="ttdoc">Bootstrapper for Vulkan RAII physical device, device, allocator creation.</div><div class="ttdef"><b>Definition</b> Gpu.cppm:35</div></div>
+<div class="ttc" id="aclassvku_1_1RefHolder_html"><div class="ttname"><a href="classvku_1_1RefHolder.html">vku::RefHolder</a></div><div class="ttdoc">A container type that can be contextually converted to a reference of type T, which has references fo...</div><div class="ttdef"><b>Definition</b> RefHolder.cppm:20</div></div>
+<div class="ttc" id="astructvku_1_1Gpu_1_1Config_html"><div class="ttname"><a href="structvku_1_1Gpu_1_1Config.html">vku::Gpu::Config</a></div><div class="ttdef"><b>Definition</b> Gpu.cppm:196</div></div>
 </div><!-- fragment --><p>All codes were gone! Parameters for physical device selection and device creation are in the <code><a class="el" href="classvku_1_1Gpu.html" title="Bootstrapper for Vulkan RAII physical device, device, allocator creation.">vku::Gpu</a>&lt;QueueFamilies, Queues&gt;::Config</code> struct, and initialized for typical usage. If you want, the settings can be modified using constructor. This struct has many parameters for sophisticated, fine-grained physical device selection, but I'll leave that details for later.</p>
 <p>Here's the explanation of the code:</p>
 <ol type="1">
@@ -436,7 +436,7 @@ Example</summary>
 <div class="line">        vk::ImageUsageFlagBits::eColorAttachment,</div>
 <div class="line">    } };</div>
 <div class="line">}</div>
-<div class="ttc" id="astructvku_1_1AllocatedImage_html"><div class="ttname"><a href="structvku_1_1AllocatedImage.html">vku::AllocatedImage</a></div><div class="ttdoc">Owning image handle with memory allocation.</div><div class="ttdef"><b>Definition</b> AllocatedImage.cppm:33</div></div>
+<div class="ttc" id="astructvku_1_1AllocatedImage_html"><div class="ttname"><a href="structvku_1_1AllocatedImage.html">vku::AllocatedImage</a></div><div class="ttdoc">Owning image handle with memory allocation.</div><div class="ttdef"><b>Definition</b> AllocatedImage.cppm:23</div></div>
 </div><!-- fragment --><p><code><a class="el" href="structvku_1_1AllocatedImage.html" title="Owning image handle with memory allocation.">vku::AllocatedImage</a></code> is an object that owns <code>vk::Image</code> and <code>vma::Allocation</code> objects. It follows the RAII convention, and automatically destroys them when it is destroyed. It can be constructed by</p>
 <ul>
 <li><code>vma::Allocator</code> (used by GPU resource allocation)</li>
@@ -782,7 +782,7 @@ I think it is worth to show what if we don't use <code>vku::unsafeProxy</code> a
 <div class="line">        },</div>
 <div class="line">    }.get() };</div>
 <div class="line">}</div>
-<div class="ttc" id="astructvku_1_1Shader_html_a5089098c11057b7ba4b6e9f0ecdb03bc"><div class="ttname"><a href="structvku_1_1Shader.html#a5089098c11057b7ba4b6e9f0ecdb03bc">vku::Shader::fromSpirvFile</a></div><div class="ttdeci">static RefHolder&lt; Shader, std::vector&lt; std::byte &gt; &gt; fromSpirvFile(const std::filesystem::path &amp;path, vk::ShaderStageFlagBits stage, const vk::SpecializationInfo *pSpecializationInfo=nullptr, const char *entryPoint=&quot;main&quot;)</div><div class="ttdoc">Create Shader from compiled SPIR-V file.</div><div class="ttdef"><b>Definition</b> Shader.cppm:123</div></div>
+<div class="ttc" id="astructvku_1_1Shader_html_a5089098c11057b7ba4b6e9f0ecdb03bc"><div class="ttname"><a href="structvku_1_1Shader.html#a5089098c11057b7ba4b6e9f0ecdb03bc">vku::Shader::fromSpirvFile</a></div><div class="ttdeci">static RefHolder&lt; Shader, std::vector&lt; std::byte &gt; &gt; fromSpirvFile(const std::filesystem::path &amp;path, vk::ShaderStageFlagBits stage, const vk::SpecializationInfo *pSpecializationInfo=nullptr, const char *entryPoint=&quot;main&quot;)</div><div class="ttdoc">Create Shader from compiled SPIR-V file.</div><div class="ttdef"><b>Definition</b> Shader.cppm:105</div></div>
 </div><!-- fragment --><p>What happened? Let's see the explanation:</p>
 <ol type="1">
 <li><p class="startli"><code>vku::getDefaultGraphicsPipelineCreateInfo</code> is the function that returns a "standard" <code>vk::GraphicsPipelineCreateInfo</code>. The term "standard" means the most commonly used settings, which are:</p><ul>
@@ -845,7 +845,7 @@ I think it is worth to show what if we don't use <code>vku::unsafeProxy</code> a
 <div class="line">      ).get(),</div>
 <div class="line">      *pipelineLayout, 1)</div>
 <div class="line">     ... <span class="comment">// Other pipeline settings</span></div>
-<div class="ttc" id="astructvku_1_1Shader_html_ab6eee8151a23d0b1c65af87145bf76ec"><div class="ttname"><a href="structvku_1_1Shader.html#ab6eee8151a23d0b1c65af87145bf76ec">vku::Shader::fromGLSLFile</a></div><div class="ttdeci">static RefHolder&lt; Shader, std::vector&lt; std::uint32_t &gt; &gt; fromGLSLFile(shaderc::Compiler compiler, const std::filesystem::path &amp;glslPath, vk::ShaderStageFlagBits stage, const shaderc::CompileOptions &amp;compileOptions, const vk::SpecializationInfo *pSpecializationInfo=nullptr)</div><div class="ttdoc">Create Shader from GLSL file.</div><div class="ttdef"><b>Definition</b> Shader.cppm:198</div></div>
+<div class="ttc" id="astructvku_1_1Shader_html_ab6eee8151a23d0b1c65af87145bf76ec"><div class="ttname"><a href="structvku_1_1Shader.html#ab6eee8151a23d0b1c65af87145bf76ec">vku::Shader::fromGLSLFile</a></div><div class="ttdeci">static RefHolder&lt; Shader, std::vector&lt; std::uint32_t &gt; &gt; fromGLSLFile(shaderc::Compiler compiler, const std::filesystem::path &amp;glslPath, vk::ShaderStageFlagBits stage, const shaderc::CompileOptions &amp;compileOptions, const vk::SpecializationInfo *pSpecializationInfo=nullptr)</div><div class="ttdoc">Create Shader from GLSL file.</div><div class="ttdef"><b>Definition</b> Shader.cppm:180</div></div>
 </div><!-- fragment --></li>
 <li>Some <em>vku</em>'s utility functions are used:<ul>
 <li><code>vku::toExtent2D(const vk::Extent3D &amp;extent)</code>: drop the <code>depth</code> field of the <code>extent</code> and return it. Useful when you're working with 2D image (whose <code>depth</code> is <code>1</code>).</li>
@@ -1108,7 +1108,7 @@ Hierarchy of vku::Buffer, vku::AllocatedBuffer, and vku::MappedBuffer</div></div
 <div class="line">    });</div>
 <div class="line">    gpu.queues.graphics.waitIdle();</div>
 <div class="line">}</div>
-<div class="ttc" id="aclassvku_1_1MappedBuffer_html"><div class="ttname"><a href="classvku_1_1MappedBuffer.html">vku::MappedBuffer</a></div><div class="ttdoc">Owning buffer handle with memory allocation and CPU-accessible mapped data.</div><div class="ttdef"><b>Definition</b> MappedBuffer.cppm:46</div></div>
+<div class="ttc" id="aclassvku_1_1MappedBuffer_html"><div class="ttname"><a href="classvku_1_1MappedBuffer.html">vku::MappedBuffer</a></div><div class="ttdoc">Owning buffer handle with memory allocation and CPU-accessible mapped data.</div><div class="ttdef"><b>Definition</b> MappedBuffer.cppm:32</div></div>
 </div><!-- fragment --><p>We created <code>destagingBuffer</code> with the required image data size (= (size of a texel) * (image width) * (image height)), and pass <code>allocationCreateInfo</code> as <code>vku::allocation::hostRead</code> constant, which is the constant that is predefined by</p>
 <div class="fragment"><div class="line"> ++</div>
 <div class="line">vma::AllocationCreateInfo {</div>

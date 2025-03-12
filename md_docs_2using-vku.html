@@ -123,15 +123,8 @@ $(function(){ initResizable(false); });
 </ul>
 </li>
 <li>Build tool<ul>
-<li>CMake 3.28 or later</li>
+<li>CMake 3.30 or later</li>
 <li>Ninja 1.11</li>
-</ul>
-</li>
-</ul>
-<p>If you want to build <em>vku</em> with <a href="https://en.cppreference.com/w/cpp/standard_library#Importing_modules">C++23 standard library module</a>, you need:</p>
-<ul>
-<li>Build tool<ul>
-<li>CMake 3.30 or later (for experimental <code>import std;</code> support: see <a href="https://www.kitware.com/import-std-in-cmake-3-30/">here</a> for the detail)</li>
 </ul>
 </li>
 </ul>
@@ -186,17 +179,7 @@ $(function(){ initResizable(false); });
 <p>In future CMake project, you can use <code>find_package(vku CONFIG REQUIRED)</code> to use <em>vku</em>.</p>
 <h2><a class="anchor" id="autotoc_md37"></a>
 3.3. Linux + Clang</h2>
-<p>For Linux, you'll use Clang and you can choose either libc++ or libstdc++ for STL.</p>
-<h3><a class="anchor" id="autotoc_md38"></a>
-Using libstdc++</h3>
-<p><em>vku</em> provides you <code>CMakePresets.json</code> file for this configuration. Use <code>vcpkg</code> preset if you're managing dependencies with vcpkg, otherwise use <code>default</code> preset.</p>
-<div class="fragment"><div class="line">cmake --preset=vcpkg \</div>
-<div class="line">  -DCMAKE_C_COMPILER=/usr/bin/clang \</div>
-<div class="line">  -DCMAKE_CXX_COMPILER=/usr/bin/clang++ # Configure</div>
-<div class="line">cmake --build build --target install # Build and install</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md39"></a>
-Using libc++</h3>
-<p>You have to specify <code>-stdlib=libc++</code> flag to your compiler.</p>
+<p>For Linux, you'll use Clang and libc++. You have to specify <code>-stdlib=libc++</code> flag to your compiler.</p>
 <div class="fragment"><div class="line">cmake --preset=vcpkg \</div>
 <div class="line">  -DCMAKE_C_COMPILER=/usr/bin/clang \</div>
 <div class="line">  -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \</div>
@@ -206,12 +189,12 @@ Using libc++</h3>
 </div><!-- fragment --><p>Or you can make your own <code>CMakePresets.json</code> script (like macOS + Clang).</p>
 <p>After the installation, package config files will be located in <code>build/install</code> directory. You can pass your own <code>CMAKE_INSTALL_PREFIX</code> when configuration time to change the installation directory (e.g. <code>/usr/local</code>).</p>
 <p>In future CMake project, you can use <code>find_package(vku CONFIG REQUIRED)</code> to use <em>vku</em>.</p>
-<h1><a class="anchor" id="autotoc_md40"></a>
+<h1><a class="anchor" id="autotoc_md38"></a>
 4. Directly use <em>vku</em> in Your CMake Project</h1>
 <p>Most of the compiler specific setup would be same as the above. You have to set the proper compilers for <em>vku</em>'s requirement.</p>
-<h2><a class="anchor" id="autotoc_md41"></a>
+<h2><a class="anchor" id="autotoc_md39"></a>
 4.1. Using vcpkg</h2>
-<h3><a class="anchor" id="autotoc_md42"></a>
+<h3><a class="anchor" id="autotoc_md40"></a>
 4.1.1. Add vku to your overlay ports</h3>
 <p>Since <em>vku</em> does not officially in the vcpkg ports, you have to add the custom registry to <code>vcpkg-configurations.json</code> file.</p>
 <dl class="section note"><dt>Note</dt><dd>I'm currently working for make <em>vku</em> to be available with vcpkg official ports.</dd></dl>
@@ -234,7 +217,7 @@ Using libc++</h3>
 <div class="line">  ]</div>
 <div class="line">}</div>
 </div><!-- fragment --><p>If you're not familiar with <a href="https://learn.microsoft.com/en-us/vcpkg/consume/git-registries">vcpkg's private registry concept</a>, read the linked document can help you to what's going on.</p>
-<h3><a class="anchor" id="autotoc_md43"></a>
+<h3><a class="anchor" id="autotoc_md41"></a>
 4.1.2. Set the Proper Triplet and Chainload Toolchain</h3>
 <p>If your system default compiler does not support C++20 module, this step is mandatory. Here's the example for x64 Linux + libc++.</p>
 <p><code>triplets/x64-linux-clang.cmake</code> </p><div class="fragment"><div class="line">set(VCPKG_TARGET_ARCHITECTURE x64) # your target architecture</div>
@@ -267,7 +250,7 @@ Using libc++</h3>
 <div class="line">  &quot;overlay-triplets&quot;: [ &quot;triplets&quot; ]</div>
 <div class="line">}</div>
 </div><!-- fragment --><p>All done! Now configuring your project with <code>--preset=vcpkg</code> would automatically build <em>vku</em>, and you can use it as <code>find_package(vku CONFIG REQUIRED)</code>.</p>
-<h2><a class="anchor" id="autotoc_md44"></a>
+<h2><a class="anchor" id="autotoc_md42"></a>
 4.2. Using CMake's <code>FetchContent</code> or <code>CPM.cmake</code></h2>
 <ol type="1">
 <li>Using <code>FetchContent</code>: <div class="fragment"><div class="line">FetchContent_Declare(</div>
@@ -280,19 +263,17 @@ Using libc++</h3>
 </div><!-- fragment --></li>
 </ol>
 <p>After this, you can use <code>find_package(vku CONFIG REQUIRED)</code> in your project.</p>
-<h1><a class="anchor" id="autotoc_md45"></a>
+<h1><a class="anchor" id="autotoc_md43"></a>
 5. Configuration Options</h1>
 <p>Here are some CMake configuration options. You can pass these options via either CLI, CMake presets or vcpkg feature.</p>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Option   </th><th class="markdownTableHeadNone">Description   </th><th class="markdownTableHeadNone">Default   </th><th class="markdownTableHeadCenter">vcpkg feature    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>VKU_USE_STD_MODULE</code>   </td><td class="markdownTableBodyNone">Use the standard library module for compilation.   </td><td class="markdownTableBodyNone"><code>OFF</code>   </td><td class="markdownTableBodyCenter"><code>std-module</code>    </td></tr>
-<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>VKU_USE_SHADERC</code>   </td><td class="markdownTableBodyNone">Add runtime GLSL compilation feature by shaderc.   </td><td class="markdownTableBodyNone"><code>OFF</code>   </td><td class="markdownTableBodyCenter"><code>shaderc</code>    </td></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>VKU_DEFAULT_DYNAMIC_DISPATCHER</code>   </td><td class="markdownTableBodyNone">Use the vk::DispatchLoaderDynamic as the default dispatcher.   </td><td class="markdownTableBodyNone"><code>OFF</code>   </td><td class="markdownTableBodyCenter"><code>dynamic-dispatcher</code>    </td></tr>
 <tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>VKU_DEFAULT_DYNAMIC_DISPATCHER</code>   </td><td class="markdownTableBodyNone">Use the vk::DispatchLoaderDynamic as the default dispatcher.   </td><td class="markdownTableBodyNone"><code>OFF</code>   </td><td class="markdownTableBodyCenter"><code>dynamic-dispatcher</code>    </td></tr>
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>VKU_ENABLE_TEST</code>   </td><td class="markdownTableBodyNone">Enable the test targets.   </td><td class="markdownTableBodyNone"><code>OFF</code>   </td><td class="markdownTableBodyCenter">-   </td></tr>
 </table>
 </div></div><!-- contents -->

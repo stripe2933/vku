@@ -167,7 +167,7 @@ struct vku::DescriptorSetLayout&lt; BindingTypes &gt;</div><p>Owning descriptor 
 <div class="line"><span class="keyword">static_assert</span>(descriptorSetLayout.bindingCount == 2);</div>
 <div class="line"><span class="keyword">static_assert</span>(descriptorSetLayout.bindingTypes == std::array { vk::DescriptorType::eUniformBuffer, vk::DescriptorType::eCombinedImageSampler });</div>
 <div class="line">assert(descriptorSetLayout.descriptorCounts == std::array { 1, 3 });</div>
-<div class="ttc" id="astructvku_1_1DescriptorSetLayout_html"><div class="ttname"><a href="structvku_1_1DescriptorSetLayout.html">vku::DescriptorSetLayout</a></div><div class="ttdoc">Owning descriptor set layout with compile-time binding types.</div><div class="ttdef"><b>Definition</b> DescriptorSetLayout.cppm:55</div></div>
+<div class="ttc" id="astructvku_1_1DescriptorSetLayout_html"><div class="ttname"><a href="structvku_1_1DescriptorSetLayout.html">vku::DescriptorSetLayout</a></div><div class="ttdoc">Owning descriptor set layout with compile-time binding types.</div><div class="ttdef"><b>Definition</b> DescriptorSetLayout.cppm:46</div></div>
 </div><!-- fragment --><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">BindingTypes</td><td>Variadic NTTP of descriptor types. </td></tr>
@@ -249,7 +249,7 @@ template&lt;vk::DescriptorType... BindingTypes&gt; </div>
 <div class="line">            vku::unsafeProxy(<a class="code hl_function" href="#a24a301081102e1c6a443915721ee545f">getBindings</a>({ 1, vk::ShaderStageFlagBits::eVertex }, { 3, vk::ShaderStageFlagBits::eFragment })),</div>
 <div class="line">        } { }</div>
 <div class="line">};</div>
-<div class="ttc" id="astructvku_1_1DescriptorSetLayout_html_a24a301081102e1c6a443915721ee545f"><div class="ttname"><a href="#a24a301081102e1c6a443915721ee545f">vku::DescriptorSetLayout::getBindings</a></div><div class="ttdeci">static constexpr std::array&lt; vk::DescriptorSetLayoutBinding, bindingCount &gt; getBindings(const BindingInfo&lt; BindingTypes &gt; &amp;...bindingInfos) noexcept</div><div class="ttdoc">Create binding array with only descriptor count and stage (and immutable samplers if specified)....</div><div class="ttdef"><b>Definition</b> DescriptorSetLayout.cppm:110</div></div>
+<div class="ttc" id="astructvku_1_1DescriptorSetLayout_html_a24a301081102e1c6a443915721ee545f"><div class="ttname"><a href="#a24a301081102e1c6a443915721ee545f">vku::DescriptorSetLayout::getBindings</a></div><div class="ttdeci">static constexpr std::array&lt; vk::DescriptorSetLayoutBinding, bindingCount &gt; getBindings(const BindingInfo&lt; BindingTypes &gt; &amp;...bindingInfos) noexcept</div><div class="ttdoc">Create binding array with only descriptor count and stage (and immutable samplers if specified)....</div><div class="ttdef"><b>Definition</b> DescriptorSetLayout.cppm:101</div></div>
 </div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">bindingInfos</td><td>Binding infos for each binding. These will be applied with index starts from zero. </td></tr>

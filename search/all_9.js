@@ -16,6 +16,6 @@ var searchData=
   ['descriptorsetlayout_2ecppm_13',['DescriptorSetLayout.cppm',['../DescriptorSetLayout_8cppm.html',1,'']]],
   ['device_14',['device',['../classvku_1_1Gpu.html#a7683312716b7663f40eed14d0e593e02',1,'vku::Gpu']]],
   ['device_20with_20a_20graphics_20capable_20queue_15',['2. Creating a Vulkan Device with a Graphics Capable Queue',['../md_docs_2hello-triangle.html#autotoc_md12',1,'']]],
-  ['directly_20use_20em_20vku_20em_20in_20your_20cmake_20project_16',['4. Directly use &lt;em&gt;vku&lt;/em&gt; in Your CMake Project',['../md_docs_2using-vku.html#autotoc_md40',1,'']]],
+  ['directly_20use_20em_20vku_20em_20in_20your_20cmake_20project_16',['4. Directly use &lt;em&gt;vku&lt;/em&gt; in Your CMake Project',['../md_docs_2using-vku.html#autotoc_md38',1,'']]],
   ['dynamic_20rendering_20feature_17',['4.3. Enabling the Dynamic Rendering Feature',['../md_docs_2hello-triangle.html#autotoc_md21',1,'']]]
 ];
