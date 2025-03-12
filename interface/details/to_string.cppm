@@ -1,19 +1,9 @@
 /** @file details/to_string.cppm
  */
 
-module;
-
-#ifndef VKU_USE_STD_MODULE
-#include <format>
-#include <source_location>
-#include <string>
-#endif
-
 export module vku:details.to_string;
 
-#ifdef VKU_USE_STD_MODULE
 import std;
-#endif
 
 namespace details {
     export

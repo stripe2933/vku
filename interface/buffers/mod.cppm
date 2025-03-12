@@ -3,13 +3,6 @@
 
 module;
 
-#ifndef VKU_USE_STD_MODULE
-#include <compare>
-#include <stdexcept>
-#include <utility>
-#include <variant>
-#endif
-
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 export module vku:buffers;
@@ -17,9 +10,7 @@ export import :buffers.AllocatedBuffer;
 export import :buffers.Buffer;
 export import :buffers.MappedBuffer;
 
-#ifdef VKU_USE_STD_MODULE
 import std;
-#endif
 import :utils;
 
 // #define VMA_HPP_NAMESPACE to vma, if not defined.

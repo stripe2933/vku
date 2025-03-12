@@ -4,27 +4,12 @@
 module;
 
 #include <cassert>
-#ifndef VKU_USE_STD_MODULE
-#include <cstdint>
-#include <algorithm>
-#include <optional>
-#include <ranges>
-#include <span>
-#include <variant>
-#include <vector>
-
-#ifdef _MSC_VER
-#include <forward_list>
-#endif
-#endif
 
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 export module vku:rendering.AttachmentGroup;
 
-#ifdef VKU_USE_STD_MODULE
 import std;
-#endif
 import :details.functional;
 export import :rendering.Attachment;
 import :rendering.AttachmentGroupBase;

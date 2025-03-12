@@ -5,33 +5,15 @@ module;
 
 #include <cassert>
 #include <cerrno>
-#ifndef VKU_USE_STD_MODULE
-#include <cstdint>
-#include <cstring>
-#include <filesystem>
-#include <format>
-#include <fstream>
-#include <ios>
-#include <span>
-#include <stdexcept>
-#include <utility>
-#include <vector>
-#endif
 
 #ifdef VKU_USE_SHADERC
-#include <ranges>
-#include <source_location>
-#include <string_view>
-
 #include <shaderc/shaderc.hpp>
 #endif
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 export module vku:pipelines.Shader;
 
-#ifdef VKU_USE_STD_MODULE
 import std;
-#endif
 export import vulkan_hpp;
 import :utils.RefHolder;
 #ifdef VKU_USE_SHADERC

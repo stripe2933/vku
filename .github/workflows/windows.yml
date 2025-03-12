@@ -18,7 +18,6 @@ jobs:
     strategy:
       matrix:
         build: [Debug, Release]
-        use_std_module: [ON, OFF]
 
     runs-on: windows-latest
     steps:
@@ -26,8 +25,6 @@ jobs:
 
       - name: Enable Developer Command Prompt
         uses: ilammy/msvc-dev-cmd@v1
-        with:
-          toolset: 14.40
 
       - name: Install Vulkan SDK
         uses: humbletim/setup-vulkan-sdk@v1.2.0
@@ -55,9 +52,7 @@ jobs:
       - name: Configure
         run: |
           mv .github\workflows\CMakeUserPresets.json .\
-          cmake --preset=msvc `
-            -DCMAKE_BUILD_TYPE=${{ matrix.build }} `
-            -DVKU_USE_STD_MODULE=${{ matrix.use_std_module }}
+          cmake --preset=msvc DCMAKE_BUILD_TYPE=${{ matrix.build }}
 
       - name: Install
-        run: cmake --build --preset=msvc --target install
+        run: cmake --build build --target install

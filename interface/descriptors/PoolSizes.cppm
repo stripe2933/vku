@@ -3,26 +3,11 @@
 
 module;
 
-#ifndef VKU_USE_STD_MODULE
-#include <cstdint>
-#include <ranges>
-#include <span>
-#include <tuple>
-#include <type_traits>
-#include <unordered_map>
-#include <vector>
-#ifdef _MSC_VER
-#include <compare>
-#endif
-#endif
-
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 export module vku:descriptors.PoolSizes;
 
-#ifdef VKU_USE_STD_MODULE
 import std;
-#endif
 export import vulkan_hpp;
 import :details.concepts;
 import :utils.RefHolder;

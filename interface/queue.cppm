@@ -3,24 +3,11 @@
 
 module;
 
-#ifndef VKU_USE_STD_MODULE
-#include <cstdint>
-#include <optional>
-#include <span>
-
-#ifdef _MSC_VER
-#include <compare>
-#include <string_view>
-#endif
-#endif
-
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 export module vku:queue;
 
-#ifdef VKU_USE_STD_MODULE
 import std;
-#endif
 export import vulkan_hpp;
 
 namespace vku {

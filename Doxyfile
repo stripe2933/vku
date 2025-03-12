@@ -2407,7 +2407,6 @@ PREDEFINED             = VULKAN_HPP_NAMESPACE=vk \
                          VMA_HPP_NAMESPACE=vma \
                          CLANG_INLINE= \
                          NOEXCEPT_IF_RELEASE=noexcept \
-                         VKU_USE_STD_MODULE=1 \
                          VKU_USE_SHADERC=1 \
                          explicit(condition)=explicit # https://github.com/doxygen/doxygen/issues/10085
 
@@ -2423,7 +2422,6 @@ EXPAND_AS_DEFINED      = VULKAN_HPP_NAMESPACE=vk \
                          VMA_HPP_NAMESPACE=vma \
                          CLANG_INLINE= \
                          NOEXCEPT_IF_RELEASE=noexcept \
-                         VKU_USE_STD_MODULE=1 \
                          VKU_USE_SHADERC=1
 
 # If the SKIP_FUNCTION_MACROS tag is set to YES then Doxygen's preprocessor will
