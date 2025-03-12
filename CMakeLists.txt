@@ -24,7 +24,7 @@ option(VKU_ENABLE_TEST "Enable the test targets.")
 # External dependencies.
 # ----------------
 
-find_package(Vulkan 1.3.256 REQUIRED)
+find_package(Vulkan 1.4.304 REQUIRED)
 find_package(VulkanMemoryAllocator CONFIG REQUIRED)
 find_package(VulkanMemoryAllocator-Hpp CONFIG REQUIRED)
 
@@ -39,7 +39,6 @@ endif()
 add_library(vku)
 target_sources(vku PUBLIC
     FILE_SET CXX_MODULES
-    BASE_DIRS ${Vulkan_INCLUDE_DIRS} .
     FILES
         ${Vulkan_INCLUDE_DIRS}/vulkan/vulkan.cppm
         extlibs/module-ports/vk_mem_alloc.cppm
