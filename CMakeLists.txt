@@ -9,9 +9,6 @@ project(vku
     VERSION 0.1.0
 )
 
-set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_MODULE_STD 1)
-
 # ----------------
 # Project options.
 # ----------------
@@ -75,7 +72,7 @@ target_sources(vku PUBLIC
         interface/utils/mod.cppm
         interface/utils/RefHolder.cppm
 )
-target_compile_features(vku PUBLIC cxx_std_${CMAKE_CXX_STANDARD})
+target_compile_features(vku PUBLIC cxx_std_23)
 target_link_libraries(vku PUBLIC
     Vulkan::Vulkan
     GPUOpen::VulkanMemoryAllocator
@@ -88,6 +85,7 @@ target_compile_definitions(vku PUBLIC
     $<$<PLATFORM_ID:Darwin>:VK_ENABLE_BETA_EXTENSIONS> # For VK_KHR_portability_subset availability.
     $<$<BOOL:${VKU_DEFAULT_DYNAMIC_DISPATCHER}>:VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1 VMA_STATIC_VULKAN_FUNCTIONS=0 VMA_DYNAMIC_VULKAN_FUNCTIONS=1>
 )
+set_target_properties(vku PROPERTIES CXX_MODULE_STD 1)
 
 # For usage consistency with FetchContent and find_package.
 add_library(${PROJECT_NAME}::vku ALIAS vku)
