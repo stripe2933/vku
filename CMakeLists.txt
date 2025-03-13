@@ -82,7 +82,8 @@ target_link_libraries(vku PUBLIC
 target_compile_definitions(vku PUBLIC
     $<$<BOOL:${VKU_USE_SHADERC}>:VKU_USE_SHADERC>
     $<$<BOOL:${MSVC}>:VULKAN_HPP_NO_SMART_HANDLE> # See https://github.com/KhronosGroup/Vulkan-Hpp/blob/main/README.md#c20-named-module for the details.
-    $<$<PLATFORM_ID:Darwin>:VK_ENABLE_BETA_EXTENSIONS> # For VK_KHR_portability_subset availability.
+    $<$<PLATFORM_ID:Windows>:VK_USE_PLATFORM_WIN32_KHR>
+    $<$<PLATFORM_ID:Darwin>:VK_USE_PLATFORM_METAL_EXT VK_ENABLE_BETA_EXTENSIONS> # For VK_KHR_portability_subset availability.
     $<$<BOOL:${VKU_DEFAULT_DYNAMIC_DISPATCHER}>:VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1 VMA_STATIC_VULKAN_FUNCTIONS=0 VMA_DYNAMIC_VULKAN_FUNCTIONS=1>
 )
 set_target_properties(vku PROPERTIES CXX_MODULE_STD 1)
