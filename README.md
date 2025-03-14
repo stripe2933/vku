@@ -33,6 +33,12 @@ I wrote several Vulkan projects using *vku*.
 
 ## Getting Started
 
+vku follows the same versioning rules as Vulkan-SDK and does not maintain backward compatibility, like as Vulkan-Hpp. For instance, vku 1.4.304 is:
+
+- **guaranteed** to be compatible with Vulkan 1.4.304.
+- **may** not be compatible with Vulkan 1.4.307, and actually [test is not compatible](https://github.com/KhronosGroup/Vulkan-Hpp/pull/2038) (usage is compatible).
+- **may** not be compatible with Vulkan 1.3.296, and actually [it isn't compatible for MSVC](https://github.com/KhronosGroup/Vulkan-Hpp/pull/1994).
+
 ### Build Steps
 
 *vku* can be used with CMake `find_package`, `FetchContent`, `CPM.cmake` or vcpkg (using overlay ports). See [Using vku](docs/using-vku.md) page for the details.

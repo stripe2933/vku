@@ -6,7 +6,7 @@ set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "0e5b6991-d74f-4b3d-a41c-cf096e0b2508")
 project(vku
     LANGUAGES CXX
     DESCRIPTION "A set of Vulkan utilities based on RAII idiom and Modern C++ features."
-    VERSION 0.1.0
+    VERSION 1.4.304
 )
 
 # ----------------
@@ -120,7 +120,7 @@ include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
     "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
     VERSION ${PROJECT_VERSION}
-    COMPATIBILITY SameMajorVersion # Change this to SameMinorVersion when reach to the version 1.0.
+    COMPATIBILITY ExactVersion
 )
 configure_package_config_file(
     cmake/config.cmake.in
