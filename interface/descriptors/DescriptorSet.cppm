@@ -39,7 +39,7 @@ namespace vku {
          * @code{.cpp}
          * struct Layout : vku::DescriptorSetLayout<vk::DescriptorType::eStorageBuffer> { ... } layout;
          *
-         * auto [descriptorSet] = vku::allocateDescriptorSets(*device, *descriptorPool, std::tie(layout));
+         * auto [descriptorSet] = vku::allocateDescriptorSets(*descriptorPool, std::tie(layout));
          * device.updateDescriptorSets({
          *     descriptorSet.getWriteOne<0>({ buffer, 0, vk::WholeSize }), // argument type infered as vk::DescriptorBufferInfo at the compile time.
          * }, {});
@@ -72,5 +72,13 @@ namespace vku {
         return INDEX_SEQ(Is, sizeof...(Layouts), {
             return std::tuple { DescriptorSet<std::remove_cvref_t<Layouts>> { unsafe, rawDescriptorSets[Is] }... };
         });
+    }
+
+    export template <details::derived_from_value_specialization_of<DescriptorSetLayout>... Layouts>
+    [[nodiscard]] std::tuple<DescriptorSet<std::remove_cvref_t<Layouts>>...> allocateDescriptorSets(
+        VULKAN_HPP_NAMESPACE::DescriptorPool pool,
+        const std::tuple<Layouts...> &layouts
+    ) {
+        return allocateDescriptorSets(get<0>(layouts).getDevice(), pool, layouts);
     }
 }
