@@ -128,6 +128,13 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a24a301081102e1c6a443915721ee545f" id="r_a24a301081102e1c6a443915721ee545f"><td class="memItemLeft" align="right" valign="top">static constexpr std::array&lt; vk::DescriptorSetLayoutBinding, <a class="el" href="#ae9a824f743ffc283db67dfb53bf24210">bindingCount</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a24a301081102e1c6a443915721ee545f">getBindings</a> (const <a class="el" href="structvku_1_1DescriptorSetLayout_1_1BindingInfo.html">BindingInfo</a>&lt; BindingTypes &gt; &amp;...bindingInfos) noexcept</td></tr>
 <tr class="memdesc:a24a301081102e1c6a443915721ee545f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create binding array with only descriptor count and stage (and immutable samplers if specified). Binding indices and types are used from the template parameters.  <br /></td></tr>
 <tr class="separator:a24a301081102e1c6a443915721ee545f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a457a6d6224ce15a1ff9fa3fd07063015" id="r_a457a6d6224ce15a1ff9fa3fd07063015"><td class="memTemplParams" colspan="2"><a id="a457a6d6224ce15a1ff9fa3fd07063015" name="a457a6d6224ce15a1ff9fa3fd07063015"></a>
+template&lt;std::uint32_t Binding&gt; </td></tr>
+<tr class="memitem:a457a6d6224ce15a1ff9fa3fd07063015"><td class="memTemplItemLeft" align="right" valign="top">static vk::WriteDescriptorSet&#160;</td><td class="memTemplItemRight" valign="bottom"><b>getWrite</b> (const vk::ArrayProxyNoTemporaries&lt; const WriteDescriptorInfo_t&lt; get&lt; Binding &gt;(<a class="el" href="#adcbc392c477ee1ce1f8d56d66e77b9a3">bindingTypes</a>)&gt; &gt; &amp;descriptorInfos) noexcept</td></tr>
+<tr class="separator:a457a6d6224ce15a1ff9fa3fd07063015"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad2684548f01e277b57e42f45255c128" id="r_aad2684548f01e277b57e42f45255c128"><td class="memTemplParams" colspan="2">template&lt;std::uint32_t Binding&gt; </td></tr>
+<tr class="memitem:aad2684548f01e277b57e42f45255c128"><td class="memTemplItemLeft" align="right" valign="top">static vk::WriteDescriptorSet&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#aad2684548f01e277b57e42f45255c128">getWriteOne</a> (const WriteDescriptorInfo_t&lt; get&lt; Binding &gt;(<a class="el" href="#adcbc392c477ee1ce1f8d56d66e77b9a3">bindingTypes</a>)&gt; &amp;&amp;descriptorInfo) noexcept</td></tr>
+<tr class="separator:aad2684548f01e277b57e42f45255c128"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -167,7 +174,7 @@ struct vku::DescriptorSetLayout&lt; BindingTypes &gt;</div><p>Owning descriptor 
 <div class="line"><span class="keyword">static_assert</span>(descriptorSetLayout.bindingCount == 2);</div>
 <div class="line"><span class="keyword">static_assert</span>(descriptorSetLayout.bindingTypes == std::array { vk::DescriptorType::eUniformBuffer, vk::DescriptorType::eCombinedImageSampler });</div>
 <div class="line">assert(descriptorSetLayout.descriptorCounts == std::array { 1, 3 });</div>
-<div class="ttc" id="astructvku_1_1DescriptorSetLayout_html"><div class="ttname"><a href="structvku_1_1DescriptorSetLayout.html">vku::DescriptorSetLayout</a></div><div class="ttdoc">Owning descriptor set layout with compile-time binding types.</div><div class="ttdef"><b>Definition</b> DescriptorSetLayout.cppm:46</div></div>
+<div class="ttc" id="astructvku_1_1DescriptorSetLayout_html"><div class="ttname"><a href="structvku_1_1DescriptorSetLayout.html">vku::DescriptorSetLayout</a></div><div class="ttdoc">Owning descriptor set layout with compile-time binding types.</div><div class="ttdef"><b>Definition</b> DescriptorSetLayout.cppm:61</div></div>
 </div><!-- fragment --><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">BindingTypes</td><td>Variadic NTTP of descriptor types. </td></tr>
@@ -249,7 +256,7 @@ template&lt;vk::DescriptorType... BindingTypes&gt; </div>
 <div class="line">            vku::unsafeProxy(<a class="code hl_function" href="#a24a301081102e1c6a443915721ee545f">getBindings</a>({ 1, vk::ShaderStageFlagBits::eVertex }, { 3, vk::ShaderStageFlagBits::eFragment })),</div>
 <div class="line">        } { }</div>
 <div class="line">};</div>
-<div class="ttc" id="astructvku_1_1DescriptorSetLayout_html_a24a301081102e1c6a443915721ee545f"><div class="ttname"><a href="#a24a301081102e1c6a443915721ee545f">vku::DescriptorSetLayout::getBindings</a></div><div class="ttdeci">static constexpr std::array&lt; vk::DescriptorSetLayoutBinding, bindingCount &gt; getBindings(const BindingInfo&lt; BindingTypes &gt; &amp;...bindingInfos) noexcept</div><div class="ttdoc">Create binding array with only descriptor count and stage (and immutable samplers if specified)....</div><div class="ttdef"><b>Definition</b> DescriptorSetLayout.cppm:101</div></div>
+<div class="ttc" id="astructvku_1_1DescriptorSetLayout_html_a24a301081102e1c6a443915721ee545f"><div class="ttname"><a href="#a24a301081102e1c6a443915721ee545f">vku::DescriptorSetLayout::getBindings</a></div><div class="ttdeci">static constexpr std::array&lt; vk::DescriptorSetLayoutBinding, bindingCount &gt; getBindings(const BindingInfo&lt; BindingTypes &gt; &amp;...bindingInfos) noexcept</div><div class="ttdoc">Create binding array with only descriptor count and stage (and immutable samplers if specified)....</div><div class="ttdef"><b>Definition</b> DescriptorSetLayout.cppm:116</div></div>
 </div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">bindingInfos</td><td>Binding infos for each binding. These will be applied with index starts from zero. </td></tr>
@@ -288,6 +295,53 @@ template&lt;vk::DescriptorType... BindingTypes&gt; </div>
 <p><a class="el" href="structvku_1_1PoolSizes.html">PoolSizes</a> that allocating a single descriptor set with this layout requires. </p>
 <p>Allocating a single descriptor set with this layout will require descriptors of the specified types and a single set.</p>
 <dl class="section return"><dt>Returns</dt><dd>Required pool sizes. </dd></dl>
+
+</div>
+</div>
+<a id="aad2684548f01e277b57e42f45255c128" name="aad2684548f01e277b57e42f45255c128"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aad2684548f01e277b57e42f45255c128">&#9670;&#160;</a></span>getWriteOne()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;vk::DescriptorType... BindingTypes&gt; </div>
+<div class="memtemplate">
+template&lt;std::uint32_t Binding&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static vk::WriteDescriptorSet <a class="el" href="structvku_1_1DescriptorSetLayout.html">vku::DescriptorSetLayout</a>&lt; BindingTypes &gt;::getWriteOne </td>
+          <td>(</td>
+          <td class="paramtype">const WriteDescriptorInfo_t&lt; get&lt; Binding &gt;(<a class="el" href="#adcbc392c477ee1ce1f8d56d66e77b9a3">bindingTypes</a>)&gt; &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>descriptorInfo</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">nodiscard</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Convenience method for calling <code>getWrite&lt;Binding&gt;</code> with single lifetime-bounded descriptor info object. </p><div class="fragment"><div class="line"><span class="keyword">struct </span>Layout : <a class="code hl_struct" href="structvku_1_1DescriptorSetLayout.html">vku::DescriptorSetLayout</a>&lt;vk::DescriptorType::eStorageBuffer&gt; { ... };</div>
+<div class="line"> </div>
+<div class="line">cb.pushDescriptorSetKHR(</div>
+<div class="line">    vk::PipelineBindPoint::eCompute, *pipelineLayout,</div>
+<div class="line">    0, Layout::getWriteOne&lt;0&gt;({ buffer, 0, vk::WholeSize })); <span class="comment">// argument type infered as vk::DescriptorBufferInfo at the compile time.</span></div>
+</div><!-- fragment --> <dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Binding</td><td>Binding index to get the write descriptor. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">descriptorInfo</td><td>Descriptor info to write. This is either <code>vk::DescriptorBufferInfo</code>, <code>vk::DescriptorImageInfo</code> or <code>vk::BufferView</code>, based on your descriptor type predefined by <code><a class="el" href="structvku_1_1DescriptorSetLayout.html" title="Owning descriptor set layout with compile-time binding types.">DescriptorSetLayout</a></code>. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>vk::WriteDescriptorSet</code> with given info. </dd></dl>
 
 </div>
 </div>

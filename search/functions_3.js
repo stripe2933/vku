@@ -5,6 +5,6 @@ var searchData=
   ['getmipviewcreateinfos_2',['getMipViewCreateInfos',['../structvku_1_1Image.html#a630412f2842993c0d94bec88fcae7af0',1,'vku::Image']]],
   ['getpoolsize_3',['getPoolSize',['../structvku_1_1DescriptorSetLayout.html#a6e1476ab74589077d09fd18f1605dbb4',1,'vku::DescriptorSetLayout']]],
   ['getviewcreateinfo_4',['getViewCreateInfo',['../structvku_1_1Image.html#a8d8ae60278558c52bcb003f102f44f75',1,'vku::Image::getViewCreateInfo(vk::ImageViewType type=vk::ImageViewType::e2D) const noexcept'],['../structvku_1_1Image.html#ac00f8f5379e7d66ae6f1a0b4637ba50d',1,'vku::Image::getViewCreateInfo(const vk::ImageSubresourceRange &amp;subresourceRange, vk::ImageViewType type=vk::ImageViewType::e2D) const noexcept']]],
-  ['getwriteone_5',['getWriteOne',['../structvku_1_1DescriptorSet.html#a2a2df3d855016a7092501d03c52a3366',1,'vku::DescriptorSet']]],
+  ['getwriteone_5',['getWriteOne',['../structvku_1_1DescriptorSet.html#aea47c6f1c404fe862ff64dc4223bd38d',1,'vku::DescriptorSet::getWriteOne()'],['../structvku_1_1DescriptorSetLayout.html#aad2684548f01e277b57e42f45255c128',1,'vku::DescriptorSetLayout::getWriteOne()']]],
   ['gpu_6',['Gpu',['../classvku_1_1Gpu.html#a657e068c4435fb5b88127ff7618f3666',1,'vku::Gpu']]]
 ];

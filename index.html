@@ -149,6 +149,12 @@ Can mainpulate the node visibility based on hierarchy.</li>
 </table>
 <h1><a class="anchor" id="autotoc_md3"></a>
 Getting Started</h1>
+<p>vku follows the same versioning rules as Vulkan-SDK and does not maintain backward compatibility, like as Vulkan-Hpp. For instance, vku 1.4.304 is:</p>
+<ul>
+<li><b>guaranteed</b> to be compatible with Vulkan 1.4.304.</li>
+<li><b>may</b> not be compatible with Vulkan 1.4.307, and actually <a href="https://github.com/KhronosGroup/Vulkan-Hpp/pull/2038">test is not compatible</a> (usage is compatible).</li>
+<li><b>may</b> not be compatible with Vulkan 1.3.296, and actually <a href="https://github.com/KhronosGroup/Vulkan-Hpp/pull/1994">it isn't compatible for MSVC</a>.</li>
+</ul>
 <h2><a class="anchor" id="autotoc_md4"></a>
 Build Steps</h2>
 <p><em>vku</em> can be used with CMake <code>find_package</code>, <code>FetchContent</code>, <code>CPM.cmake</code> or vcpkg (using overlay ports). See <a class="el" href="md_docs_2using-vku.html">Using vku</a> page for the details.</p>
