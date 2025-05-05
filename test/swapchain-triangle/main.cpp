@@ -41,7 +41,7 @@ struct Queues {
 };
 
 struct Gpu : vku::Gpu<QueueFamilies, Queues> {
-    Gpu(const vk::raii::Instance &instance [[clang::lifetimebound]], vk::SurfaceKHR surface)
+    Gpu(const vk::raii::Instance &instance, vk::SurfaceKHR surface)
         : vku::Gpu<QueueFamilies, Queues> { instance, vku::Gpu<QueueFamilies, Queues>::Config<vk::PhysicalDeviceDynamicRenderingFeatures> {
             .verbose = true,
             .deviceExtensions = {

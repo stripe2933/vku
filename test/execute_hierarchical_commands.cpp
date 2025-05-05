@@ -62,7 +62,7 @@ struct Queues {
 };
 
 struct Gpu : vku::Gpu<QueueFamilies, Queues> {
-    explicit Gpu(const vk::raii::Instance &instance [[clang::lifetimebound]])
+    explicit Gpu(const vk::raii::Instance &instance)
         : vku::Gpu<QueueFamilies, Queues> { instance, vku::Gpu<QueueFamilies, Queues>::Config {
             .verbose = true,
             .deviceExtensions = {

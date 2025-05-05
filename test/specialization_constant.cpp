@@ -37,7 +37,7 @@ struct Queues {
 };
 
 struct Gpu : vku::Gpu<QueueFamilies, Queues> {
-    explicit Gpu(const vk::raii::Instance &instance [[clang::lifetimebound]])
+    explicit Gpu(const vk::raii::Instance &instance)
         : vku::Gpu<QueueFamilies, Queues> { instance, vku::Gpu<QueueFamilies, Queues>::Config {
             .verbose = true,
 #if __APPLE__
@@ -53,7 +53,7 @@ struct BufferFillComputer {
     vk::raii::PipelineLayout pipelineLayout;
     vk::raii::Pipeline pipeline;
 
-    explicit BufferFillComputer(const vk::raii::Device &device [[clang::lifetimebound]], std::uint32_t value)
+    explicit BufferFillComputer(const vk::raii::Device &device, std::uint32_t value)
         : descriptorSetLayout { device, {
             {},
             vku::unsafeProxy(decltype(descriptorSetLayout)::getBindings({ 1, vk::ShaderStageFlagBits::eCompute })),
