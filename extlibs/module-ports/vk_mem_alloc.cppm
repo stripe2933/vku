@@ -65,7 +65,9 @@ export namespace VMA_HPP_NAMESPACE {
 }
 #endif
 
+#ifndef __GNUC__
 module : private;
+#endif
 
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
 // Instantiate unique handle templates.
