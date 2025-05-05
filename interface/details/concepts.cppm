@@ -1,11 +1,11 @@
 /** @file details/concepts.cppm
  */
 
-export module vku:details.concepts;
+export module vku.details:concepts;
 
 import std;
 
-namespace details {
+namespace vku::details {
     template <typename>
     struct is_tuple_like : std::false_type{};
     template <typename T, typename U>

@@ -12,10 +12,9 @@ module;
 export module vku:descriptors.DescriptorSetLayout;
 
 import std;
+import vku.details;
 export import vulkan_hpp;
 export import :descriptors.PoolSizes;
-import :details.concepts;
-import :details.functional;
 
 #define INDEX_SEQ(Is, N, ...) [&]<std::size_t ...Is>(std::index_sequence<Is...>) __VA_ARGS__ (std::make_index_sequence<N>{})
 

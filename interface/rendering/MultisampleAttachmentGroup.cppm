@@ -10,9 +10,9 @@ module;
 export module vku:rendering.MultisampleAttachmentGroup;
 
 import std;
-import :details.functional;
+import vku.details;
 export import :rendering.Attachment;
-import :rendering.AttachmentGroupBase;
+export import :rendering.AttachmentGroupBase;
 export import :rendering.MultisampleAttachment;
 import :utils.RefHolder;
 

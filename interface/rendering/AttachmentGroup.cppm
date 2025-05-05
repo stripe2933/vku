@@ -10,9 +10,9 @@ module;
 export module vku:rendering.AttachmentGroup;
 
 import std;
-import :details.functional;
+import vku.details;
 export import :rendering.Attachment;
-import :rendering.AttachmentGroupBase;
+export import :rendering.AttachmentGroupBase;
 import :utils.RefHolder;
 
 // #define VMA_HPP_NAMESPACE to vma, if not defined.

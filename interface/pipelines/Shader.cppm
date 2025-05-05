@@ -16,11 +16,11 @@ module;
 export module vku:pipelines.Shader;
 
 import std;
+#ifdef VKU_USE_SHADERC
+import vku.details;
+#endif
 export import vulkan_hpp;
 import :utils.RefHolder;
-#ifdef VKU_USE_SHADERC
-import :details.to_string;
-#endif
 
 #ifdef _MSC_VER
 #define PATH_C_STR(...) (__VA_ARGS__).string().c_str()

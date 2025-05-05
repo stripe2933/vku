@@ -55,11 +55,10 @@ target_sources(vku PUBLIC
         interface/descriptors/DescriptorSetLayout.cppm
         interface/descriptors/DescriptorSet.cppm
         interface/descriptors/PoolSizes.cppm
+        interface/details/mod.cppm
         interface/details/concepts.cppm
-        interface/details/container/OnDemandCounterStorage.cppm
         interface/details/functional.cppm
         interface/details/to_string.cppm
-        interface/details/tuple.cppm
         interface/Gpu.cppm
         interface/images/mod.cppm
         interface/images/AllocatedImage.cppm

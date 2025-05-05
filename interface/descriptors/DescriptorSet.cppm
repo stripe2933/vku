@@ -10,8 +10,8 @@ module;
 export module vku:descriptors.DescriptorSet;
 
 import std;
+import vku.details;
 export import :descriptors.DescriptorSetLayout;
-import :details.concepts;
 import :utils;
 
 #define INDEX_SEQ(Is, N, ...) [&]<std::size_t ...Is>(std::index_sequence<Is...>) __VA_ARGS__ (std::make_index_sequence<N>{})

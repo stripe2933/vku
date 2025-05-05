@@ -8,7 +8,7 @@ module;
 export module vku:debugging;
 
 import std;
-import :details.to_string;
+import vku.details;
 import :utils;
 
 namespace vku {

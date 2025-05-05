@@ -12,9 +12,9 @@ module;
 export module vku:Gpu;
 
 import std;
+import vku.details;
 export import vk_mem_alloc_hpp;
 export import vulkan_hpp;
-import :details.concepts;
 import :utils;
 
 // #define VMA_HPP_NAMESPACE to vma, if not defined.
