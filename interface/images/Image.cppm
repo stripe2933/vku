@@ -19,14 +19,13 @@ import :utils;
 #define NOEXCEPT_IF_RELEASE
 #endif
 
-// This macro is for Clang's false-positive build error when using lambda in initializer of non-inline variable in named
+// This macro is for GCC and Clang < 21's false-positive build error when using lambda in initializer of non-inline variable in named
 // modules. We can specify the inline keyword to workaround this.
 // See: https://github.com/llvm/llvm-project/issues/110146
-// TODO: remove this macro when the issue fixed.
-#if __clang__
-#define CLANG_INLINE inline
+#if defined(__GNUC__) || (defined(__clang_major__) && __clang_major__ < 21)
+#define INLINE_TU_INTERNAL_LAMBDA inline
 #else
-#define CLANG_INLINE
+#define INLINE_TU_INTERNAL_LAMBDA
 #endif
 
 namespace vku {
@@ -112,7 +111,7 @@ namespace vku {
          * @param type Image view type (default=<tt>vk::ImageViewType::e2D</tt>).
          * @return Range of <tt>vk::ImageViewCreateInfo</tt> structs for each mip levels.
          */
-        [[nodiscard]] CLANG_INLINE auto getMipViewCreateInfos(VULKAN_HPP_NAMESPACE::ImageViewType type = VULKAN_HPP_NAMESPACE::ImageViewType::e2D) const NOEXCEPT_IF_RELEASE {
+        [[nodiscard]] inline auto getMipViewCreateInfos(VULKAN_HPP_NAMESPACE::ImageViewType type = VULKAN_HPP_NAMESPACE::ImageViewType::e2D) const NOEXCEPT_IF_RELEASE {
             return std::views::iota(0U, mipLevels)
                 | std::views::transform([this, type, aspectFlags = inferAspectFlags(format)](std::uint32_t level) {
                     return VULKAN_HPP_NAMESPACE::ImageViewCreateInfo {
