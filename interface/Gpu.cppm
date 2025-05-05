@@ -62,20 +62,20 @@ namespace vku {
                 }
 
                 // Check device extension availability.
-                const std::vector availableExtensions = physicalDevice.enumerateDeviceExtensionProperties();
+                const std::vector<VULKAN_HPP_NAMESPACE::ExtensionProperties> availableExtensions = physicalDevice.enumerateDeviceExtensionProperties();
 
-                constexpr auto toStringView = [](const auto &str) { return std::string_view { str }; };
-                std::vector availableExtensionNames
-                    = availableExtensions
-                    | std::views::transform(&VULKAN_HPP_NAMESPACE::ExtensionProperties::extensionName)
-                    | std::views::transform(toStringView)
-                    | std::ranges::to<std::vector>();
+                std::vector<std::string_view> availableExtensionNames;
+                availableExtensionNames.reserve(availableExtensions.size());
+                for (const VULKAN_HPP_NAMESPACE::ExtensionProperties &props : availableExtensions) {
+                    availableExtensionNames.push_back(static_cast<std::string_view>(props.extensionName));
+                }
                 std::ranges::sort(availableExtensionNames);
 
-                std::vector deviceExtensionNames
-                    = deviceExtensions
-                    | std::views::transform(toStringView)
-                    | std::ranges::to<std::vector>();
+                std::vector<std::string_view> deviceExtensionNames;
+                deviceExtensionNames.reserve(deviceExtensions.size());
+                for (const char *deviceExtension : deviceExtensions) {
+                    deviceExtensionNames.push_back(deviceExtension);
+                }
                 std::ranges::sort(deviceExtensionNames);
 
                 if (!std::ranges::includes(availableExtensionNames, deviceExtensionNames)) {

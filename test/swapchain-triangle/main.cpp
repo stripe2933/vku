@@ -1,3 +1,7 @@
+#ifdef __GNUC__
+#include <ranges>
+#endif
+
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 import std;
@@ -159,7 +163,7 @@ int main(){
                         swapchainImage, vku::fullSubresourceRange(),
                     };
                 })
-                | std::ranges::to<std::vector>());
+                | std::ranges::to<std::vector<vk::ImageMemoryBarrier>>());
     });
     gpu.queues.graphicsPresent.waitIdle();
 

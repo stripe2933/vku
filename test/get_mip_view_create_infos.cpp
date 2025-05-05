@@ -1,4 +1,7 @@
 #include <cassert>
+#ifdef __GNUC__
+#include <ranges>
+#endif
 
 #include <vulkan/vulkan_hpp_macros.hpp>
 
@@ -148,7 +151,7 @@ int main() {
         | std::views::transform([&](const vk::ImageViewCreateInfo &createInfo) {
             return vk::raii::ImageView { gpu.device, createInfo };
         })
-        | std::ranges::to<std::vector>();
+        | std::ranges::to<std::vector<vk::raii::ImageView>>();
 
     const vku::MappedBuffer buffer {
         gpu.allocator,
@@ -163,7 +166,7 @@ int main() {
     gpu.device.updateDescriptorSets({
         descriptorSet.getWrite<0>(vku::unsafeProxy(imageViews | std::views::transform([](const auto &imageView) {
             return vk::DescriptorImageInfo { {}, *imageView, vk::ImageLayout::eShaderReadOnlyOptimal };
-        }) | std::ranges::to<std::vector>())),
+        }) | std::ranges::to<std::vector<vk::DescriptorImageInfo>>())),
         descriptorSet.getWriteOne<1>({ buffer, 0, vk::WholeSize }),
     }, {});
 
