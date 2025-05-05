@@ -4,3 +4,4 @@ target_compile_definitions(swapchain-triangle PRIVATE
     COMPILED_SHADER_DIR="${CMAKE_CURRENT_SOURCE_DIR}/shaders"
 )
 add_test(NAME swapchain-triangle COMMAND swapchain-triangle)
+set_target_properties(swapchain-triangle PROPERTIES CXX_MODULE_STD 1)

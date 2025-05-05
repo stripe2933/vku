@@ -1,5 +1,6 @@
 add_executable(execute_hierarchical_commands execute_hierarchical_commands.cpp)
 target_link_libraries(execute_hierarchical_commands PRIVATE vku::vku)
+set_target_properties(execute_hierarchical_commands PROPERTIES CXX_MODULE_STD 1)
 add_test(NAME execute_hierarchical_commands COMMAND execute_hierarchical_commands)
 
 add_executable(get_mip_view_create_infos get_mip_view_create_infos.cpp)
@@ -7,10 +8,12 @@ target_link_libraries(get_mip_view_create_infos PRIVATE vku::vku)
 target_compile_definitions(get_mip_view_create_infos PRIVATE
     COMPILED_SHADER_DIR="${CMAKE_CURRENT_SOURCE_DIR}/shaders/get_mip_view_create_infos"
 )
+set_target_properties(get_mip_view_create_infos PROPERTIES CXX_MODULE_STD 1)
 add_test(NAME get_mip_view_create_infos COMMAND get_mip_view_create_infos)
 
 add_executable(pool_sizes pool_sizes.cpp)
 target_link_libraries(pool_sizes PRIVATE vku::vku)
+set_target_properties(pool_sizes PROPERTIES CXX_MODULE_STD 1)
 add_test(NAME pool_sizes COMMAND pool_sizes)
 
 add_executable(specialization_constant specialization_constant.cpp)
@@ -18,6 +21,7 @@ target_link_libraries(specialization_constant PRIVATE vku::vku)
 target_compile_definitions(specialization_constant PRIVATE
     COMPILED_SHADER_DIR="${CMAKE_CURRENT_SOURCE_DIR}/shaders/specialization_constant"
 )
+set_target_properties(specialization_constant PROPERTIES CXX_MODULE_STD 1)
 add_test(NAME specialization_constant COMMAND specialization_constant)
 
 add_subdirectory(msaa-triangle)
