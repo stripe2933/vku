@@ -11,6 +11,8 @@ module;
 #endif
 #include <vulkan/vulkan_hpp_macros.hpp>
 
+#include <lifetimebound.hpp>
+
 export module vku:pipelines.Shader;
 
 import std;
@@ -105,7 +107,7 @@ namespace vku {
         [[nodiscard]] static RefHolder<Shader, std::vector<std::byte>> fromSpirvFile(
             const std::filesystem::path &path,
             VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage,
-            const VULKAN_HPP_NAMESPACE::SpecializationInfo *pSpecializationInfo [[clang::lifetimebound]] = nullptr,
+            const VULKAN_HPP_NAMESPACE::SpecializationInfo *pSpecializationInfo LIFETIMEBOUND = nullptr,
             const char *entryPoint = "main"
         ) {
             return {
@@ -142,7 +144,7 @@ namespace vku {
             std::string_view glsl,
             VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage,
             const shaderc::CompileOptions &compileOptions,
-            const VULKAN_HPP_NAMESPACE::SpecializationInfo *pSpecializationInfo [[clang::lifetimebound]] = nullptr,
+            const VULKAN_HPP_NAMESPACE::SpecializationInfo *pSpecializationInfo LIFETIMEBOUND = nullptr,
             const char *identifier = details::to_string(std::source_location::current()).c_str()
         ) {
             const auto compilationResult = compiler.CompileGlslToSpv(glsl.data(), glsl.size(), getShaderKind(stage), identifier, "main", compileOptions);
@@ -182,7 +184,7 @@ namespace vku {
             const std::filesystem::path &glslPath,
             VULKAN_HPP_NAMESPACE::ShaderStageFlagBits stage,
             const shaderc::CompileOptions &compileOptions,
-            const VULKAN_HPP_NAMESPACE::SpecializationInfo *pSpecializationInfo [[clang::lifetimebound]] = nullptr
+            const VULKAN_HPP_NAMESPACE::SpecializationInfo *pSpecializationInfo LIFETIMEBOUND = nullptr
         ) {
             const std::vector glsl = loadFileAsBinary(glslPath);
             const auto compilationResult = compiler.CompileGlslToSpv(reinterpret_cast<const char*>(glsl.data()), glsl.size(), getShaderKind(stage), PATH_C_STR(glslPath), "main", compileOptions);

@@ -7,6 +7,8 @@ module;
 
 #include <vulkan/vulkan_hpp_macros.hpp>
 
+#include <lifetimebound.hpp>
+
 export module vku:utils;
 export import :utils.RefHolder;
 
@@ -56,7 +58,7 @@ namespace vku {
      * @warning The result address is only valid until the end of the expression, which contains the temporary value.
      */
     export template <typename T>
-    [[nodiscard]] const T* unsafeAddress(const T &&value [[clang::lifetimebound]]) noexcept {
+    [[nodiscard]] const T* unsafeAddress(const T &&value LIFETIMEBOUND) noexcept {
         return &value;
     }
 
@@ -78,7 +80,7 @@ namespace vku {
      * @warning The result is only valid until the end of the expression, which contains the temporary value.
      */
     export template <typename T>
-    [[nodiscard]] VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const T> unsafeProxy(const T &&value [[clang::lifetimebound]]) noexcept {
+    [[nodiscard]] VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const T> unsafeProxy(const T &&value LIFETIMEBOUND) noexcept {
         return static_cast<const T&>(value);
     }
 
@@ -90,7 +92,7 @@ namespace vku {
      * @warning The result is only valid until the end of the expression, which contains the temporary range.
      */
     export template <std::ranges::contiguous_range R>
-    [[nodiscard]] VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const std::ranges::range_value_t<R>> unsafeProxy(const R &&range [[clang::lifetimebound]]) noexcept {
+    [[nodiscard]] VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const std::ranges::range_value_t<R>> unsafeProxy(const R &&range LIFETIMEBOUND) noexcept {
         return static_cast<const R&>(range);
     }
 
@@ -115,7 +117,7 @@ namespace vku {
      * @warning The result is only valid until the end of the expression, which contains the temporary initializer list.
      */
     export template <typename T>
-    [[nodiscard]] VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const T> unsafeProxy(const std::initializer_list<T> &list [[clang::lifetimebound]]) noexcept {
+    [[nodiscard]] VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const T> unsafeProxy(const std::initializer_list<T> &list LIFETIMEBOUND) noexcept {
         return static_cast<const std::initializer_list<T>&>(list);
     }
 

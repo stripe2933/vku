@@ -7,6 +7,8 @@ module;
 
 #include <vulkan/vulkan_hpp_macros.hpp>
 
+#include <lifetimebound.hpp>
+
 export module vku:descriptors.DescriptorSetLayout;
 
 import std;
@@ -87,7 +89,7 @@ namespace vku {
          * @param createInfo Descriptor set layout create info. Its bindings must match the template parameter count and types.
          */
         DescriptorSetLayout(
-            const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device [[clang::lifetimebound]],
+            const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device LIFETIMEBOUND,
             const VULKAN_HPP_NAMESPACE::DescriptorSetLayoutCreateInfo &createInfo
         ) : VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DescriptorSetLayout { device, createInfo } {
             assert(createInfo.bindingCount == bindingCount && "The binding count must match the template parameter count.");
@@ -178,7 +180,7 @@ namespace vku {
          */
         template <std::uint32_t Binding>
         [[nodiscard]] static VULKAN_HPP_NAMESPACE::WriteDescriptorSet getWriteOne(
-            const WriteDescriptorInfo_t<get<Binding>(bindingTypes)> &&descriptorInfo [[clang::lifetimebound]]
+            const WriteDescriptorInfo_t<get<Binding>(bindingTypes)> &&descriptorInfo LIFETIMEBOUND
         ) noexcept {
             return getWrite<Binding>(descriptorInfo);
         }

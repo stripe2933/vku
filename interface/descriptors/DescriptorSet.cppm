@@ -5,6 +5,8 @@ module;
 
 #include <vulkan/vulkan_hpp_macros.hpp>
 
+#include <lifetimebound.hpp>
+
 export module vku:descriptors.DescriptorSet;
 
 import std;
@@ -50,7 +52,7 @@ namespace vku {
          */
         template <std::uint32_t Binding>
         [[nodiscard]] VULKAN_HPP_NAMESPACE::WriteDescriptorSet getWriteOne(
-            const WriteDescriptorInfo_t<get<Binding>(Layout::bindingTypes)> &&descriptorInfo [[clang::lifetimebound]]
+            const WriteDescriptorInfo_t<get<Binding>(Layout::bindingTypes)> &&descriptorInfo LIFETIMEBOUND
         ) const noexcept {
             return getWrite<Binding>(descriptorInfo);
         }

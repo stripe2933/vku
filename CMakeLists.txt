@@ -77,6 +77,7 @@ target_sources(vku PUBLIC
         interface/utils/RefHolder.cppm
 )
 target_compile_features(vku PUBLIC cxx_std_23)
+target_include_directories(vku PRIVATE include)
 target_link_libraries(vku PUBLIC
     Vulkan::Vulkan
     GPUOpen::VulkanMemoryAllocator
@@ -90,7 +91,10 @@ target_compile_definitions(vku PUBLIC
     $<$<PLATFORM_ID:Darwin>:VK_USE_PLATFORM_METAL_EXT VK_ENABLE_BETA_EXTENSIONS> # For VK_KHR_portability_subset availability.
     $<$<BOOL:${VKU_DEFAULT_DYNAMIC_DISPATCHER}>:VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1 VMA_STATIC_VULKAN_FUNCTIONS=0 VMA_DYNAMIC_VULKAN_FUNCTIONS=1>
 )
-set_target_properties(vku PROPERTIES CXX_MODULE_STD 1)
+set_target_properties(vku PROPERTIES 
+    CXX_MODULE_STD 1
+    PRIVATE_HEADER include/lifetimebound.hpp
+)
 
 # For usage consistency with FetchContent and find_package.
 add_library(${PROJECT_NAME}::vku ALIAS vku)

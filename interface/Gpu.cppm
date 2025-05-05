@@ -7,6 +7,8 @@ module;
 
 #include <vulkan/vulkan_hpp_macros.hpp>
 
+#include <lifetimebound.hpp>
+
 export module vku:Gpu;
 
 import std;
@@ -232,7 +234,7 @@ namespace vku {
          */
         template <typename... DevicePNexts>
         explicit Gpu(
-            const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance &instance [[clang::lifetimebound]],
+            const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance &instance LIFETIMEBOUND,
             const Config<DevicePNexts...> &config = {}
         ) : physicalDevice { selectPhysicalDevice(instance, config) },
             queueFamilies { config.queueFamilyGetter(physicalDevice) },
