@@ -1,0 +1,2 @@
+add_subdirectory(triangle)
+add_subdirectory(triangle_1_3)

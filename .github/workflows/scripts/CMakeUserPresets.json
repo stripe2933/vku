@@ -1,0 +1,29 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "ci",
+      "inherits": "default",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_INTERPROCEDURAL_OPTIMIZATION": "ON",
+        "VKU_BUILD_EXAMPLES": "ON"
+      },
+      "environment": {
+        "VCPKG_ROOT": "$env{VCPKG_INSTALLATION_ROOT}"
+      }
+    },
+    {
+      "name": "windows-latest",
+      "inherits": "ci"
+    },
+    {
+      "name": "macos-latest",
+      "inherits": "ci"
+    },
+    {
+      "name": "ubuntu-latest",
+      "inherits": "ci"
+    }
+  ]
+}

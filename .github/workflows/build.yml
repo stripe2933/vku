@@ -1,0 +1,38 @@
+name: Build
+
+on: push
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['windows-latest', 'macos-latest', 'ubuntu-latest']
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install Vulkan SDK
+        uses: stripe2933/setup-vulkan-sdk@30a1c4f5464781f4559063b11e19b080a53b4411
+        with:
+          vulkan-query-version: latest
+          vulkan-components: Vulkan-Headers, Vulkan-Loader, Glslang, SPIRV-Tools
+          vulkan-use-cache: true
+
+      - name: Install Build Dependencies (Ubuntu)
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: sudo apt-get install xorg-dev libtool libltdl-dev
+
+      - name: Enable Developer Command Prompt (Windows)
+        if: ${{ matrix.os == 'windows-latest' }}
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Configure
+        run: |
+          mv .github/workflows/scripts/* .
+          cmake --preset=${{ matrix.os }}
+
+      - name: Build
+        run: cmake --build build --config release
