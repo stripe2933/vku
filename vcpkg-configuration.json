@@ -11,5 +11,6 @@
       "name": "microsoft"
     }
   ],
-  "overlay-ports": ["overlays"]
+  "overlay-ports": ["overlays"],
+  "overlay-triplets": ["triplets"]
 }
