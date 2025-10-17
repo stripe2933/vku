@@ -1,0 +1,7 @@
+/.github/ export-ignore
+/examples/ export-ignore
+/overlays/ export-ignore
+.gitattributes export-ignore
+CMakePresets.json export-ignore
+vcpkg.json export-ignore
+vcpkg-configuration.json export-ignore
