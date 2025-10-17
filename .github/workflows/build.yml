@@ -10,11 +10,13 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { os: 'windows-latest', compiler: 'msvc' }
-          - { os: 'windows-latest', compiler: 'mingw' }
-          - { os: 'macos-latest', compiler: 'apple-clang' }
-          - { os: 'ubuntu-latest', compiler: 'gcc' }
-          - { os: 'ubuntu-latest', compiler: 'clang-libcxx' }
+          - { os: 'windows-latest', compiler: 'msvc', module: 'on' }
+          - { os: 'windows-latest', compiler: 'msvc', module: 'off' }
+          - { os: 'windows-latest', compiler: 'mingw', module: 'off' }
+          - { os: 'macos-latest', compiler: 'apple-clang', module: 'off' }
+          - { os: 'ubuntu-latest', compiler: 'gcc', module: 'off' }
+          - { os: 'ubuntu-latest', compiler: 'clang-libcxx', module: 'on' }
+          - { os: 'ubuntu-latest', compiler: 'clang-libcxx', module: 'off' }
 
     steps:
       - uses: actions/checkout@v5
@@ -41,7 +43,7 @@ jobs:
       - name: Configure
         run: |
           mv .github/workflows/scripts/* .
-          cmake --preset=${{ matrix.os }}-${{ matrix.compiler }}
+          cmake --preset=${{ matrix.os }}-${{ matrix.compiler }} -DVKU_BUILD_MODULE=${{ matrix.module }}
 
       - name: Build
         run: cmake --build build --config release
