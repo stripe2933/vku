@@ -17,12 +17,17 @@ find_package(unofficial-vulkan-memory-allocator-hpp CONFIG REQUIRED)
 
 add_library(vku INTERFACE)
 target_compile_features(vku INTERFACE cxx_std_20)
-target_include_directories(vku INTERFACE include)
+target_include_directories(vku INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
 target_link_libraries(vku INTERFACE
     Vulkan::Headers
     GPUOpen::VulkanMemoryAllocator
     unofficial::VulkanMemoryAllocator-Hpp::VulkanMemoryAllocator-Hpp
 )
+
+set_target_properties(vku PROPERTIES PUBLIC_HEADER include/vku.hpp)
 
 # Usage consistency between FetchContent and find_package.
 add_library(vku::vku ALIAS vku)
@@ -71,3 +76,32 @@ endif()
 if (VKU_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
+
+# ----- Installation -----
+
+install(
+    TARGETS vku
+    EXPORT "${PROJECT_NAME}Targets"
+)
+install(
+    EXPORT "${PROJECT_NAME}Targets"
+    DESTINATION cmake/${PROJECT_NAME}
+    NAMESPACE ${PROJECT_NAME}::
+)
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY ExactVersion
+)
+configure_package_config_file(
+    cmake/config.cmake.in
+    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+    INSTALL_DESTINATION cmake/${PROJECT_NAME}
+)
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+    DESTINATION cmake/${PROJECT_NAME}
+)
