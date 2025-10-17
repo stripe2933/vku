@@ -43,6 +43,15 @@
       }
     },
     {
+      "name": "ubuntu-latest-clang",
+      "inherits": "ci",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "/usr/bin/clang",
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
+        "VCPKG_TARGET_TRIPLET": "x64-linux-clang-release"
+      }
+    },
+    {
       "name": "ubuntu-latest-clang-libcxx",
       "inherits": "ci",
       "cacheVariables": {
@@ -51,7 +60,7 @@
         "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
         "CMAKE_CXX_FLAGS": "-stdlib=libc++",
         "CMAKE_EXE_LINKER_FLAGS": "-stdlib=libc++ -lc++abi",
-        "VCPKG_TARGET_TRIPLET": "x64-linux-clang-release"
+        "VCPKG_TARGET_TRIPLET": "x64-linux-clang-libcxx-release"
       }
     }
   ]
