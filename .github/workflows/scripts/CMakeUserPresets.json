@@ -17,6 +17,7 @@
       "name": "windows-latest-msvc",
       "inherits": "ci",
       "cacheVariables": {
+        "CMAKE_EXPERIMENTAL_CXX_IMPORT_STD": "0e5b6991-d74f-4b3d-a41c-cf096e0b2508",
         "VCPKG_TARGET_TRIPLET": "x64-windows-release"
       }
     },
@@ -45,6 +46,7 @@
       "name": "ubuntu-latest-clang-libcxx",
       "inherits": "ci",
       "cacheVariables": {
+        "CMAKE_EXPERIMENTAL_CXX_IMPORT_STD": "0e5b6991-d74f-4b3d-a41c-cf096e0b2508",
         "CMAKE_C_COMPILER": "/usr/bin/clang",
         "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
         "CMAKE_CXX_FLAGS": "-stdlib=libc++",
