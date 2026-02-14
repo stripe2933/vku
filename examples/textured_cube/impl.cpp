@@ -4,7 +4,7 @@
 #ifdef VKU_EXAMPLE_USE_MODULE
 #include <vulkan/vulkan_hpp_macros.hpp>
 
-import vulkan_hpp;
+import vulkan;
 #else
 #define VMA_IMPLEMENTATION
 #define VKU_IMPLEMENTATION

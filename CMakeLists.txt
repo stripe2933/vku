@@ -51,6 +51,7 @@ if (VKU_BUILD_MODULE)
             module
         FILES
             ${Vulkan_INCLUDE_DIRS}/vulkan/vulkan.cppm
+            ${Vulkan_INCLUDE_DIRS}/vulkan/vulkan_video.cppm
             ${VulkanMemoryAllocator_Hpp_INCLUDE_DIR}/vulkan-memory-allocator-hpp/vk_mem_alloc.cppm
             module/vku.cppm
     )
