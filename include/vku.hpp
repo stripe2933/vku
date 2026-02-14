@@ -258,6 +258,7 @@ namespace details {
     }
 
     VKU_EXPORT template <typename T>
+    [[deprecated("Use setDebugUtilsObjectNameEXT(vk::HandleType const&, std::string const&) instead.")]]
     [[nodiscard]] VULKAN_HPP_NAMESPACE::DebugUtilsObjectNameInfoEXT getDebugUtilsObjectNameInfoEXT(
         T handle,
         const char *name VKU_LIFETIMEBOUND
@@ -270,6 +271,7 @@ namespace details {
     }
 
     VKU_EXPORT template <typename T>
+    [[deprecated("Use setDebugUtilsObjectTagEXT(vk::HandleType const&, uint64_t, vk::TagType const&) instead.")]]
     [[nodiscard]] VULKAN_HPP_NAMESPACE::DebugUtilsObjectTagInfoEXT getDebugUtilsObjectTagInfoEXT(
         T handle,
         std::uint64_t tagName,
@@ -287,6 +289,7 @@ namespace details {
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     VKU_EXPORT template <typename T>
+    [[deprecated("Use setDebugUtilsObjectTagEXT(vk::HandleType const&, uint64_t, vk::TagType const&) instead.")]]
     [[nodiscard]] VULKAN_HPP_NAMESPACE::DebugUtilsObjectTagInfoEXT getDebugUtilsObjectTagInfoEXT(
         T handle,
         std::uint64_t tagName,
