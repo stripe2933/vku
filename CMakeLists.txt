@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.30)
 
 project(vku
     LANGUAGES CXX
-    VERSION 1.4.328
+    VERSION 1.4.335
 )
 
 option(VKU_DISPATCH_LOADER_DYNAMIC "Use Vulkan-Hpp dynamic dispatch loader.")

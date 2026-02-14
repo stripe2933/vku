@@ -93,8 +93,8 @@ private:
             }),
             {},
             extensions,
-            &vk::PhysicalDeviceFeatures{}
-                .setSamplerAnisotropy(true)
+            &vku::lvalue(vk::PhysicalDeviceFeatures{}
+                .setSamplerAnisotropy(true))
         } };
 
     #if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
