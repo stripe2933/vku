@@ -19,7 +19,7 @@
 #include <vector>
 
 #include <vulkan/vulkan_raii.hpp>
-#include <vulkan-memory-allocator-hpp/vk_mem_alloc.hpp>
+#include <vulkan-memory-allocator-hpp/vk_mem_alloc_raii.hpp>
 #endif
 
 #ifndef VKU_EXPORT
@@ -587,12 +587,16 @@ namespace raii {
             VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr
         );
 
+        [[nodiscard]] operator vku::Buffer() const noexcept {
+            return { .buffer = *this, .size = size };
+        }
+
         [[nodiscard]] VULKAN_HPP_NAMESPACE::BufferViewCreateInfo getViewCreateInfo(
             VULKAN_HPP_NAMESPACE::Format format,
             VULKAN_HPP_NAMESPACE::DeviceSize offset = 0,
             VULKAN_HPP_NAMESPACE::DeviceSize range = VULKAN_HPP_NAMESPACE::WholeSize
         ) const noexcept {
-            return { {}, **this, format, offset, range };
+            return static_cast<vku::Buffer>(*this).getViewCreateInfo(format, offset, range);
         }
     };
 
@@ -614,75 +618,96 @@ namespace raii {
             VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr
         );
 
+        [[nodiscard]] operator vku::Image() const noexcept {
+            return { .image = *this, .extent = extent, .format = format, .mipLevels = mipLevels, .arrayLayers = arrayLayers };
+        }
+
         [[nodiscard]] VULKAN_HPP_NAMESPACE::ImageViewCreateInfo getViewCreateInfo(
             VULKAN_HPP_NAMESPACE::ImageViewType type,
             const VULKAN_HPP_NAMESPACE::ImageSubresourceRange &subresourceRange
         ) const noexcept {
-            VULKAN_HPP_NAMESPACE::ImageViewCreateInfo result{};
-            result.image = **this;
-            result.viewType = type;
-            result.format = format;
-            result.subresourceRange = subresourceRange;
-            return result;
+            return static_cast<vku::Image>(*this).getViewCreateInfo(type, subresourceRange);
         }
 
         [[nodiscard]] VULKAN_HPP_NAMESPACE::ImageViewCreateInfo getViewCreateInfo(VULKAN_HPP_NAMESPACE::ImageViewType type) const {
-            return getViewCreateInfo(type, fullSubresourceRange(details::getAspectFlags(format)));
+            return static_cast<vku::Image>(*this).getViewCreateInfo(type, fullSubresourceRange(details::getAspectFlags(format)));
         }
 
         // FIXME: inline keyword is redundant as it is template function, but Clang < 21 and the latest GCC have bug
         //  for it and can be workarounded by adding the keyword. Remove the keyword when fixed.
         [[nodiscard]] inline auto getPerMipLevelViewCreateInfos(VULKAN_HPP_NAMESPACE::ImageViewType type) const {
-            return std::views::iota(0U, mipLevels)
-                | std::views::transform([this, type](std::uint32_t level) {
-                    return getViewCreateInfo(type, { details::getAspectFlags(format), level, 1, 0, VULKAN_HPP_NAMESPACE::RemainingArrayLayers });
-                });
+            return static_cast<vku::Image>(*this).getPerMipLevelViewCreateInfos(type);
         }
 
         // FIXME: inline keyword is redundant as it is template function, but Clang < 21 and the latest GCC have bug
         //  for it and can be workarounded by adding the keyword. Remove the keyword when fixed.
         [[nodiscard]] inline auto getPerArrayLayerViewCreateInfos(VULKAN_HPP_NAMESPACE::ImageViewType type) const {
-            return std::views::iota(0U, arrayLayers)
-                | std::views::transform([this, type](std::uint32_t layer) {
-                    return getViewCreateInfo(type, { details::getAspectFlags(format), 0, VULKAN_HPP_NAMESPACE::RemainingMipLevels, layer, 1 });
-                });
+            return static_cast<vku::Image>(*this).getPerArrayLayerViewCreateInfos(type);
         }
     };
 
-    VKU_EXPORT struct AllocatedBuffer : vku::Buffer {
-        VMA_HPP_NAMESPACE::Allocator allocator;
-        VMA_HPP_NAMESPACE::Allocation allocation;
+    VKU_EXPORT struct AllocatedBuffer : VMA_HPP_NAMESPACE::VMA_HPP_RAII_NAMESPACE::Buffer {
+        VULKAN_HPP_NAMESPACE::DeviceSize size;
 
         AllocatedBuffer(
-            VMA_HPP_NAMESPACE::Allocator allocator,
+            const VMA_HPP_NAMESPACE::VMA_HPP_RAII_NAMESPACE::Allocator &allocator,
             const VULKAN_HPP_NAMESPACE::BufferCreateInfo &createInfo,
             const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo,
             VULKAN_HPP_NAMESPACE::Optional<VMA_HPP_NAMESPACE::AllocationInfo> allocationInfo = nullptr
         );
-        AllocatedBuffer(const AllocatedBuffer&) = delete;
-        AllocatedBuffer(AllocatedBuffer &&src) noexcept;
-        AllocatedBuffer &operator=(const AllocatedBuffer&) = delete;
-        AllocatedBuffer &operator=(AllocatedBuffer &&src) noexcept;
 
-        ~AllocatedBuffer();
+        [[nodiscard]] operator vku::Buffer() const noexcept {
+            return { .buffer = *this, .size = size };
+        }
+
+        [[nodiscard]] VULKAN_HPP_NAMESPACE::BufferViewCreateInfo getViewCreateInfo(
+            VULKAN_HPP_NAMESPACE::Format format,
+            VULKAN_HPP_NAMESPACE::DeviceSize offset = 0,
+            VULKAN_HPP_NAMESPACE::DeviceSize range = VULKAN_HPP_NAMESPACE::WholeSize
+        ) const noexcept {
+            return static_cast<vku::Buffer>(*this).getViewCreateInfo(format, offset, range);
+        }
     };
 
-    VKU_EXPORT struct AllocatedImage : vku::Image {
-        VMA_HPP_NAMESPACE::Allocator allocator;
-        VMA_HPP_NAMESPACE::Allocation allocation;
+    VKU_EXPORT struct AllocatedImage : VMA_HPP_NAMESPACE::VMA_HPP_RAII_NAMESPACE::Image {
+        VULKAN_HPP_NAMESPACE::Extent3D extent;
+        VULKAN_HPP_NAMESPACE::Format format;
+        std::uint32_t mipLevels;
+        std::uint32_t arrayLayers;
 
         AllocatedImage(
-            VMA_HPP_NAMESPACE::Allocator allocator,
+            const VMA_HPP_NAMESPACE::VMA_HPP_RAII_NAMESPACE::Allocator &allocator,
             const VULKAN_HPP_NAMESPACE::ImageCreateInfo &createInfo,
             const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo,
             VULKAN_HPP_NAMESPACE::Optional<VMA_HPP_NAMESPACE::AllocationInfo> allocationInfo = nullptr
         );
-        AllocatedImage(const AllocatedImage&) = delete;
-        AllocatedImage(AllocatedImage &&src) noexcept;
-        AllocatedImage &operator=(const AllocatedImage&) = delete;
-        AllocatedImage &operator=(AllocatedImage &&src) noexcept;
 
-        ~AllocatedImage();
+        [[nodiscard]] operator vku::Image() const noexcept {
+            return { .image = *this, .extent = extent, .format = format, .mipLevels = mipLevels, .arrayLayers = arrayLayers };
+        }
+
+        [[nodiscard]] VULKAN_HPP_NAMESPACE::ImageViewCreateInfo getViewCreateInfo(
+            VULKAN_HPP_NAMESPACE::ImageViewType type,
+            const VULKAN_HPP_NAMESPACE::ImageSubresourceRange &subresourceRange
+        ) const noexcept {
+            return static_cast<vku::Image>(*this).getViewCreateInfo(type, subresourceRange);
+        }
+
+        [[nodiscard]] VULKAN_HPP_NAMESPACE::ImageViewCreateInfo getViewCreateInfo(VULKAN_HPP_NAMESPACE::ImageViewType type) const {
+            return static_cast<vku::Image>(*this).getViewCreateInfo(type, fullSubresourceRange(details::getAspectFlags(format)));
+        }
+
+        // FIXME: inline keyword is redundant as it is template function, but Clang < 21 and the latest GCC have bug
+        //  for it and can be workarounded by adding the keyword. Remove the keyword when fixed.
+        [[nodiscard]] inline auto getPerMipLevelViewCreateInfos(VULKAN_HPP_NAMESPACE::ImageViewType type) const {
+            return static_cast<vku::Image>(*this).getPerMipLevelViewCreateInfos(type);
+        }
+
+        // FIXME: inline keyword is redundant as it is template function, but Clang < 21 and the latest GCC have bug
+        //  for it and can be workarounded by adding the keyword. Remove the keyword when fixed.
+        [[nodiscard]] inline auto getPerArrayLayerViewCreateInfos(VULKAN_HPP_NAMESPACE::ImageViewType type) const {
+            return static_cast<vku::Image>(*this).getPerArrayLayerViewCreateInfos(type);
+        }
     };
 
     VKU_EXPORT template <VULKAN_HPP_NAMESPACE::DescriptorType... BindingTypes>
@@ -1062,68 +1087,23 @@ vku::raii::Image::Image(
     arrayLayers { image.arrayLayers } { }
 
 vku::raii::AllocatedBuffer::AllocatedBuffer(
-    VMA_HPP_NAMESPACE::Allocator allocator,
+    const VMA_HPP_NAMESPACE::VMA_HPP_RAII_NAMESPACE::Allocator &allocator,
     const VULKAN_HPP_NAMESPACE::BufferCreateInfo &createInfo,
     const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo,
     VULKAN_HPP_NAMESPACE::Optional<VMA_HPP_NAMESPACE::AllocationInfo> allocationInfo
-) : Buffer { nullptr, createInfo.size },
-    allocator { allocator } {
-    std::tie(buffer, allocation) = allocator.createBuffer(createInfo, allocationCreateInfo, allocationInfo);
-}
-
-vku::raii::AllocatedBuffer::AllocatedBuffer(AllocatedBuffer &&src) noexcept
-    : Buffer { static_cast<Buffer>(src) }
-    , allocator { src.allocator }
-    , allocation { std::exchange(src.allocation, {}) } { }
-
-vku::raii::AllocatedBuffer &vku::raii::AllocatedBuffer::operator=(AllocatedBuffer &&src) noexcept {
-    if (allocation) {
-        allocator.destroyBuffer(buffer, allocation);
-    }
-
-    static_cast<Buffer&>(*this) = static_cast<Buffer>(src);
-    allocator = src.allocator;
-    allocation = std::exchange(src.allocation, {});
-    return *this;
-}
-
-vku::raii::AllocatedBuffer::~AllocatedBuffer() {
-    if (allocation) {
-        allocator.destroyBuffer(buffer, allocation);
-    }
-}
+) : Buffer { allocator, createInfo, allocationCreateInfo, allocationInfo },
+    size { createInfo.size } { }
 
 vku::raii::AllocatedImage::AllocatedImage(
-    VMA_HPP_NAMESPACE::Allocator allocator,
+    const VMA_HPP_NAMESPACE::VMA_HPP_RAII_NAMESPACE::Allocator &allocator,
     const VULKAN_HPP_NAMESPACE::ImageCreateInfo &createInfo,
     const VMA_HPP_NAMESPACE::AllocationCreateInfo &allocationCreateInfo,
     VULKAN_HPP_NAMESPACE::Optional<VMA_HPP_NAMESPACE::AllocationInfo> allocationInfo
-) : Image { nullptr, createInfo.extent, createInfo.format, createInfo.mipLevels, createInfo.arrayLayers },
-    allocator { allocator } {
-    std::tie(image, allocation) = allocator.createImage(createInfo, allocationCreateInfo, allocationInfo);
-}
-
-vku::raii::AllocatedImage::AllocatedImage(AllocatedImage &&src) noexcept
-    : Image { static_cast<Image>(src) }
-    , allocator { src.allocator }
-    , allocation { std::exchange(src.allocation, {}) } { }
-
-vku::raii::AllocatedImage &vku::raii::AllocatedImage::operator=(AllocatedImage &&src) noexcept {
-    if (allocation) {
-        allocator.destroyImage(image, allocation);
-    }
-
-    static_cast<Image&>(*this) = static_cast<Image>(src);
-    allocator = src.allocator;
-    allocation = std::exchange(src.allocation, {});
-    return *this;
-}
-
-vku::raii::AllocatedImage::~AllocatedImage() {
-    if (allocation) {
-        allocator.destroyImage(image, allocation);
-    }
-}
+) : Image { allocator, createInfo, allocationCreateInfo, allocationInfo },
+    extent { createInfo.extent },
+    format { createInfo.format },
+    mipLevels { createInfo.mipLevels },
+    arrayLayers { createInfo.arrayLayers } { }
 
 vku::DescriptorPoolSize &vku::DescriptorPoolSize::operator+=(const DescriptorPoolSize &rhs) noexcept {
     maxSets += rhs.maxSets;

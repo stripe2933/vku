@@ -42,18 +42,21 @@ public:
     std::uint32_t queueFamily;
     vk::raii::Device device;
     vk::Queue queue;
-    vma::Allocator allocator;
+    vma::raii::Allocator allocator;
 
     Gpu(const vk::raii::Instance &instance, vk::raii::PhysicalDevice &&_physicalDevice, vk::SurfaceKHR surface)
         : physicalDevice { std::move(_physicalDevice) }
         , queueFamily { getQueueFamily(surface) }
         , device { createDevice() }
         , queue { (*device).getQueue(queueFamily, 0) }
-        , allocator { createAllocator(instance) } { }
-
-    ~Gpu() {
-        allocator.destroy();
-    }
+        , allocator { instance, device, vma::AllocatorCreateInfo {
+            {},
+            *physicalDevice, {},
+            {}, {}, {}, {},
+            {},
+            {},
+            vk::makeApiVersion(0, 1, 0, 0),
+        } } { }
 
 private:
     [[nodiscard]] std::uint32_t getQueueFamily(vk::SurfaceKHR surface) const {
@@ -103,24 +106,6 @@ private:
     #endif
 
         return result;
-    }
-
-    [[nodiscard]] vma::Allocator createAllocator(const vk::raii::Instance &instance) const {
-        return vma::createAllocator(vma::AllocatorCreateInfo {
-            {},
-            *physicalDevice, *device,
-            {}, {}, {}, {},
-        #if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
-            &vku::lvalue(vma::VulkanFunctions{
-                instance.getDispatcher()->vkGetInstanceProcAddr,
-                device.getDispatcher()->vkGetDeviceProcAddr,
-            }),
-        #else
-            {},
-        #endif
-            *instance,
-            vk::makeApiVersion(0, 1, 0, 0),
-        });
     }
 };
 
@@ -377,7 +362,7 @@ public:
                         vma::MemoryUsage::eAutoPreferHost,
                     },
                 };
-                gpu.allocator.copyMemoryToAllocation(data, stagingBuffer.allocation, 0, stagingBuffer.size);
+                stagingBuffer.getAllocation().copyFromMemory(data, 0, stagingBuffer.size);
                 stbi_image_free(data);
 
                 vku::raii::AllocatedImage result {
@@ -488,7 +473,7 @@ public:
                 -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
                 -0.5f,  0.5f,  0.5f,  0.0f, 0.0f  // bottom-left
             };
-            gpu.allocator.copyMemoryToAllocation(cubeVertices, cubeVertexBuffer.allocation, 0, cubeVertexBuffer.size);
+            cubeVertexBuffer.getAllocation().copyFromMemory(cubeVertices, 0, cubeVertexBuffer.size);
 
             vku::DescriptorSetAllocationBuilder{}
                 .add(cubeRenderPipeline.descriptorSetLayout, cubeBaseColorTextureDescriptorSet)
@@ -562,7 +547,7 @@ public:
         frameCommandBuffer.setViewport(0, vku::toViewport(renderArea, true));
         frameCommandBuffer.setScissor(0, renderArea);
 
-        frameCommandBuffer.bindVertexBuffers(0, shared->cubeVertexBuffer.buffer, { 0 });
+        frameCommandBuffer.bindVertexBuffers(0, *shared->cubeVertexBuffer, { 0 });
 
         frameCommandBuffer.draw(36, 1, 0, 0);
         
