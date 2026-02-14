@@ -17,7 +17,6 @@
       "name": "windows-latest-msvc",
       "inherits": "ci",
       "cacheVariables": {
-        "CMAKE_EXPERIMENTAL_CXX_IMPORT_STD": "0e5b6991-d74f-4b3d-a41c-cf096e0b2508",
         "VCPKG_TARGET_TRIPLET": "x64-windows-release"
       }
     },
@@ -32,6 +31,16 @@
       "name": "macos-latest-apple-clang",
       "inherits": "ci",
       "cacheVariables": {
+        "VCPKG_TARGET_TRIPLET": "arm64-osx-release"
+      }
+    },
+    {
+      "name": "macos-latest-clang",
+      "inherits": "ci",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "/opt/homebrew/opt/llvm@18/bin/clang",
+        "CMAKE_CXX_COMPILER": "/opt/homebrew/opt/llvm@18/bin/clang++",
+        "CMAKE_CXX_STDLIB_MODULES_JSON": "/opt/homebrew/opt/llvm@18/lib/c++/libc++.modules.json",
         "VCPKG_TARGET_TRIPLET": "arm64-osx-release"
       }
     },
@@ -55,7 +64,6 @@
       "name": "ubuntu-latest-clang-libcxx",
       "inherits": "ci",
       "cacheVariables": {
-        "CMAKE_EXPERIMENTAL_CXX_IMPORT_STD": "0e5b6991-d74f-4b3d-a41c-cf096e0b2508",
         "CMAKE_C_COMPILER": "/usr/bin/clang",
         "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
         "CMAKE_CXX_FLAGS": "-stdlib=libc++",

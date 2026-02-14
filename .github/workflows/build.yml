@@ -18,6 +18,8 @@ jobs:
           - { os: 'windows-latest', compiler: 'msvc', module: 'off' }
           - { os: 'windows-latest', compiler: 'mingw', module: 'off' }
           - { os: 'macos-latest', compiler: 'apple-clang', module: 'off' }
+          - { os: 'macos-latest', compiler: 'clang', module: 'off' }
+          - { os: 'macos-latest', compiler: 'clang', module: 'on' }
           - { os: 'ubuntu-latest', compiler: 'gcc', module: 'off' }
           - { os: 'ubuntu-latest', compiler: 'clang', module: 'off' }
           - { os: 'ubuntu-latest', compiler: 'clang-libcxx', module: 'on' }
