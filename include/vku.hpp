@@ -1066,7 +1066,7 @@ vku::raii::Buffer::Buffer(
     const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
     const vku::Buffer &buffer,
     VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator
-) : VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Buffer { device, buffer.buffer },
+) : VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Buffer { device, buffer.buffer, allocator },
     size { buffer.size } { }
 
 vku::raii::Image::Image(
@@ -1083,7 +1083,7 @@ vku::raii::Image::Image(
     const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device &device,
     const vku::Image &image,
     VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator
-) : VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Image { device, image.image },
+) : VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Image { device, image.image, allocator },
     extent { image.extent },
     format { image.format },
     mipLevels { image.mipLevels },
