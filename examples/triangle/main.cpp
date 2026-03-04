@@ -172,7 +172,7 @@ public:
             surfaceCapabilities.currentTransform,
             vk::CompositeAlphaFlagBitsKHR::eOpaque,
             vk::PresentModeKHR::eFifo,
-            false,
+            true,
             oldSwapchain
         } },
         images { swapchain.getImages() },
