@@ -12,7 +12,7 @@ endif()
 
 project(vku
     LANGUAGES CXX
-    VERSION 1.4.335
+    VERSION 1.4.341
 )
 
 option(VKU_DISPATCH_LOADER_DYNAMIC "Use Vulkan-Hpp dynamic dispatch loader.")
