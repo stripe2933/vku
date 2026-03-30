@@ -558,8 +558,15 @@ namespace details {
         //  for it and can be workarounded by adding the keyword. Remove the keyword when fixed.
         [[nodiscard]] inline auto getPerMipLevelViewCreateInfos(VULKAN_HPP_NAMESPACE::ImageViewType type) const {
             return std::views::iota(0U, mipLevels)
-                | std::views::transform([this, type](std::uint32_t level) {
-                    return getViewCreateInfo(type, { details::getAspectFlags(format), level, 1, 0, VULKAN_HPP_NAMESPACE::RemainingArrayLayers });
+                | std::views::transform([type, image = this->image, format = this->format](std::uint32_t level) {
+                    return VULKAN_HPP_NAMESPACE::ImageViewCreateInfo {
+                        {},
+                        image,
+                        type,
+                        format,
+                        {},
+                        { details::getAspectFlags(format), level, 1, 0, VULKAN_HPP_NAMESPACE::RemainingArrayLayers },
+                    };
                 });
         }
 
@@ -567,8 +574,15 @@ namespace details {
         //  for it and can be workarounded by adding the keyword. Remove the keyword when fixed.
         [[nodiscard]] inline auto getPerArrayLayerViewCreateInfos(VULKAN_HPP_NAMESPACE::ImageViewType type) const {
             return std::views::iota(0U, arrayLayers)
-                | std::views::transform([this, type](std::uint32_t layer) {
-                    return getViewCreateInfo(type, { details::getAspectFlags(format), 0, VULKAN_HPP_NAMESPACE::RemainingMipLevels, layer, 1 });
+                | std::views::transform([type, image = this->image, format = this->format](std::uint32_t layer) {
+                    return VULKAN_HPP_NAMESPACE::ImageViewCreateInfo {
+                        {},
+                        image,
+                        type,
+                        format,
+                        {},
+                        { details::getAspectFlags(format), 0, VULKAN_HPP_NAMESPACE::RemainingMipLevels, layer, 1 },
+                    };
                 });
         }
     };
