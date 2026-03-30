@@ -172,7 +172,7 @@ public:
             surfaceCapabilities.currentTransform,
             vk::CompositeAlphaFlagBitsKHR::eOpaque,
             vk::PresentModeKHR::eFifo,
-            false,
+            true,
             oldSwapchain
         } },
         images { swapchain.getImages() },
@@ -271,7 +271,7 @@ public:
         // Acquire swapchain image.
         std::uint32_t swapchainImageIndex;
         try {
-            swapchainImageIndex = (*gpu.get().device).acquireNextImageKHR(*shared->swapchain.swapchain, ~0ULL, *imageAvailableSemaphore).value;
+            swapchainImageIndex = shared->swapchain.swapchain.acquireNextImage(~0ULL, *imageAvailableSemaphore).value;
         }
         catch (const vk::OutOfDateKHRError&) {
             return;

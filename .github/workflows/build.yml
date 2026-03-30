@@ -2,6 +2,10 @@ name: Build
 
 on: push
 
+env:
+  FEED_URL: "https://nuget.pkg.github.com/stripe2933/index.json"
+  VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/stripe2933/index.json,readwrite"
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -14,6 +18,8 @@ jobs:
           - { os: 'windows-latest', compiler: 'msvc', module: 'off' }
           - { os: 'windows-latest', compiler: 'mingw', module: 'off' }
           - { os: 'macos-latest', compiler: 'apple-clang', module: 'off' }
+          - { os: 'macos-latest', compiler: 'clang', module: 'off' }
+          - { os: 'macos-latest', compiler: 'clang', module: 'on' }
           - { os: 'ubuntu-latest', compiler: 'gcc', module: 'off' }
           - { os: 'ubuntu-latest', compiler: 'clang', module: 'off' }
           - { os: 'ubuntu-latest', compiler: 'clang-libcxx', module: 'on' }
@@ -22,16 +28,15 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Install Vulkan SDK
-        uses: stripe2933/setup-vulkan-sdk@30a1c4f5464781f4559063b11e19b080a53b4411
-        with:
-          vulkan-query-version: latest
-          vulkan-components: Vulkan-Headers, Vulkan-Loader, Glslang, SPIRV-Tools
-          vulkan-use-cache: true
+      - name: Install Build Dependencies (macOS)
+        if: ${{ matrix.os == 'macos-latest' }}
+        run: brew install mono
 
       - name: Install Build Dependencies (Ubuntu)
         if: ${{ matrix.os == 'ubuntu-latest' }}
-        run: sudo apt-get install xorg-dev libtool libltdl-dev
+        run: |
+          sudo apt-get update
+          sudo apt-get install mono-devel xorg-dev libtool libltdl-dev
 
       - name: Install Build Dependencies (Ubuntu + Clang libc++)
         if: ${{ matrix.os == 'ubuntu-latest' && matrix.compiler == 'clang-libcxx' }}
@@ -40,6 +45,20 @@ jobs:
       - name: Enable Developer Command Prompt (Windows)
         if: ${{ matrix.os == 'windows-latest' && matrix.compiler == 'msvc' }}
         uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Add NuGet sources (Windows)
+        if: ${{ matrix.os == 'windows-latest' }}
+        shell: pwsh
+        run: |
+          .$(vcpkg fetch nuget) sources add -Source "${{ env.FEED_URL }}" -Name GitHubPackages -UserName "stripe2933" -Password "${{ secrets.GH_PACKAGES_TOKEN }}"
+          .$(vcpkg fetch nuget) setapikey "${{ secrets.GH_PACKAGES_TOKEN }}" -Source "${{ env.FEED_URL }}"
+
+      - name: Add NuGet sources (macOS, Ubuntu)
+        if: ${{ matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest' }}
+        shell: bash
+        run: |
+          mono `vcpkg fetch nuget | tail -n 1` sources add -Source "${{ env.FEED_URL }}" -Name GitHubPackages -UserName "stripe2933" -Password "${{ secrets.GH_PACKAGES_TOKEN }}"
+          mono `vcpkg fetch nuget | tail -n 1` setapikey "${{ secrets.GH_PACKAGES_TOKEN }}" -Source "${{ env.FEED_URL }}"
 
       - name: Configure
         run: |

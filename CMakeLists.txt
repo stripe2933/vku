@@ -1,8 +1,20 @@
 cmake_minimum_required(VERSION 3.30)
 
+if (VKU_BUILD_MODULE)
+    if (CMAKE_VERSION VERSION_GREATER_EQUAL "4.3.0")
+        set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "451f2fe2-a8a2-47c3-bc32-94786d8fc91b")
+    elseif (CMAKE_VERSION VERSION_GREATER_EQUAL "4.0.3")
+        set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "d0edc3af-4c50-42ea-a356-e2862fe7a444")
+    elseif (CMAKE_VERSION VERSION_GREATER_EQUAL "4.0.1")
+        set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "a9e1cf81-9932-4810-974b-6eccaf14e457")
+    else()
+        set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "0e5b6991-d74f-4b3d-a41c-cf096e0b2508")
+    endif()
+endif()
+
 project(vku
     LANGUAGES CXX
-    VERSION 1.4.328
+    VERSION 1.4.341
 )
 
 option(VKU_DISPATCH_LOADER_DYNAMIC "Use Vulkan-Hpp dynamic dispatch loader.")
@@ -51,6 +63,7 @@ if (VKU_BUILD_MODULE)
             module
         FILES
             ${Vulkan_INCLUDE_DIRS}/vulkan/vulkan.cppm
+            ${Vulkan_INCLUDE_DIRS}/vulkan/vulkan_video.cppm
             ${VulkanMemoryAllocator_Hpp_INCLUDE_DIR}/vulkan-memory-allocator-hpp/vk_mem_alloc.cppm
             module/vku.cppm
     )
